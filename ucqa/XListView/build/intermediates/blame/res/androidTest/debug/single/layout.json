@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\xlistview_header.xml",
+        "source": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\layout\\xlistview_header.xml"
+    },
+    {
+        "merged": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\ptr_header.xml",
+        "source": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\layout\\ptr_header.xml"
+    },
+    {
+        "merged": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\res\\merged\\androidTest\\debug\\layout\\xlistview_footer.xml",
+        "source": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\layout\\xlistview_footer.xml"
+    }
+]

@@ -1,0 +1,458 @@
+[
+    {
+        "outputFile": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\res\\merged\\androidTest\\debug\\values\\values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 54,
+                    "endOffset": 105
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 55,
+                        "endColumn": 54,
+                        "endOffset": 105
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 110,
+                    "endColumn": 51,
+                    "endOffset": 157
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 110,
+                        "endColumn": 51,
+                        "endOffset": 157
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 9,
+                    "startColumn": 4,
+                    "startOffset": 7256,
+                    "endColumn": 42,
+                    "endOffset": 7294
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 9,
+                        "startColumn": 4,
+                        "startOffset": 7256,
+                        "endColumn": 42,
+                        "endOffset": 7294
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 7299,
+                    "endColumn": 46,
+                    "endOffset": 7341
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 10,
+                        "startColumn": 4,
+                        "startOffset": 7299,
+                        "endColumn": 46,
+                        "endOffset": 7341
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 11,
+                    "startColumn": 4,
+                    "startOffset": 7346,
+                    "endColumn": 65,
+                    "endOffset": 7407
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 11,
+                        "startColumn": 4,
+                        "startOffset": 7346,
+                        "endColumn": 65,
+                        "endOffset": 7407
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 12,
+                    "startColumn": 4,
+                    "startOffset": 7412,
+                    "endColumn": 58,
+                    "endOffset": 7466
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 12,
+                        "startColumn": 4,
+                        "startOffset": 7412,
+                        "endColumn": 58,
+                        "endOffset": 7466
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 13,
+                    "startColumn": 4,
+                    "startOffset": 7471,
+                    "endColumn": 63,
+                    "endOffset": 7530
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 13,
+                        "startColumn": 4,
+                        "startOffset": 7471,
+                        "endColumn": 63,
+                        "endOffset": 7530
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 14,
+                    "startColumn": 4,
+                    "startOffset": 7535,
+                    "endColumn": 53,
+                    "endOffset": 7584
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 14,
+                        "startColumn": 4,
+                        "startOffset": 7535,
+                        "endColumn": 53,
+                        "endOffset": 7584
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 15,
+                    "startColumn": 4,
+                    "startOffset": 7589,
+                    "endColumn": 69,
+                    "endOffset": 7654
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 15,
+                        "startColumn": 4,
+                        "startOffset": 7589,
+                        "endColumn": 69,
+                        "endOffset": 7654
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 16,
+                    "startColumn": 4,
+                    "startOffset": 7659,
+                    "endColumn": 63,
+                    "endOffset": 7718
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 16,
+                        "startColumn": 4,
+                        "startOffset": 7659,
+                        "endColumn": 63,
+                        "endOffset": 7718
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 17,
+                    "startColumn": 4,
+                    "startOffset": 7723,
+                    "endColumn": 62,
+                    "endOffset": 7781
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 17,
+                        "startColumn": 4,
+                        "startOffset": 7723,
+                        "endColumn": 62,
+                        "endOffset": 7781
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 18,
+                    "startColumn": 4,
+                    "startOffset": 7786,
+                    "endColumn": 65,
+                    "endOffset": 7847
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 18,
+                        "startColumn": 4,
+                        "startOffset": 7786,
+                        "endColumn": 65,
+                        "endOffset": 7847
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 19,
+                    "startColumn": 4,
+                    "startOffset": 7852,
+                    "endColumn": 61,
+                    "endOffset": 7909
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 19,
+                        "startColumn": 4,
+                        "startOffset": 7852,
+                        "endColumn": 61,
+                        "endOffset": 7909
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 20,
+                    "startColumn": 4,
+                    "startOffset": 7914,
+                    "endColumn": 62,
+                    "endOffset": 7972
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 20,
+                        "startColumn": 4,
+                        "startOffset": 7914,
+                        "endColumn": 62,
+                        "endOffset": 7972
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 21,
+                    "startColumn": 4,
+                    "startOffset": 7977,
+                    "endColumn": 58,
+                    "endOffset": 8031
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 21,
+                        "startColumn": 4,
+                        "startOffset": 7977,
+                        "endColumn": 58,
+                        "endOffset": 8031
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 22,
+                    "startColumn": 4,
+                    "startOffset": 8036,
+                    "endColumn": 57,
+                    "endOffset": 8089
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 22,
+                        "startColumn": 4,
+                        "startOffset": 8036,
+                        "endColumn": 57,
+                        "endOffset": 8089
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 23,
+                    "startColumn": 4,
+                    "startOffset": 8094,
+                    "endLine": 29,
+                    "endColumn": 12,
+                    "endOffset": 8452
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 23,
+                        "startColumn": 4,
+                        "startOffset": 8094,
+                        "endLine": 29,
+                        "endColumn": 12,
+                        "endOffset": 8452
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 30,
+                    "startColumn": 4,
+                    "startOffset": 8457,
+                    "endLine": 35,
+                    "endColumn": 12,
+                    "endOffset": 8729
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 30,
+                        "startColumn": 4,
+                        "startOffset": 8457,
+                        "endLine": 35,
+                        "endColumn": 12,
+                        "endOffset": 8729
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 36,
+                    "startColumn": 4,
+                    "startOffset": 8734,
+                    "endLine": 40,
+                    "endColumn": 12,
+                    "endOffset": 8957
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 36,
+                        "startColumn": 4,
+                        "startOffset": 8734,
+                        "endLine": 40,
+                        "endColumn": 12,
+                        "endOffset": 8957
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 41,
+                    "startColumn": 4,
+                    "startOffset": 8962,
+                    "endLine": 47,
+                    "endColumn": 12,
+                    "endOffset": 9332
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 41,
+                        "startColumn": 4,
+                        "startOffset": 8962,
+                        "endLine": 47,
+                        "endColumn": 12,
+                        "endOffset": 9332
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 48,
+                    "startColumn": 4,
+                    "startOffset": 9337,
+                    "endLine": 54,
+                    "endColumn": 12,
+                    "endOffset": 9727
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 48,
+                        "startColumn": 4,
+                        "startOffset": 9337,
+                        "endLine": 54,
+                        "endColumn": 12,
+                        "endOffset": 9727
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 55,
+                    "startColumn": 4,
+                    "startOffset": 9732,
+                    "endLine": 63,
+                    "endColumn": 12,
+                    "endOffset": 10200
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 55,
+                        "startColumn": 4,
+                        "startOffset": 9732,
+                        "endLine": 63,
+                        "endColumn": 12,
+                        "endOffset": 10200
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 64,
+                    "startColumn": 4,
+                    "startOffset": 10205,
+                    "endLine": 70,
+                    "endColumn": 12,
+                    "endOffset": 10555
+                },
+                "from": {
+                    "file": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\values\\values.xml",
+                    "position": {
+                        "startLine": 64,
+                        "startColumn": 4,
+                        "startOffset": 10205,
+                        "endLine": 70,
+                        "endColumn": 12,
+                        "endOffset": 10555
+                    }
+                }
+            }
+        ]
+    }
+]

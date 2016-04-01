@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\ic_launcher.png",
+        "source": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\ic_launcher.png"
+    },
+    {
+        "merged": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\ic_logo.png",
+        "source": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\ic_logo.png"
+    },
+    {
+        "merged": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\default_ptr_flip_bottom.png",
+        "source": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\default_ptr_flip_bottom.png"
+    },
+    {
+        "merged": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\xlistview_arrow.png",
+        "source": "E:\\lightup\\ucqa\\XListView\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\xlistview_arrow.png"
+    }
+]
