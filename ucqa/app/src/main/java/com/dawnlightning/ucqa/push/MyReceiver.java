@@ -1,10 +1,18 @@
 package com.dawnlightning.ucqa.push;
 
+import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.alibaba.fastjson.JSON;
+import com.dawnlightning.ucqa.activity.MainActivity;
+import com.dawnlightning.ucqa.base.Code;
+import com.dawnlightning.ucqa.base.MyApp;
+import com.dawnlightning.ucqa.db.SharedPreferenceDb;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,8 +29,6 @@ import cn.jpush.android.api.JPushInterface;
  */
 public class MyReceiver extends BroadcastReceiver {
 	private static final String TAG = "JPush";
-	String id="";
-	String uid="";
 	@Override
 	public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
@@ -35,18 +41,43 @@ public class MyReceiver extends BroadcastReceiver {
                         
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
         	Log.d(TAG, "[MyReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
-        	processCustomMessage(context, bundle);
+        	//processCustomMessage(context, bundle);
         
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
             Log.d(TAG, "[MyReceiver] 接收到推送下来的通知");
             int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
-            processCustomMessage(context, bundle);
+            //processCustomMessage(context, bundle);
             Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
         	
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
             Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
-            processCustomMessage(context, bundle);
-            gotoactivity(context);
+			if (!MainActivity.isForeground){
+				//如果在后台
+				String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+				com.alibaba.fastjson.JSONObject extraJson = (com.alibaba.fastjson.JSONObject) JSON.parse(extras);
+				if (null != extraJson) {
+					String id=extraJson.getString("id");
+					String uid=extraJson.getString("uid");
+					KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(context.KEYGUARD_SERVICE);
+					KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("");
+					keyguardLock.disableKeyguard();
+					Intent i = new Intent(context, MainActivity.class);
+					i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					Bundle userbundle = new Bundle();
+					userbundle.putSerializable("userdata", MainActivity.userBean);
+					userbundle.putString("id", id);
+					userbundle.putString("uid",uid);
+					i.putExtras(userbundle);
+					context.startActivity(i);
+					processCustomMessage(context, bundle);
+				}
+
+			}else{
+				//如果不在后台
+				processCustomMessage(context, bundle);
+			}
+
+            //processCustomMessage(context, bundle);
         	//打开自定义的Activity
         
         	
@@ -60,22 +91,6 @@ public class MyReceiver extends BroadcastReceiver {
         } else {
         	Log.d(TAG, "[MyReceiver] Unhandled intent - " + intent.getAction());
         }
-	}
-	private void gotoactivity(Context context){
-		
-	
-//		ArrayList<String> message =new ArrayList<String>();
-//		for(int i=0;i<MainActivity.userinfo.size();i++){
-//			message.add(MainActivity.userinfo.get(i));
-//		}
-//
-//		message.add(id);
-//		message.add(uid);
-//		Intent i=new Intent();
-//		i.setClass(context, CommentActivity.class);
-//		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );
-//		i.putStringArrayListExtra("message", message);
-//		context.startActivity(i);
 	}
 	// 打印所有的 intent extra 数据
 	private static String printBundle(Bundle bundle) {
@@ -96,24 +111,26 @@ public class MyReceiver extends BroadcastReceiver {
 	//send msg to MainActivity
 	private void processCustomMessage(Context context, Bundle bundle) {
 	
-//			String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
-//			String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
-//			Intent msgIntent = new Intent( MainActivity.MESSAGE_RECEIVED_ACTION);
-//			msgIntent.putExtra( MainActivity.KEY_MESSAGE, message);
-//			if (!ExampleUtil.isEmpty(extras)) {
-//				try {
-//					JSONObject extraJson = new JSONObject(extras);
-//					if (null != extraJson && extraJson.length() > 0) {
-//						id=extraJson.getString("id");
-//						uid=extraJson.getString("uid");
-//						msgIntent.putExtra( MainActivity.KEY_EXTRAS, extras);
-//					}
-//				} catch (JSONException e) {
-//
-//				}
-//
-//			}
-//			context.sendBroadcast(msgIntent);
+			String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
+			String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+			Intent msgIntent = new Intent( Code.MESSAGE_RECEIVED_ACTION);
+			msgIntent.putExtra( Code.KEY_MESSAGE, message);
+			if (!ExampleUtil.isEmpty(extras)) {
+				try {
+					JSONObject extraJson = new JSONObject(extras);
+					if (null != extraJson && extraJson.length() > 0) {
+					  String id=extraJson.getString("id");
+					  String uid=extraJson.getString("uid");
+						msgIntent.putExtra(Code.KEY_EXTRAS, extras);
+						msgIntent.putExtra("id",id);
+						msgIntent.putExtra("uid",uid);
+					}
+				} catch (JSONException e) {
+
+				}
+
+			}
+			context.sendBroadcast(msgIntent);
 		
 	}
 }

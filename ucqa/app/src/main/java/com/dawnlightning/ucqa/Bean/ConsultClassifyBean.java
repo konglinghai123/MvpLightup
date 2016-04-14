@@ -1,41 +1,59 @@
 package com.dawnlightning.ucqa.Bean;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * Created by Administrator on 2016/3/31.
  */
-public class ConsultClassifyBean {
-    private HashMap<String, String> mapid = new HashMap<String, String>();//症状分类
-    private HashMap<String, String> mapname = new HashMap<String, String>();//科室分类
+public class ConsultClassifyBean implements Serializable{
 
-    public ConsultClassifyBean(HashMap<String, String> mapid, HashMap<String, String> mapname) {
-        this.mapid = mapid;
-        this.mapname = mapname;
-    }
-    public  ConsultClassifyBean(){
-
-    }
-    public HashMap<String, String> getMapid() {
-        return mapid;
+    private   String  bwztclassarrname;//症状
+    private int bwztclassarrid;//症状
+    private     String bwztdivisionarrname;//科室
+    private int bwztdivisionarrid;
+    public String getBwztclassarrname() {
+        return bwztclassarrname;
     }
 
-    public void setMapid(HashMap<String, String> mapid) {
-        this.mapid = mapid;
+    public void setBwztclassarrname(String bwztclassarrname) {
+        this.bwztclassarrname = bwztclassarrname;
     }
 
-    public HashMap<String, String> getMapname() {
-        return mapname;
+    public int getBwztclassarrid() {
+        return bwztclassarrid;
     }
 
-    public void setMapname(HashMap<String, String> mapname) {
-        this.mapname = mapname;
+    public void setBwztclassarrid(String bwztclassarrid) {
+        this.bwztclassarrid = Integer.parseInt(bwztclassarrid);
+    }
+
+    public String getBwztdivisionarrname() {
+        return bwztdivisionarrname;
+    }
+
+    public void setBwztdivisionarrname(String bwztdivisionarrname) {
+        this.bwztdivisionarrname = bwztdivisionarrname;
+    }
+
+    public int getBwztdivisionarrid() {
+        return bwztdivisionarrid;
+    }
+
+    public void setBwztdivisionarrid(String bwztdivisionarrid) {
+        this.bwztdivisionarrid = Integer.parseInt(bwztdivisionarrid);
+    }
+
+    public ConsultClassifyBean(String bwztclassarrname, String bwztclassarrid, String bwztdivisionarrname, String bwztdivisionarrid) {
+
+        this.bwztclassarrname = bwztclassarrname;
+        this.bwztclassarrid = Integer.parseInt(bwztclassarrid);
+        this.bwztdivisionarrname = bwztdivisionarrname;
+        this.bwztdivisionarrid = Integer.parseInt(bwztdivisionarrid);
+    }
+    public ConsultClassifyBean(){
+
     }
 
 
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
 }

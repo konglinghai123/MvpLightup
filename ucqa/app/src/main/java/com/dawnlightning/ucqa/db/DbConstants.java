@@ -35,6 +35,10 @@ public class DbConstants {
 	public static final String DB_lOGIN="DB_LOGIN";
 
 	public static final String KEY__LOGIN="KEY_LOGIN";
+	/*推送开关*/
+	public static final String DB_PUSH="DB_PUSH";
+
+	public static final String KEY__PUSH="KEY_PUSH";
 	
 	/*formhash*/
 	public static final String KEY_FORMHASH="KEY_FORMHASH";
@@ -51,5 +55,9 @@ public class DbConstants {
 	public static final String KEY_READMESSAGE="KEY_READMESSAGE";
 
 	public static final String KEY_M_AUTH="KEY_M_AUTH";
+
+	public static final String KEY_PHONE="KEY_PHONE";
+
+	public static final String KEY_PASSWORD="KEY_PASSWORD";
 	
 }

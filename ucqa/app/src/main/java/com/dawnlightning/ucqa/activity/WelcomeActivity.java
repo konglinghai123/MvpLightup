@@ -1,12 +1,12 @@
 package com.dawnlightning.ucqa.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -16,14 +16,17 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
+import com.dawnlightning.ucqa.Bean.UserBean;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.base.BaseActivity;
 import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
+import com.dawnlightning.ucqa.base.Code;
 import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.db.SharedPreferenceDb;
 import com.dawnlightning.ucqa.fragment.LoginFragment;
+import com.dawnlightning.ucqa.model.LoginModel;
 import com.dawnlightning.ucqa.presenter.ClassifyPresenter;
-import com.dawnlightning.ucqa.presenter.ConsultPresenter;
+import com.dawnlightning.ucqa.presenter.ConsultListPresenter;
 import com.dawnlightning.ucqa.tools.Blur;
 import com.dawnlightning.ucqa.util.SQLHelper;
 import com.dawnlightning.ucqa.viewinterface.IConsultListView;
@@ -34,24 +37,42 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/3/31.
  */
-public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsultListView {
+public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsultListView,LoginModel.loginlistener {
 
 
     private RelativeLayout contentview = null;
     private Bitmap bitmap = null;
     private AlphaAnimation start_anima;//开动画始
+
+    @Override
+    public void onSuccess(UserBean bean) {
+
+        Intent intent = new Intent();
+        intent.setClass(this, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userdata",bean);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        dismissdialog();
+        finish();
+    }
+
+    @Override
+    public void onFailure(int code, String msg) {
+        dismissdialog();
+        blurbackground();
+    }
+
     private ImageView iv_top = null;
     private ImageView iv_buttom = null;
     private ImageView introduction = null;
     private AlphaAnimation animaTop = null;//上箭头动画
     private AlphaAnimation animabuttom = null;//下箭头动画
-    private View view;
     private Boolean IsSlide=false;//是否滑动过
     private Boolean allowSlide=false; //是否允许滑动
     float x1 = 0;  float x2 = 0;  float y1 = 0;  float y2 = 0;
-    private static final String BLURRED_IMG_PATH = "blurred_image.png";
     private ClassifyPresenter classifyPresenter=null;
-    private ConsultPresenter consultPresenter=null;
+    private ConsultListPresenter consultListPresenter =null;
     private SQLHelper sqlHelper;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -60,52 +81,42 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsu
 
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initview();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-
+        initdata();
+        initevent();
     }
+
 
 
 
     @Override
     public void initview() {
-        view = View.inflate(this, R.layout.activity_welcome, null);
+        final  View view = View.inflate(this, R.layout.activity_welcome, null);
         setContentView(view);
-        classifyPresenter=new ClassifyPresenter(this);
-        consultPresenter=new ConsultPresenter(this);
-        sqlHelper=((MyApp)getApplication()).getSQLHelper();
         contentview = (RelativeLayout) findViewById(R.id.contentview);
         iv_top = (ImageView) findViewById(R.id.up_top);
         iv_buttom = (ImageView) findViewById(R.id.up_buttom);
         introduction=(ImageView) findViewById(R.id.introduction);
         start_anima = new AlphaAnimation(0.3f, 1.0f);
         start_anima.setDuration(3000);
-        view.startAnimation(start_anima);
-        start_anima.setAnimationListener(new Animation.AnimationListener(){
-
+        view.post(new Runnable() {
             @Override
-            public void onAnimationStart(Animation animation) {
-                AnimationStart();
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                AnimationEnd();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
+            public void run() {
+                view.startAnimation(start_anima);
             }
         });
+
+
     }
 
     @Override
     public void initdata() {
-
+        classifyPresenter=new ClassifyPresenter(this);
+        consultListPresenter =new ConsultListPresenter(this,MyApp.getApp());
+        sqlHelper=((MyApp)getApplication()).getSQLHelper();
     }
 
     @Override
@@ -183,7 +194,8 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsu
     public void AnimationStart() {
         if(checknetwork(getcontext())){
             classifyPresenter.load();
-            doloadfirstlist();
+            doloadassignlist(1,-1,Code.ALL,Code.REFRESH);
+
         }
         else
         {
@@ -208,20 +220,68 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsu
         animabuttom.setRepeatCount(AlphaAnimation.INFINITE);
         iv_buttom.setAnimation(animabuttom);
     }
-    @Override
-    public void TouchUp() {
-        //上滑
 
-        if(!IsSlide&&allowSlide){
-            IsSlide=true;
+    @Override
+    public void blurbackground() {
+
+
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 2;
             Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.bg, options);
             Bitmap newImg = Blur.fastblur(getcontext(), image, 5);
             Drawable drawable =new BitmapDrawable(newImg);
             contentview.setBackground(drawable);
-            //showPopwindow(getDataPick());
             showlogin();
+
+    }
+
+    @Override
+    public void initevent() {
+        start_anima.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+                AnimationStart();
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                AnimationEnd();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    @Override
+    public void TouchUp() {
+        //上滑
+        if(!IsSlide&&allowSlide){
+            IsSlide=true;
+        SharedPreferenceDb sharedPreferenceDb=getMySharedPreferenceDb();
+            String phone=sharedPreferenceDb.getPhone();
+            String password=sharedPreferenceDb.getPassword();
+            Boolean IsAutologin=sharedPreferenceDb.getAutoLogin();
+        if (!IsAutologin&&phone!=""&&password!=""){
+
+            blurbackground();
+        }
+
+        else{
+            if(checknetwork(getcontext())) {
+
+                LoginModel loginModel = new LoginModel();
+                loginModel.setUsername(phone);
+                loginModel.setPassword(password);
+                loginModel.login(loginModel, this);
+                this.initdialog("加载中");
+            }else{
+                showerror("请检查网络连接");
+            }
+        }
         }
     }
 
@@ -241,22 +301,23 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsu
     }
 
     @Override
-    public void doloadfirstlist() {
-        consultPresenter.loadfistlist();
+    public void doloadassignlist(int page, int bwztclassid, int identity, int operate) {
+
+            consultListPresenter.loadassignlist(page,bwztclassid,"",identity,operate);
+
     }
 
     @Override
-    public void doloadassignlist(int page, String bwztclassid) {
+    public void getSuccess(int code,List<ConsultMessageBean> list,int indentity,int  operate) {
 
-    }
-    @Override
-    public void getSuccess(List<ConsultMessageBean> list) {
-          sqlHelper.deleteallconsult();
-          sqlHelper.insertconsult(list);
     }
 
     @Override
-    public void getFailure(int code, String msg) {
+    public void getFailure(int code, String msg,int indentity,int  operate) {
+
+    }
+    @Override
+    public void refresh(int operate) {
 
     }
 }

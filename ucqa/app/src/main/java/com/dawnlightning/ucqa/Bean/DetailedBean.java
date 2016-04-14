@@ -8,16 +8,86 @@ import java.util.List;
 
 public class DetailedBean {
 	private String uid;
-	private String age;
 	private String usename;
 	private String datetime;
 	private String subject;
-	private String content;
+	private String message;
 	private List<PicsBean> picsBean;
 	private List<CommentBean> commentBean;
 	private String avatar_url;
 	private String name;
-	private static final long ONE_MINUTE = 60000L;  
+	private String sex;
+	private String age;
+	private String viewnum;
+	private String replynum;
+	private int status;
+	private int bwztid;
+
+	public int getBwztid() {
+		return bwztid;
+	}
+
+	public void setBwztid(int bwztid) {
+		this.bwztid = bwztid;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public String getReplynum() {
+		return replynum;
+	}
+
+	public void setReplynum(String replynum) {
+		this.replynum = replynum;
+	}
+
+	public String getViewnum() {
+		return viewnum;
+	}
+
+	public void setViewnum(String viewnum) {
+		this.viewnum = viewnum;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public List<CommentBean> getCommentBean() {
+		return commentBean;
+	}
+
+	public void setCommentBean(List<CommentBean> commentBean) {
+		this.commentBean = commentBean;
+	}
+
+	public List<PicsBean> getPicsBean() {
+		return picsBean;
+	}
+
+	public void setPicsBean(List<PicsBean> picsBean) {
+		this.picsBean = picsBean;
+	}
+
+	private static final long ONE_MINUTE = 60000L;
     private static final long ONE_HOUR = 3600000L;  
     
   
@@ -56,10 +126,10 @@ public class DetailedBean {
 		this.subject = subject;
 	}
 	public String getContent() {
-		return content;
+		return message;
 	}
-	public void setContent(String content) {
-		this.content = content;
+	public void setContent(String message) {
+		this.message = message;
 	}
 	public List<PicsBean> getPics() {
 		return picsBean;
@@ -83,29 +153,7 @@ public class DetailedBean {
 	public void setAvatar_url(String avatar_url) {
 		this.avatar_url = avatar_url;
 	}
-	public DetailedBean(String uid, String age, String usename, String datetime,
-						String subject, String content, List<PicsBean> picsBean,
-						List<CommentBean> commentBean, String avatar_url, String name) {
-		super();
-		this.uid = uid;
-		this.age = age;
-		this.usename = usename;
-		this.datetime = datetime;
-		this.subject = subject;
-		this.content = content;
-		this.picsBean = picsBean;
-		this.commentBean = commentBean;
-		this.avatar_url = avatar_url;
-		this.name = name;
-	}
-	@Override
-	public String toString() {
-		return "DetailedBean [uid=" + uid + ", age=" + age + ", usename=" + usename
-				+ ", datetime=" + datetime + ", subject=" + subject
-				+ ", content=" + content + ", picsBean=" + picsBean + ", commentBean="
-				+ commentBean + ", avatar_url=" + avatar_url + ", name=" + name
-				+ "]";
-	}
+
 	public String getName() {
 		return name;
 	}
@@ -139,7 +187,47 @@ public class DetailedBean {
 	     
 	     
 		}
-	private static long toSeconds(long date) {  
+
+	public DetailedBean(String uid, int bwztid, int status, String replynum, String viewnum, String age, String usename, String sex, String name, String avatar_url, List<CommentBean> commentBean, List<PicsBean> picsBean, String message, String subject, String datetime) {
+		this.uid = uid;
+		this.bwztid = bwztid;
+		this.status = status;
+		this.replynum = replynum;
+		this.viewnum = viewnum;
+		this.age = age;
+		this.usename = usename;
+		this.sex = sex;
+		this.name = name;
+		this.avatar_url = avatar_url;
+		this.commentBean = commentBean;
+		this.picsBean = picsBean;
+		this.message = message;
+		this.subject = subject;
+		this.datetime = datetime;
+	}
+
+	@Override
+	public String toString() {
+		return "DetailedBean{" +
+				"uid='" + uid + '\'' +
+				", usename='" + usename + '\'' +
+				", datetime='" + datetime + '\'' +
+				", subject='" + subject + '\'' +
+				", message='" + message + '\'' +
+				", picsBean=" + picsBean +
+				", commentBean=" + commentBean +
+				", avatar_url='" + avatar_url + '\'' +
+				", name='" + name + '\'' +
+				", sex='" + sex + '\'' +
+				", age='" + age + '\'' +
+				", viewnum='" + viewnum + '\'' +
+				", replynum='" + replynum + '\'' +
+				", status=" + status +
+				", bwztid=" + bwztid +
+				'}';
+	}
+
+	private static long toSeconds(long date) {
 	    return date / 1000L;  
 	}  
 	private static long toMinutes(long date) {  

@@ -20,8 +20,8 @@
       
       
         <item name="android:windowNoTitle">true</item>  
-        <item name="android:animationDuration">5000</item>
-        <item name="android:windowContentOverlay">@null</item>  
+
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="MyDialogStyle">
@@ -33,7 +33,25 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+    <style name="ReplyDialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item><!--边框-->
+        <item name="android:windowIsFloating">true</item><!--是否浮现在activity之上-->
+        <item name="android:windowIsTranslucent">false</item><!--半透明-->
+        <item name="android:windowNoTitle">true</item><!--无标题-->
+        <item name="android:windowBackground">@android:color/transparent</item><!--背景透明-->
+        <item name="android:backgroundDimEnabled">false</item><!--模糊-->
+        <item name="android:backgroundDimAmount">0.6</item>
+        <item name="android:background">#00000000</item>
+    </style>
+    <style name="Dialog" parent="android:style/Theme.Dialog">
 
+        <item name="android:windowFrame">@null</item><!-- 边框 -->
+        <item name="android:windowIsFloating">true</item><!-- 是否浮现在activity之上 -->
+        <item name="android:windowIsTranslucent">false</item><!-- 半透明 -->
+        <item name="android:windowNoTitle">true</item><!-- 无标题 -->
+        <item name="android:windowBackground">@mipmap/bg_white</item><!-- 自己想要的背景 -->
+        <item name="android:backgroundDimEnabled">false</item><!-- 模糊 -->
 
+    </style>
 
 </resources>

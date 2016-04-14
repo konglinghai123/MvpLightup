@@ -3,6 +3,7 @@ package com.dawnlightning.ucqa.presenter;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
 import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
@@ -38,11 +39,13 @@ public class MainViewPresenter implements IMainViewPresenter {
     public void loaduserdata(Intent intent) {
         UserBean user=(UserBean)intent.getSerializableExtra("userdata");
         view.saveuserdata(user);
+
+
     }
 
     @Override
     public void loadlist() {
-        if (sqlHelper!=null) {
+        if (sqlHelper==null) {
             sqlHelper = new SQLHelper(myApp.getApplicationContext());
         }
           List<ConsultMessageBean> list=sqlHelper.queryconsult("全部");
@@ -52,26 +55,61 @@ public class MainViewPresenter implements IMainViewPresenter {
 
     @Override
     public void loadclassify() {
-        if (sqlHelper!=null) {
+        if (sqlHelper==null) {
             sqlHelper = new SQLHelper(myApp.getApplicationContext());
         }
         List<ConsultClassifyBean> list=sqlHelper.queryclassify("眼科");
-        if (list.size()>0){
+        if (list.size()<0){
+            ConsultClassifyBean bean6=new ConsultClassifyBean();
+            bean6.setBwztclassarrid("6");
+            bean6.setBwztclassarrname("全部");
+            bean6.setBwztdivisionarrid("1");
+            bean6.setBwztdivisionarrname("眼科");
+            list.add(bean6);
             view.showclassifylist(list);
         }else{
             List<ConsultClassifyBean> staticlist=new ArrayList<ConsultClassifyBean>();
-            ConsultClassifyBean bean=new ConsultClassifyBean();
-            HashMap<String,String> mapid=new HashMap<String,String>();
-            HashMap<String,String> mapname=new HashMap<String,String>();
-            mapid.put("青少年近视","1");
-            mapid.put("防盲治盲","2");
-            mapid.put("飞秒激光治疗近视","3");
-            mapid.put("青光眼","4");
-            mapid.put("白内障","5");
-            mapname.put("眼科","1");
-            bean.setMapid(mapid);
-            bean.setMapname(mapname);
-            staticlist.add(bean);
+            ConsultClassifyBean bean1=new ConsultClassifyBean();
+            bean1.setBwztclassarrid("1");
+            bean1.setBwztclassarrname("青少年近视");
+            bean1.setBwztdivisionarrid("1");
+            bean1.setBwztdivisionarrname("眼科");
+
+            ConsultClassifyBean bean2=new ConsultClassifyBean();
+            bean2.setBwztclassarrid("2");
+            bean2.setBwztclassarrname("防盲治盲");
+            bean2.setBwztdivisionarrid("1");
+            bean2.setBwztdivisionarrname("眼科");
+
+            ConsultClassifyBean bean3=new ConsultClassifyBean();
+            bean3.setBwztclassarrid("3");
+            bean3.setBwztclassarrname("飞秒激光治疗近视");
+            bean3.setBwztdivisionarrid("1");
+            bean3.setBwztdivisionarrname("眼科"); ConsultClassifyBean bean=new ConsultClassifyBean();
+
+            ConsultClassifyBean bean4=new ConsultClassifyBean();
+            bean4.setBwztclassarrid("4");
+            bean4.setBwztclassarrname("青光眼");
+            bean4.setBwztdivisionarrid("1");
+            bean4.setBwztdivisionarrname("眼科");
+
+            ConsultClassifyBean bean5=new ConsultClassifyBean();
+            bean5.setBwztclassarrid("5");
+            bean5.setBwztclassarrname("白内障");
+            bean5.setBwztdivisionarrid("1");
+            bean5.setBwztdivisionarrname("眼科");
+
+            ConsultClassifyBean bean6=new ConsultClassifyBean();
+            bean6.setBwztclassarrid("6");
+            bean6.setBwztclassarrname("全部");
+            bean6.setBwztdivisionarrid("1");
+            bean6.setBwztdivisionarrname("眼科");
+            staticlist.add(bean1);
+            staticlist.add(bean2);
+            staticlist.add(bean3);
+            staticlist.add(bean4);
+            staticlist.add(bean5);
+            staticlist.add(bean6);
             view.showclassifylist(staticlist);
         }
 
@@ -93,7 +131,7 @@ public class MainViewPresenter implements IMainViewPresenter {
                 switch (msg.what) {
 
                     case UpdateStatus.UPDATA_CLIENT:
-                        view.showdownloaddialog();
+                       updateManager.showNoticeDialog();
                         break;
                     case UpdateStatus.UPDATA_ERROR:
 

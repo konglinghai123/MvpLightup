@@ -2,6 +2,7 @@ package com.dawnlightning.ucqa.util;
 
 import android.annotation.SuppressLint;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -44,6 +45,18 @@ public class TimeUtil {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "yyyyMMdd_HHmmss");
         return dateFormat.format(date) + ".jpg";
+	}
+	/*将字符串转为时间戳*/
+	public static long getStringToDate(String time) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = new Date();
+		try{
+			date = sdf.parse(time);
+		} catch(ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date.getTime();
 	}
 	/**
 	 * 将时间戳转换为”时分秒天月年“

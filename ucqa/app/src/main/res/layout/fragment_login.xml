@@ -29,8 +29,7 @@
 	  	android:textColor="@color/white"
 	    android:hint="手机号码"
 	    android:maxLength="11"
-	    android:numeric="integer"
-	    android:phoneNumber="true"
+
 	    android:text="13650421544"
 	    android:textSize="16.0sp" 
 	    android:background="@drawable/login_edit_bg"

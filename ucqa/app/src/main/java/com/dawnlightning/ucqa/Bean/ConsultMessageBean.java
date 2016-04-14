@@ -4,10 +4,11 @@ import android.annotation.SuppressLint;
 
 import com.dawnlightning.ucqa.util.TimeUtil;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ConsultMessageBean {
+public class ConsultMessageBean implements Serializable{
 
 private String bwztid;
 private String message;

@@ -15,7 +15,7 @@ public interface IWelcomeView {
     public  void AnimationEnd();//动画加载完成
     public  void TouchUp();//上滑
     public  void showlogin();//上滑后显示登陆
-
+    public  void blurbackground();//模糊化背景
 
 
 }

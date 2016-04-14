@@ -13,18 +13,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
 import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 
-import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 
@@ -32,7 +23,7 @@ public class SQLHelper extends SQLiteOpenHelper {
     //数据库名称
     private static final String DATABASE_NAME = "lightup.db";
     // 版本号
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION =5;
     // 表名
     public static final String TABLES_CONSULT_NAME = "TB_CONSULT";
 
@@ -58,7 +49,9 @@ public class SQLHelper extends SQLiteOpenHelper {
                 + "bwztid" + " TEXT,"
                 + "messagetype" + " TEXT,"
                 + "status" + " TEXT,"
-                + "uid" + " TEXT"
+                + "uid" + " TEXT,"
+                + "sex" + " TEXT,"
+                + "age" + " TEXT"
                 + ");");
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLES_CLASSIFY_NAME + " ("
                 + "_ID" + " INTEGER PRIMARY KEY,"
@@ -78,45 +71,125 @@ public class SQLHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertconsult(List<ConsultMessageBean> list){
+    public int insertconsult(List<ConsultMessageBean> list){
+        int insertcount=0;
+        List<ConsultMessageBean> beans=queryallconsult();
         SQLiteDatabase db = this.getWritableDatabase();
-        for(ConsultMessageBean item : list){
-            ContentValues values = new ContentValues();
-            values.put("title", item.getSubject());
-            values.put("content", item.getMessage());
-            values.put("date", item.getDateline());
-            values.put("img", item.getAvatar_url());
-            values.put("uid", item.getUid());
-            values.put("replynum", item.getReplynum());
-            values.put("viewnum", item.getViewnum());
-            if (item.messagetype==null){
-                values.put("messagetype", "全部");
-            }else{
-                values.put("messagetype", item.messagetype);
+        if (beans.size()>0){
+            for (ConsultMessageBean item : list){
+                for(int i=0;i<beans.size();i++){
+                    if (item.getBwztid().equals(beans.get(i).getBwztid())){
+                        break;
+                    }else if (i==beans.size()-1){
+                        ContentValues values = new ContentValues();
+                        values.put("title", item.getSubject());
+                        values.put("content", item.getMessage());
+                        values.put("date", item.getDateline());
+                        values.put("img", item.getAvatar_url());
+                        values.put("uid", item.getUid());
+                        values.put("replynum", item.getReplynum());
+                        values.put("viewnum", item.getViewnum());
+                        if (item.messagetype == null) {
+                            values.put("messagetype", "全部");
+                        } else {
+                            values.put("messagetype", item.messagetype);
+                        }
+
+                        values.put("status", item.getStatus());
+                        values.put("bwztid", item.getBwztid());
+                        values.put("sex",item.getSex());
+                        values.put("age",item.getAge());
+                        db.insert(TABLES_CONSULT_NAME, null, values);
+                        insertcount++;
+                    }else{
+                        break;
+                    }
+
+                }
             }
 
-            values.put("status", item.getStatus());
-            values.put("bwztid", item.getBwztid());
-            db.insert(TABLES_CONSULT_NAME, null, values);
+       }else{
+            for(ConsultMessageBean item : list){
+            ContentValues values = new ContentValues();
+                    values.put("title", item.getSubject());
+                    values.put("content", item.getMessage());
+                    values.put("date", item.getDateline());
+                    values.put("img", item.getAvatar_url());
+                    values.put("uid", item.getUid());
+                    values.put("replynum", item.getReplynum());
+                    values.put("viewnum", item.getViewnum());
+                    if (item.messagetype == null) {
+                        values.put("messagetype", "全部");
+                    } else {
+                        values.put("messagetype", item.messagetype);
+                    }
+
+                    values.put("status", item.getStatus());
+                    values.put("bwztid", item.getBwztid());
+                     values.put("sex",item.getSex());
+                     values.put("age",item.getAge());
+                    db.insert(TABLES_CONSULT_NAME, null, values);
+                    insertcount++;
+            }
         }
-        Log.e("SQLHelper","插入成功");
+
+//        for(ConsultMessageBean item : list){
+//            if (beans.size()>0){
+//                if (!beans.contains(item)) {
+//                    ContentValues values = new ContentValues();
+//                    values.put("title", item.getSubject());
+//                    values.put("content", item.getMessage());
+//                    values.put("date", item.getDateline());
+//                    values.put("img", item.getAvatar_url());
+//                    values.put("uid", item.getUid());
+//                    values.put("replynum", item.getReplynum());
+//                    values.put("viewnum", item.getViewnum());
+//                    if (item.messagetype == null) {
+//                        values.put("messagetype", "全部");
+//                    } else {
+//                        values.put("messagetype", item.messagetype);
+//                    }
+//
+//                    values.put("status", item.getStatus());
+//                    values.put("bwztid", item.getBwztid());
+//                    db.insert(TABLES_CONSULT_NAME, null, values);
+//                    insertcount++;
+//                }
+//            }else{
+//                ContentValues values = new ContentValues();
+//                values.put("title", item.getSubject());
+//                values.put("content", item.getMessage());
+//                values.put("date", item.getDateline());
+//                values.put("img", item.getAvatar_url());
+//                values.put("uid", item.getUid());
+//                values.put("replynum", item.getReplynum());
+//                values.put("viewnum", item.getViewnum());
+//                if (item.messagetype == null) {
+//                    values.put("messagetype", "全部");
+//                } else {
+//                    values.put("messagetype", item.messagetype);
+//                }
+//                values.put("status", item.getStatus());
+//                values.put("bwztid", item.getBwztid());
+//                db.insert(TABLES_CONSULT_NAME, null, values);
+//                insertcount++;
+//            }
+//        }
+        return insertcount;
     }
     public void insertclassify(List<ConsultClassifyBean> beans){
         SQLiteDatabase db = this.getWritableDatabase();
-        for (ConsultClassifyBean bean:beans){
-            HashMap<String,String> nowmapid=bean.getMapid();
-            HashMap<String,String> nowmapname=bean.getMapname();
-            for (String keyid:nowmapid.keySet()){
+            for (ConsultClassifyBean bean:beans) {
                 ContentValues values = new ContentValues();
-                values.put("bwztclassarrname",keyid);
-                values.put("bwztclassarrid",nowmapid.get(keyid));
-                for (String keyname:nowmapname.keySet()){
-                    values.put("bwztdivisionarrid",nowmapname.get(keyname));
-                    values.put("bwztdivisionarrname",keyname);
-                }
+                values.put("bwztclassarrname", bean.getBwztclassarrname());
+                values.put("bwztclassarrid", bean.getBwztclassarrid());
+                values.put("bwztdivisionarrid", bean.getBwztdivisionarrid());
+                values.put("bwztdivisionarrname", bean.getBwztdivisionarrname());
                 db.insert(TABLES_CLASSIFY_NAME, null, values);
             }
-        }
+
+
+
 
     }
     public void deleteclassify(){
@@ -124,13 +197,40 @@ public class SQLHelper extends SQLiteOpenHelper {
         String strsql=String.format("DELETE FROM %s",TABLES_CLASSIFY_NAME);
         db.execSQL(strsql);
 
+
+    }
+    public  List<ConsultMessageBean> queryallconsult(){
+        List<ConsultMessageBean> list = new ArrayList<ConsultMessageBean>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String SQL=String.format("select * from %s ",TABLES_CONSULT_NAME);
+        Cursor cursor = db.rawQuery(SQL, null);
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+            do{
+                ConsultMessageBean item = new ConsultMessageBean();
+                item.setSubject(cursor.getString(1));
+                item.setMessage(cursor.getString(2));
+                item.dateline=cursor.getString(3);
+                item.setAvatar_url(cursor.getString(4));
+                item.setReplynum(cursor.getString(5));
+                item.setViewnum(cursor.getString(6));
+                item.setBwztid(cursor.getString(7));
+                item.setStatus(cursor.getString(9));
+                item.setUid(cursor.getString(10));
+                item.setAge(cursor.getString(12));
+                item.setSex(cursor.getString(11));
+                list.add(item);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        return  list;
     }
     public  void deleteallconsult(){
 
         SQLiteDatabase db = this.getWritableDatabase();
         String strsql=String.format("DELETE FROM %s",TABLES_CONSULT_NAME);
         db.execSQL(strsql);
-        Log.e("SQLHelper", "删除成功");
+
     }
     public void deleteassignconsult(String newsType){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -143,26 +243,21 @@ public class SQLHelper extends SQLiteOpenHelper {
         String SQL=String.format("select * from %s where bwztdivisionarrname='%s'", TABLES_CLASSIFY_NAME, classname);
         Cursor cursor = db.rawQuery(SQL, null);
         cursor.moveToFirst();
-        ConsultClassifyBean bean=new ConsultClassifyBean();
+
         if (cursor.getCount()>0){
             do {
 
-                HashMap<String,String> mapid=new HashMap<String,String>();
-                mapid.put(cursor.getString(2),cursor.getString(1));
-                bean.setMapid(mapid);
-                HashMap<String,String> mapname=new HashMap<String,String>();
-                if (!mapname.keySet().contains(cursor.getString(4))){
-                    mapname.put(cursor.getString(4), cursor.getString(3));
-                    bean.setMapname(mapname);
-
-                }
-
-
+                ConsultClassifyBean item = new  ConsultClassifyBean();
+                item.setBwztdivisionarrname(cursor.getString(3));
+                item.setBwztclassarrname(cursor.getString(1));
+                item.setBwztclassarrid(cursor.getString(2));
+                item.setBwztdivisionarrid(cursor.getString(4));
+                list.add(item);
             }
             while (cursor.moveToNext());
-            list.add(bean);
-        }
 
+        }
+        cursor.close();
         return  list;
 
     }
@@ -185,6 +280,8 @@ public class SQLHelper extends SQLiteOpenHelper {
                 item.setBwztid(cursor.getString(7));
                 item.setStatus(cursor.getString(9));
                 item.setUid(cursor.getString(10));
+                item.setAge(cursor.getString(12));
+                item.setSex(cursor.getString(11));
                 list.add(item);
             }while(cursor.moveToNext());
         }

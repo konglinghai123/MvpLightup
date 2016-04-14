@@ -73,6 +73,7 @@ public class XListViewHeader extends LinearLayout {
 		mLoadingAnim.setDuration(3000);
 		mLoadingAnim.setFillAfter(true);
 		mLoadingAnim.setRepeatCount(Animation.INFINITE);
+
 		mRotateDownAnim = new RotateAnimation(-180.0f, 0.0f,
 				Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
 				0.5f);

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <RelativeLayout
+                android:id="@+id/re_setting_help"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@mipmap/bg_white"
+                android:clickable="true"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                >
+                <EditText
+                    android:id="@+id/et_consult_subject"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:hint="请输入标题"
+                    android:background="@null"
+                    android:layout_centerVertical="true"
+                    android:singleLine="true"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/bg_white"
+                android:clickable="true"
+                android:paddingLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:paddingRight="20dp"
+                >
+                <com.dawnlightning.ucqa.view.ExpandListView
+                    android:id="@+id/lv_consult_pic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:listSelector="@android:color/transparent"
+                    android:numColumns="1"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="0dp"
+                    android:scrollbars="vertical"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="10dp"
+                    />
+            </RelativeLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@mipmap/bg_white"
+                >
+                <ImageView
+                    android:id="@+id/iv_consult_sentvoice"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_consult_voice"
+                    android:layout_weight="1"
+
+                    />
+                <ImageView
+                    android:id="@+id/iv_consult_sentphotos"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+
+                    android:src="@mipmap/ic_consult_photos"
+                    android:layout_weight="1"
+
+                    />
+                <ImageView
+                    android:id="@+id/iv_consult_sentcamera"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_consult_camera"
+                    android:layout_weight="1"
+
+                    />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:clickable="true"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="20dp"
+                android:paddingLeft="60dp"
+                android:paddingRight="60dp"
+                >
+                <Button
+                    android:id="@+id/bt_setting_submit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:background="@color/lightgray"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:text="提交"
+                    />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -52,6 +52,38 @@ public class LoginModel implements ILoginModel {
     }
 
     @Override
+    public void loginoff(String uhash, String m_auth,final loginlistener listener) {
+        RequestParams params = new RequestParams();
+        params.put("ac", "common");
+        params.put("op", "logout");
+        params.put("uhash",uhash);
+        params.put("m_auth",m_auth);
+        AsyncHttp.get(HttpConstants.HTTP_COMMENT, params, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers,
+                                  Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                listener.onFailure(1, "注销失败");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers,
+                                  JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                BaseBean b = JSON.parseObject(response.toString(), BaseBean.class);
+                if ("0".equals(b.getCode())) {
+                    listener.onSuccess(null);
+                } else {
+                    listener.onFailure(1,b.getMsg());
+                }
+
+            }
+
+        });
+    }
+
+    @Override
     public void login(LoginModel model, final loginlistener listener) {
         RequestParams params = new RequestParams();
         params.put("ac", "login");
@@ -71,14 +103,12 @@ public class LoginModel implements ILoginModel {
             public void onSuccess(int statusCode, Header[] headers,
                                   JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-
                 BaseBean b = JSON.parseObject(response.toString(), BaseBean.class);
                 if ("0".equals(b.getCode())) {
                     UserBean bean =new UserBean();
                     bean.setM_auth(JSON.parseObject(b.getData().toString()).getString("m_auth"));
                     bean.setFormhash(JSON.parseObject(b.getData().toString()).getString("formhash"));
                     String space=JSON.parseObject(b.getData().toString()).getString("space");
-                    Log.e("tag", space.toString());
                     UserData data=JSON.parseObject(space, UserData.class);
                     bean.setUserdata(data);
                     listener.onSuccess(bean);

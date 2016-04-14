@@ -6,21 +6,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.dawnlightning.ucqa.Bean.BaseBean;
 import com.dawnlightning.ucqa.Bean.CommentBean;
-import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.Bean.DetailedBean;
 import com.dawnlightning.ucqa.Bean.PicsBean;
+import com.dawnlightning.ucqa.base.Code;
 import com.dawnlightning.ucqa.modelinterface.IDetailedModel;
 import com.dawnlightning.ucqa.util.AsyncHttp;
 import com.dawnlightning.ucqa.util.HttpConstants;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -34,6 +30,14 @@ public class DetailedModel implements IDetailedModel{
     public interface commentlistener{
         public void commentSuccess(List<CommentBean> beans);
         public void commentFailure(int code,String msg);
+    }
+    public interface replytlistener{
+        public void replySuccess(CommentBean bean,int postion);
+        public void replyFailure(int code,String msg);
+    }
+    public interface setcommentlistener{
+        public void setcommentSuccess(int code,String msg);
+        public void setcommentFailure(int code,String msg);
     }
     public interface solvelistener{
         public void solveSuccess(String msg);
@@ -57,7 +61,7 @@ public class DetailedModel implements IDetailedModel{
             public void onFailure(int statusCode, Header[] headers,
                                   Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                detailedlistener.detailedFailure(1, "获取咨询详细失败");
+                detailedlistener.detailedFailure(Code.SERVER_LOAD_FAILURE, "获取咨询详细失败");
             }
 
             @Override
@@ -78,15 +82,50 @@ public class DetailedModel implements IDetailedModel{
                     detailedBean.setUsename(js.getString("username"));
                     detailedBean.setAvatar_url(js.getString("avatar_url"));
                     detailedBean.setName(js.getString("name"));
-                    detailedBean.setComment(JSON.parseArray(js.getString("replylist"),CommentBean.class));
+                    detailedBean.setViewnum(js.getString("viewnum"));
+                    detailedBean.setName(js.getString("name"));
+                    detailedBean.setReplynum(js.getString("replynum"));
+                    detailedBean.setBwztid(Integer.parseInt(js.getString("bwztid")));
+                    detailedBean.setStatus(Integer.parseInt(js.getString("status")));
+                    detailedBean.setSex(js.getString("sex"));
+                    detailedBean.setComment(JSON.parseArray(js.getString("replylist"), CommentBean.class));
+
+                    List<CommentBean> newlist=new ArrayList<CommentBean>();
+                    for (CommentBean commentbean:detailedBean.getComment()) {
+                        newlist.add(commentbean);
+                    }
+                     for (int i=0;i<detailedBean.getComment().size();i++){
+                        List<String> replylist=new ArrayList<String>();
+                        String comment=detailedBean.getComment().get(i).getAuthor()+": "+detailedBean.getComment().get(i).getMessage();
+                        for (int z=i+1;z<detailedBean.getComment().size();z++){
+                            String reply=detailedBean.getComment().get(z).getMessage();
+                            if (reply.contains(comment)){
+                                String name="";
+                                if (detailedBean.getComment().get(z).getName().length()>0){
+                                    name=detailedBean.getComment().get(z).getName();
+                                }else{
+                                    name=detailedBean.getComment().get(z).getAuthor();
+                                }
+                                reply=name+": "+reply.replace(comment,"");
+
+                                replylist.add(reply);
+                                newlist.remove(detailedBean.getComment().get(z));
+                            }
+                        }
+                         if(i<=newlist.size()-1){
+                             newlist.get(i).setReplylist(replylist);
+                         }
+
+                    }
+
+                    detailedBean.setComment(newlist);
                     JSONArray jsonArray = JSONArray.parseArray(js.getString("pics"));
                     List<PicsBean> list=new ArrayList<PicsBean>();
                     if(jsonArray!=null){
                         for(int k=0;k<jsonArray.size();k++){
-                            System.out.print(jsonArray.get(k) + "\t");
-                            Log.e("strpic", jsonArray.get(k).toString());
+
                             com.alibaba.fastjson.JSONObject objpic=(com.alibaba.fastjson.JSONObject) JSON.parse(jsonArray.get(k).toString());
-                            PicsBean p=new PicsBean( objpic.getString("picurl"),"");
+                            PicsBean p=new PicsBean( objpic.getString("picurl"),objpic.getString("title"));
                             list.add(p);
                         }
                         detailedBean.setPics(list);
@@ -94,7 +133,7 @@ public class DetailedModel implements IDetailedModel{
                     detailedlistener.detailedSuccess(detailedBean);
 
                 } else {
-                    detailedlistener.detailedFailure(1, b.getMsg());
+                    detailedlistener.detailedFailure(Code.LOAD_NODATA, b.getMsg());
                 }
 
             }
@@ -152,6 +191,9 @@ public class DetailedModel implements IDetailedModel{
         params.put("op","alterstatus");
         params.put("m_auth",m_auth);
         params.put("status",1);
+        params.put("bwztsubmit",true);
+
+
         AsyncHttp.get(HttpConstants.HTTP_COMMENT, params, new JsonHttpResponseHandler() {
 
             @Override
@@ -165,7 +207,9 @@ public class DetailedModel implements IDetailedModel{
             public void onSuccess(int statusCode, Header[] headers,
                                   JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-
+                for (int i=0;i<headers.length;i++){
+                    Log.e("head",headers[i].getName()+":"+headers[i].getValue());
+                }
                 BaseBean b = JSON.parseObject(response.toString(), BaseBean.class);
                 if ("0".equals(b.getCode())) {
 
@@ -207,11 +251,12 @@ public class DetailedModel implements IDetailedModel{
                 } else {
                     deletelistener.deleteFailure(1, b.getMsg());
                 }
-            }});
+            }
+        });
     }
 
     @Override
-    public void setcomment(int classid, String message, String formhash,String m_auth,final  commentlistener commentlistener) {
+    public void setcomment(int classid, String message, String formhash,String m_auth,final  setcommentlistener setcommentlistener) {
         String url=String.format(HttpConstants.HTTP_COMMENT+"ac=comment&inajax=1&m_auth=%s",m_auth);
         RequestParams params = new RequestParams();
         params.put("message", message);
@@ -225,7 +270,7 @@ public class DetailedModel implements IDetailedModel{
             public void onFailure(int statusCode, Header[] headers,
                                   Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                commentlistener.commentFailure(1, "评论失败");
+                setcommentlistener.setcommentFailure(1, "评论失败");
             }
 
             @Override
@@ -236,14 +281,47 @@ public class DetailedModel implements IDetailedModel{
                 BaseBean b = JSON.parseObject(response.toString(), BaseBean.class);
                 if ("0".equals(b.getCode())) {
 
-                    commentlistener.commentFailure(0, "评论成功");
+                    setcommentlistener.setcommentSuccess(0, "评论成功");
 
                 } else {
-                    commentlistener.commentFailure(1, b.getMsg());
+                    setcommentlistener.setcommentFailure(1, b.getMsg());
                 }
             }});
     }
 
+    @Override
+    public void setreply(final  CommentBean bean,final  String username, final int postion,int classid, int cid, final String message, String formhash, String m_auth, final  replytlistener replylistener) {
+        String url=String.format(HttpConstants.HTTP_COMMENT+"ac=comment&inajax=1&m_auth=%s",m_auth);
+        RequestParams params = new RequestParams();
+        params.put("message", message);
+        params.put("id",classid);
+        params.put("cid",cid);
+        params.put("idtype","bwztid");
+        params.put("formhash",formhash);
+        params.put("commentsubmit",true);
+        AsyncHttp.post(url, params, new JsonHttpResponseHandler() {
 
+            @Override
+            public void onFailure(int statusCode, Header[] headers,
+                                  Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                replylistener. replyFailure(1, "回复失败");
+            }
 
+            @Override
+            public void onSuccess(int statusCode, Header[] headers,
+                                  JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                BaseBean b = JSON.parseObject(response.toString(), BaseBean.class);
+                if ("0".equals(b.getCode())) {
+                    CommentBean newbean=bean;
+                    newbean.getReplylist().add(username + ": " + message);
+                    replylistener.replySuccess(newbean, postion);
+
+                } else {
+                    replylistener. replyFailure(1, b.getMsg());
+                }
+            }});
+    }
 }

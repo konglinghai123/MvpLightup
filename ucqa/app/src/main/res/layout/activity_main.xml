@@ -26,10 +26,12 @@
 
             <TextView
                 android:id="@+id/tv_username"
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
                 android:text="BlueMor"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="5dp"
                 android:textColor="#ffffff"
                 android:textSize="18.0sp" />
         </LinearLayout>
@@ -52,13 +54,13 @@
     <com.dawnlightning.ucqa.view.MyRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#eeeeee" >
+        android:background="@mipmap/bg_white" >
 
         <RelativeLayout
             android:id="@+id/rl_title"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:background="#009990" >
+            android:layout_height="48dp"
+            android:background="#549D37" >
 
             <ImageView
                 android:id="@+id/iv_menu"
@@ -70,6 +72,20 @@
                 android:src="@mipmap/left_menu_list" />
 
             <TextView
+                android:id="@+id/unread_msg_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/unread_count_bg"
+                android:gravity="center"
+                android:text="7"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/iv_menu"
+                android:layout_toEndOf="@+id/iv_menu"
+                android:visibility="invisible"
+                />
+            <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -77,6 +93,7 @@
                 android:text="系统相册"
                 android:textColor="#ffffff"
                 android:textSize="20sp" />
+
         </RelativeLayout>
 
         <me.maxwin.view.XListView
@@ -85,16 +102,53 @@
             android:layout_height="match_parent"
             android:layout_below="@id/rl_title"
             android:cacheColorHint="#00000000"
-            android:fadingEdge="none" />
-
-        <TextView
-            android:id="@+id/iv_nodata"
+            android:fadingEdge="none"
+            />
+        <ProgressBar
+            android:id="@+id/consult_list_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            />
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:contentDescription="@string/app_name"
-            android:text="你的系统相册没有图片哦~"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:id="@+id/ll_error"
+            android:visibility="invisible"
+            >
+            <ImageView
+                android:id="@+id/iv_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@mipmap/nomessage"
+                />
+            <TextView
+                android:id="@+id/tv_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/nomalGray"
+                android:textSize="12sp"
+                android:text="暂无咨询"
+                />
+            <Button
+                android:id="@+id/bt_error"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="#549D37"
+                android:textColor="@color/white"
+                android:layout_marginTop="20dp"
+                android:text="发布咨询"
+                />
+        </LinearLayout>
+
     </com.dawnlightning.ucqa.view.MyRelativeLayout>
 
 </com.dawnlightning.ucqa.view.DragLayout>

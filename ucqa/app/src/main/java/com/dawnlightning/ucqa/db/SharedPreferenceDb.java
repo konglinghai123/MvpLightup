@@ -95,6 +95,16 @@ public class SharedPreferenceDb {
 		SharedPreferences sp=context.getSharedPreferences(DbConstants.DB_lOGIN, Context.MODE_PRIVATE);
 		return sp.getBoolean(DbConstants.KEY__LOGIN, isAutoLogin);
 	}
+
+	public void setPush(Boolean isOpen){
+		SharedPreferences sp=context.getSharedPreferences(DbConstants.DB_PUSH, Context.MODE_PRIVATE);
+		sp.edit().putBoolean(DbConstants.KEY__PUSH, isOpen).commit();
+	}
+	public Boolean getPush(){
+
+		SharedPreferences sp=context.getSharedPreferences(DbConstants.DB_PUSH, Context.MODE_PRIVATE);
+		return sp.getBoolean(DbConstants.KEY__PUSH,true);
+	}
 	
 	public void setformhash(String formhash){
 		SharedPreferences sp=context.getSharedPreferences(DbConstants.DB_lOGIN, Context.MODE_PRIVATE);
@@ -132,7 +142,7 @@ public class SharedPreferenceDb {
 
 	public void setm_auth(String m_auth){
 		SharedPreferences sp=context.getSharedPreferences(DbConstants.DB_lOGIN, Context.MODE_PRIVATE);
-		sp.edit().putString(DbConstants.KEY_M_AUTH,m_auth).commit();
+		sp.edit().putString(DbConstants.KEY_M_AUTH, m_auth).commit();
 	}
 	public String getm_auth(){
 		SharedPreferences sp=context.getSharedPreferences(DbConstants.DB_lOGIN, Context.MODE_PRIVATE);
@@ -147,14 +157,23 @@ public class SharedPreferenceDb {
 		SharedPreferences sp=context.getSharedPreferences(DbConstants.DB_IS_INSTALL, Context.MODE_PRIVATE);
 		return sp.getBoolean(DbConstants.KEY_UPDATESHOW, false);
 	}
-	
-	public void setMessageCount(int count){
+
+
+	public void setPassword(String password){
 		SharedPreferences sp=context.getSharedPreferences(DbConstants.DB_lOGIN, Context.MODE_PRIVATE);
-		sp.edit().putInt(DbConstants.KEY_READMESSAGE, count).commit();
+		sp.edit().putString(DbConstants.KEY_PASSWORD, password).commit();
 	}
-	
-	public int getMessageCount(){
+	public String getPassword(){
 		SharedPreferences sp=context.getSharedPreferences(DbConstants.DB_lOGIN, Context.MODE_PRIVATE);
-		return sp.getInt(DbConstants.KEY_READMESSAGE,0);
+		return sp.getString(DbConstants.KEY_PASSWORD, "");
+	}
+
+	public void setPhone(String phone){
+		SharedPreferences sp=context.getSharedPreferences(DbConstants.DB_lOGIN, Context.MODE_PRIVATE);
+		sp.edit().putString(DbConstants.KEY_PHONE, phone).commit();
+	}
+	public String getPhone(){
+		SharedPreferences sp=context.getSharedPreferences(DbConstants.DB_lOGIN, Context.MODE_PRIVATE);
+		return sp.getString(DbConstants.KEY_PHONE, "");
 	}
 }

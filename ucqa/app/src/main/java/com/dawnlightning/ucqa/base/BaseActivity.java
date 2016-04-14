@@ -16,6 +16,9 @@ import com.dawnlightning.ucqa.db.SharedPreferenceDb;
 import com.dawnlightning.ucqa.dialog.LoadingDialog;
 import com.dawnlightning.ucqa.util.AppUtils;
 import com.dawnlightning.ucqa.Listener.BackGestureListener;
+
+import cn.jpush.android.api.JPushInterface;
+
 /**
  * Created by Administrator on 2016/3/30.
  */
@@ -23,12 +26,14 @@ public abstract  class BaseActivity extends FragmentActivity {
     private Context context;
     private  SharedPreferenceDb MySharedPreferenceDb;
     private LoadingDialog dialog=null;
+    public static boolean isForeground = false;//推送判断是否在主界面
     /** 手势监听 */
     GestureDetector mGestureDetector;
     /** 是否需要监听手势关闭功能 */
     private boolean mNeedBackGesture = false;
     public  abstract  void  initview();
     public  abstract  void  initdata();
+    public  abstract  void  initevent();
     public  void showmessage(String msg,int time){
         Toast.makeText(context,msg,time).show();
     }
@@ -52,6 +57,7 @@ public abstract  class BaseActivity extends FragmentActivity {
     @Override
     protected void onStop() {
         super.onStop();
+
     }
 
     @Override
@@ -62,11 +68,16 @@ public abstract  class BaseActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        isForeground = true;
+        JPushInterface.onResume(context);
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        isForeground = false;
+        JPushInterface.onPause(context);
     }
 
     @Override

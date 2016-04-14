@@ -61,20 +61,21 @@ public class ClassifyModel implements IClassifyModel {
                         com.alibaba.fastjson.JSONObject bwztname=(com.alibaba.fastjson.JSONObject) JSON.parse(js.getString("bwztdivisionarr"));
                         Iterator it=bwztname.keySet().iterator();
                         Iterator iterator=bwztid.keySet().iterator();
-                        ConsultClassifyBean bean=new ConsultClassifyBean();
-                        HashMap<String,String> mapid=new HashMap<String, String>();
-                        HashMap<String,String> mapname=new HashMap<String, String>();
                         while (iterator.hasNext()){
+                            ConsultClassifyBean bean=new ConsultClassifyBean();
                             String s=iterator.next().toString();
-                            mapid.put(bwztid.getString(s), s);
+                            bean.setBwztclassarrid(s);
+                            bean.setBwztclassarrname(bwztid.getString(s));
+                            bean.setBwztdivisionarrid("1");
+                            bean.setBwztdivisionarrname("眼科");
+                            while(it.hasNext()){
+                                String version=it.next().toString();
+                                bean.setBwztdivisionarrid(version);
+                                bean.setBwztdivisionarrname(bwztname.getString(version));
+
+                            }
+                            beans.add(bean);
                         }
-                        while(it.hasNext()){
-                            String s=it.next().toString();
-                            mapname.put(bwztname.getString(s), s);
-                        }
-                        bean.setMapid(mapid);
-                        bean.setMapname(mapname);
-                        beans.add(bean);
                         listener.onSuccess(beans);
                     }catch (Exception e){
                         listener.onFailure(1,b.getData());

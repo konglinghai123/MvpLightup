@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/rl_consult_title"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/green" >
+
+        <ImageView
+            android:id="@+id/iv_consult_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:src="@mipmap/ic_back" />
+
+        <TextView
+            android:id="@+id/tv_consult_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="我要咨询"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+    </RelativeLayout>
+   <LinearLayout
+       android:id="@+id/ll_consult_pageindex"
+       android:layout_width="match_parent"
+       android:layout_height="48dp"
+       android:orientation="horizontal"
+       android:paddingRight="15dp"
+       android:paddingLeft="15dp"
+       >
+
+           <Button
+               android:background="@null"
+               android:id="@+id/bt_consult_page1"
+               android:layout_weight="1"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:text="(1)患者信息"
+               android:layout_gravity="center_horizontal|center_vertical"
+               android:layout_centerInParent="true"
+               android:textColor="@color/green"
+               android:textSize="16sp"
+               />
+
+
+
+           <Button
+               android:id="@+id/bt_consult_page2"
+               android:background="@null"
+               android:layout_weight="1"
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:text="(2)病情介绍"
+               android:layout_gravity="center_horizontal|center_vertical"
+               android:layout_centerInParent="true"
+               android:textColor="@color/green"
+               android:textSize="16sp"
+               />
+
+
+   </LinearLayout>
+    <com.dawnlightning.ucqa.view.MyViewPager
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/vp_consult_pageconview"
+        >
+
+
+    </com.dawnlightning.ucqa.view.MyViewPager>
+
+</LinearLayout>

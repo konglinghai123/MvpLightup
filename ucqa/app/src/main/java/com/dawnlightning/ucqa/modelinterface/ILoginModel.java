@@ -6,4 +6,5 @@ import  com.dawnlightning.ucqa.model.LoginModel.loginlistener;
  */
 public interface ILoginModel {
     public void login(LoginModel model,loginlistener listener);//登陆
+    public void loginoff(String uhash,String m_auth,loginlistener listener );
 }

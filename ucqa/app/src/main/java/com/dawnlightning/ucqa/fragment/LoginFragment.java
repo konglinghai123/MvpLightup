@@ -87,6 +87,7 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
                         LoginModel model = new LoginModel(password.getText().toString().trim(), phone.getText().toString().trim());
                         dologin(model);
                     }else{
+
                         activity.showmessage("请再次输入密码",Toast.LENGTH_SHORT);
                     }
 
@@ -150,6 +151,8 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
         sharedPreferenceDb.setuserAutoLogin(true);
         sharedPreferenceDb.setm_auth(bean.getM_auth());
         sharedPreferenceDb.setformhash(bean.getFormhash());
+        sharedPreferenceDb.setPhone(phone.getText().toString().trim());
+        sharedPreferenceDb.setPassword(password.getText().toString().trim());
         if(bean.getUserdata().getSex()=="0"){
             sharedPreferenceDb.setsex("男");
         }else{
@@ -178,7 +181,9 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
         Bundle bundle = new Bundle();
         bundle.putSerializable("userdata",bean);
         intent.putExtras(bundle);
-        getActivity().startActivity(intent);
+        activity.startActivity(intent);
+        activity.finish();
+
     }
 
     @Override
@@ -194,7 +199,7 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
 
     @Override
     public void loginFailure(int code, String msg) {
-        this.activity.showmessage(msg,Toast.LENGTH_LONG);
+        activity.showmessage(msg,Toast.LENGTH_LONG);
         clearpassword();
     }
     @Override
@@ -232,7 +237,6 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
     @Override
     public void registerFailure(int code, String msg) {
 
-        dissmissloadingdialog();
-        this.activity.showmessage(msg,Toast.LENGTH_LONG);
+        dissmissloadingdialog();activity.showmessage(msg,Toast.LENGTH_LONG);
     }
 }
