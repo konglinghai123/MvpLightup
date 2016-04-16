@@ -27,15 +27,12 @@ public class AsyncHttp {
 	
 	public static void get(String url,RequestParams params,JsonHttpResponseHandler responseHandler){
 
-
 		client.get(url, params, responseHandler);
-
-
 	}
 
 	public static void post(String url,RequestParams params,JsonHttpResponseHandler responseHandler){
-		client.post(url, params, responseHandler);
 
+		client.post(url, params, responseHandler);
 	}
 	
 

@@ -2,6 +2,7 @@ package com.dawnlightning.ucqa.model;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.dawnlightning.ucqa.Bean.BaseBean;
@@ -36,15 +37,17 @@ public class ConsultModel implements IConsultModel{
     public void uploadpic(final List<UploadPicsBean> beans,final Handler mhandler) {
         for (final  UploadPicsBean bean:beans) {
             try {
-                String url = String.format(HttpConstants.HTTP_COMMENT + "ac=uplaod&m_auth=%s", bean.getM_auth());
+                String url = String.format(HttpConstants.HTTP_COMMENT + "ac=upload&m_auth=%s", bean.getM_auth());
                 RequestParams params = new RequestParams();
                 params.put("op", " uploadphoto2");
                 params.put("uid", bean.getUid());
                 params.put("topicid", 0);
                 params.put("albumid", 0);
-                params.put("attach", bean.getPicture());
+                params.put("attach", bean.getPicture(),"image/jpeg");
                 params.put("uploadsubmit2", true);
                 params.put("title", bean.getPicturetitle());
+                Log.e("pic",bean.getPicturetitle());
+                params.setForceMultipartEntityContentType(true);
                 AsyncHttp.post(url, params, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -62,7 +65,7 @@ public class ConsultModel implements IConsultModel{
                         } else {
                             message.what = Code.UPLOADFAILURE;
                             message.arg1 = bean.getPictureid();
-                            message.obj = b.getMsg();
+                            message.obj =bean.getPicture();
                             message.sendToTarget();
                         }
                     }
@@ -73,7 +76,7 @@ public class ConsultModel implements IConsultModel{
                         Message message = mhandler.obtainMessage();
                         message.what = Code.UPLOADFAILURE;
                         message.arg1 = bean.getPictureid();
-                        message.obj = "上传失败";
+                        message.obj = bean.getPicture();
                         message.sendToTarget();
                     }
 
@@ -89,6 +92,7 @@ public class ConsultModel implements IConsultModel{
                         message.obj = count;
                         message.sendToTarget();
 
+
                     }
 
                 });
@@ -97,7 +101,7 @@ public class ConsultModel implements IConsultModel{
                 Message message = mhandler.obtainMessage();
                 message.arg1 = bean.getPictureid();
                 message.what = Code.UPLOADFAILURE;
-                message.obj = "当前文件不存在";
+                message.obj = bean.getPicture();
                 message.sendToTarget();
             }
         }
@@ -120,6 +124,7 @@ public class ConsultModel implements IConsultModel{
         if(bean.getPicids().size()>0){
             for(int i=0;i<bean.getPicids().size();i++){
                 String picsid=String.format("picids[%s]",bean.getPicids().get(i));
+                Log.e("picid",bean.getPicids().get(i));
                 params.put(picsid, i);
             }
         }
@@ -138,7 +143,9 @@ public class ConsultModel implements IConsultModel{
               super.onSuccess(statusCode, headers, response);
               BaseBean b = JSON.parseObject(response.toString(), BaseBean.class);
               if ("0".equals(b.getCode())) {
-                  sendConsultListener.SendSuccess(0, "发布成功");
+                  com.alibaba.fastjson.JSONObject j = (com.alibaba.fastjson.JSONObject) JSON.parse(b.getData());
+                  String url=j.getString("url");
+                  sendConsultListener.SendSuccess(0,url);
               } else {
                   sendConsultListener.SendFailure(1, b.getMsg());
               }

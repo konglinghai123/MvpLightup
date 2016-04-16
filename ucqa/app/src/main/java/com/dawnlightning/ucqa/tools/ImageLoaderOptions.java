@@ -69,4 +69,27 @@ public class ImageLoaderOptions {
 				.build();
 		return options;
 	}
+	public static DisplayImageOptions getConsultLoadPictureOptions() {
+		DisplayImageOptions options = new DisplayImageOptions.Builder()
+				.cacheInMemory(true)
+						// 设置下载的图片是否缓存在内存中
+				.cacheOnDisc(true)
+						// 设置下载的图片是否缓存在SD卡中
+				.considerExifParams(true)
+				.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)// 设置图片以如何的编码方式显示
+				.bitmapConfig(Bitmap.Config.RGB_565)// 设置图片的解码类型
+						// .decodingOptions(android.graphics.BitmapFactory.ImageLoaderOptions
+						// decodingOptions)//设置图片的解码配置
+				.considerExifParams(true)
+						// 设置图片下载前的延迟
+						// .delayBeforeLoading(int delayInMillis)//int
+						// delayInMillis为你设置的延迟时间
+						// 设置图片加入缓存前，对bitmap进行设置
+						// 。preProcessor(BitmapProcessor preProcessor)
+				.resetViewBeforeLoading(true)// 设置图片在下载前是否重置，复位
+						// .displayer(new RoundedBitmapDisplayer(20))//是否设置为圆角，弧度为多少
+
+				.build();
+		return options;
+	}
 }

@@ -32,8 +32,10 @@ import com.dawnlightning.ucqa.presenter.DetailedPresenter;
 import com.dawnlightning.ucqa.share.ShareModel;
 import com.dawnlightning.ucqa.share.ShareTool;
 import com.dawnlightning.ucqa.tools.ImageLoaderOptions;
+import com.dawnlightning.ucqa.util.LvHeightUtil;
 import com.dawnlightning.ucqa.util.TimeUtil;
 import com.dawnlightning.ucqa.view.ExpandListView;
+import com.dawnlightning.ucqa.view.OtherGridView;
 import com.dawnlightning.ucqa.viewinterface.IDetailView;
 import com.mob.tools.utils.UIHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -56,7 +58,7 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
     private TextView tv_userdata;
     private ImageView iv_status;
     private TextView tv_message;
-    private GridView gv_picslist;
+    private OtherGridView gv_picslist;
     private TextView tv_numviewpeople;
     private TextView tv_numcommentpeople;
     private TextView tv_time;
@@ -110,7 +112,7 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
         iv_error=(ImageView)findViewById(R.id.iv_detail_error);
         bt_error=(Button)findViewById(R.id.bt_detail_error);
         bt_sentcomment=(Button)findViewById(R.id.bt_sentcomment);
-        gv_picslist=(GridView)findViewById(R.id.gv_detail_picslist);
+        gv_picslist=(OtherGridView)findViewById(R.id.gv_detail_picslist);
         xListView=(ExpandListView)findViewById(R.id.lv_comment_list);
         footerview=getLayoutInflater().inflate(R.layout.comment_xlistview_footer,null);
         progressBar=(ProgressBar)footerview.findViewById(R.id.comment_xlistview_footer_progressbar);
@@ -265,9 +267,10 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
         tv_numviewpeople.setText(detailedBean.getViewnum());
         tv_numcommentpeople.setText(detailedBean.getReplynum());
         tv_time.setText(bean.getDatetime());
-        if (bean.getPics()!=null){
+        if (bean.getPicsBean()!=null){
+
             gv_picslist.setVisibility(View.VISIBLE);
-            detailPicsAdapter =new DetailPicsAdapter(getcontext(),bean.getPics());
+            detailPicsAdapter =new DetailPicsAdapter(getcontext(),bean.getPicsBean());
             gv_picslist.setAdapter(detailPicsAdapter);
             detailPicsAdapter.notifyDataSetChanged();
         }else{
@@ -342,9 +345,8 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
                     commentAdapter=new CommentAdapter(getcontext(),beans,this);
                 }
             }
-            Log.e("commentconut",String.valueOf(commentAdapter.getCount()));
+
             xListView.setAdapter(commentAdapter);
-            //LvHeightUtil.setListViewHeightBasedOnChildren(xListView,2);
             commentAdapter.notifyDataSetChanged();
         }
         if (Integer.parseInt(tv_numcommentpeople.getText().toString())==0){
@@ -625,31 +627,5 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
     public void dodelete(int classid, String m_auth) {
         detailedPresenter.delete(classid,m_auth);
     }
-    //    final AlertDialog alertDialog = new AlertDialog.Builder(getcontext()).create();
-//    alertDialog.setView(new EditText(getcontext()));
-//    alertDialog.show();
-//    final Window window = alertDialog.getWindow();
-//    window.setContentView(R.layout.dialog_reply);
-//    ((TextView) window.findViewById(R.id.tv_replydialog_title)).setText("回复评论");
-//    final EditText editText=(EditText)window.findViewById(R.id.et_replydialog_content);
-//    ((Button)window.findViewById(R.id.bt_replydialog_positiveButton)).setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            String content = editText.getText().toString().trim();
-//            String username="";
-//            if (userBean.getUserdata().getName().length()>0){
-//                username=userBean.getUserdata().getName();
-//            }else{
-//                username=userBean.getUserdata().getUsername();
-//            }
-//            detailedPresenter.setreply(bean,username,postion,classid, cid, content, userBean.getFormhash(), userBean.getM_auth());
-//            alertDialog.dismiss();
-//        }
-//    });
-//    ((Button)window.findViewById(R.id.bt_replydialog_negativeButton)).setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            alertDialog.dismiss();
-//        }
-//    });
+
 }

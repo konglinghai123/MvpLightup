@@ -137,7 +137,7 @@
                         android:textColor="#020202"
                         android:textIsSelectable="true"
                         />
-                    <GridView
+                    <com.dawnlightning.ucqa.view.OtherGridView
                         android:id="@+id/gv_detail_picslist"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

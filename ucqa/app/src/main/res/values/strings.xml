@@ -6,4 +6,5 @@
     <string name="down_fail">下载失败</string>
     <string name="is_downing">正在下载</string>
     <string name="down_sucess">下载成功</string>
+    <string name="app_id">57106504</string>
 </resources>

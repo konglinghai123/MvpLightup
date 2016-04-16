@@ -74,19 +74,7 @@ public class DetailPicsAdapter extends BaseAdapter {
         }
         final  PicsBean bean=list.get(position);
         if (bean.getUrl()!=null) {
-//            imageLoader.displayImage(HttpConstants.HTTP_HEAD+HttpConstants.HTTP_IP+bean.getUrl(),viewHolder.img, options,new SimpleImageLoadingListener(){
-//
-//                @Override
-//                public void onLoadingComplete(String imageUri, View view,
-//                                              Bitmap loadedImage) {
-//
-//                    super.onLoadingComplete(imageUri, view, loadedImage);
-//                    Bitmap resizeBmp = ThumbnailUtils.extractThumbnail(loadedImage,120,80);
-//                    viewHolder.img.setImageBitmap(resizeBmp);
-//
-//                }
-//
-//            });
+
            imageLoader.displayImage(HttpConstants.HTTP_HEAD+HttpConstants.HTTP_IP+bean.getUrl(), viewHolder.img, options);
             viewHolder.img.setOnClickListener(new View.OnClickListener() {
                 @Override

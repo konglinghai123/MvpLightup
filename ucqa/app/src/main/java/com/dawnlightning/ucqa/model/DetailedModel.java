@@ -128,8 +128,10 @@ public class DetailedModel implements IDetailedModel{
                             PicsBean p=new PicsBean( objpic.getString("picurl"),objpic.getString("title"));
                             list.add(p);
                         }
+
                         detailedBean.setPics(list);
                     }
+                    Log.e("list",String.valueOf(list.size()));
                     detailedlistener.detailedSuccess(detailedBean);
 
                 } else {
@@ -264,6 +266,7 @@ public class DetailedModel implements IDetailedModel{
         params.put("idtype","bwztid");
         params.put("formhash",formhash);
         params.put("commentsubmit",true);
+        Log.e("comment", "评论中");
         AsyncHttp.post(url, params, new JsonHttpResponseHandler() {
 
             @Override
@@ -277,14 +280,15 @@ public class DetailedModel implements IDetailedModel{
             public void onSuccess(int statusCode, Header[] headers,
                                   JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-
+                Log.e("comment", response.toString());
                 BaseBean b = JSON.parseObject(response.toString(), BaseBean.class);
                 if ("0".equals(b.getCode())) {
 
                     setcommentlistener.setcommentSuccess(0, "评论成功");
 
                 } else {
-                    setcommentlistener.setcommentFailure(1, b.getMsg());
+
+                    setcommentlistener.setcommentFailure(1, b.getMsg()+11);
                 }
             }});
     }

@@ -2,6 +2,8 @@ package com.dawnlightning.ucqa.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,7 +24,13 @@ import com.dawnlightning.ucqa.util.HttpConstants;
 import com.dawnlightning.ucqa.view.ProcessImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -30,17 +38,20 @@ import java.util.List;
  */
 public class ConsultPicsAdapter extends BaseAdapter{
     private Context context;
+    private List<ProcessImageView> processImageViewList=new ArrayList<ProcessImageView>();
+    private HashMap<String,ProcessImageView> hashMap=new HashMap<String,ProcessImageView>();
     private List<UploadPicsBean> list;
     private ViewHolder viewHolder;
     private LayoutInflater layoutInflater;
     private ImageLoader imageLoader = ImageLoader.getInstance();
     private DisplayImageOptions options;
     private  DeletePicture  deletePicture;
+    private EditTextListener editTextListener;
     public ConsultPicsAdapter(Context context, List<UploadPicsBean> list){
         this.context=context;
         this.list=list;
         layoutInflater = (LayoutInflater) LayoutInflater.from(context);
-        options = ImageLoaderOptions.getLoadPictureOptions();
+        options = ImageLoaderOptions.getConsultLoadPictureOptions();
     }
     public void setlist(List<UploadPicsBean> list){
         this.list=list;
@@ -50,7 +61,9 @@ public class ConsultPicsAdapter extends BaseAdapter{
         return list.size();
     }
 
-
+    public List<UploadPicsBean> getlist(){
+        return this.list;
+    }
     @Override
     public Object getItem(int position) {
 
@@ -63,6 +76,9 @@ public class ConsultPicsAdapter extends BaseAdapter{
     public void  setDeletePicture(DeletePicture deletePicture){
         this.deletePicture=deletePicture;
     }
+    public void setEditTextListener( EditTextListener editTextListener){
+        this.editTextListener=editTextListener;
+    }
     @Override
     public long getItemId(int position) {
         return position;
@@ -72,43 +88,13 @@ public class ConsultPicsAdapter extends BaseAdapter{
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        if (null == convertView) {
+//        if (null == convertView) {
+            //此处不能用复用的方法，否则会导致刷新，焦点不准确
             convertView = layoutInflater.inflate(R.layout.item_consult_pics, null);
             viewHolder=new ViewHolder();
             viewHolder.img=(ProcessImageView)convertView.findViewById(R.id.piv_consult_picture);
             viewHolder.title=(EditText)convertView.findViewById(R.id.et_consult_picture_title);
-            viewHolder.delete=(ImageView)convertView.findViewById(R.id.iv_consult_picture_delete);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
-        final  UploadPicsBean bean=list.get(position);
-        if(bean!=null){
-            //            imageLoader.displayImage(HttpConstants.HTTP_HEAD+HttpConstants.HTTP_IP+bean.getUrl(),viewHolder.img, options,new SimpleImageLoadingListener(){
-//
-//                @Override
-//                public void onLoadingComplete(String imageUri, View view,
-//                                              Bitmap loadedImage) {
-//
-//                    super.onLoadingComplete(imageUri, view, loadedImage);
-//                    Bitmap resizeBmp = ThumbnailUtils.extractThumbnail(loadedImage,120,80);
-//                    viewHolder.img.setImageBitmap(resizeBmp);
-//
-//                }
-//
-//            });
-            imageLoader.displayImage("file://"+bean.getPicture().getPath(), viewHolder.img, options);
-            viewHolder.img.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.setClass(context, DisplayActivity.class);
-                    intent.putExtra("image", "file://" + bean.getPicture().getPath());
-                    context.startActivity(intent);
-
-                }
-            });
-            viewHolder.title.setText(bean.getPicturetitle());
+            hashMap.put(String.valueOf(position),viewHolder.img);
             viewHolder.title.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -123,14 +109,42 @@ public class ConsultPicsAdapter extends BaseAdapter{
                 @Override
                 public void afterTextChanged(Editable s) {
 
-                     bean.setPicturetitle(viewHolder.title.getText().toString());
+                    if (s != null && !"".equals(s.toString())) {
+                        if (editTextListener != null) {
+                            editTextListener.AdapterTextChaged(position, s.toString());
+                        }
+                    }
+
+
                 }
             });
+            viewHolder.delete=(ImageView)convertView.findViewById(R.id.iv_consult_picture_delete);
+            convertView.setTag(viewHolder);
+//        } else {
+//            viewHolder = (ViewHolder) convertView.getTag();
+//        }
+        final  UploadPicsBean bean=list.get(position);
+        if(bean!=null){
+            imageLoader.displayImage("file://" + bean.getPicture().getPath(), viewHolder.img, options);
+            viewHolder.img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.setClass(context, DisplayActivity.class);
+                    intent.putExtra("image", "file://" + bean.getPicture().getPath());
+                    context.startActivity(intent);
+
+                }
+            });
+
+            viewHolder.img.setProgress(bean.getPresent());
+            viewHolder.title.setText(bean.getPicturetitle());
+
             viewHolder.delete.setBackgroundResource(R.mipmap.ic_delete);
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (deletePicture!=null){
+                    if (deletePicture != null) {
                         deletePicture.Detele(position);
                     }
                 }
@@ -141,6 +155,20 @@ public class ConsultPicsAdapter extends BaseAdapter{
         return convertView;
 
     }
+    //获取待上传或者要重新上传的图片
+    public List<UploadPicsBean> getUploadPicsBeans(){
+        List<UploadPicsBean> uploadPicsBeanList=new ArrayList<UploadPicsBean>();
+        for (UploadPicsBean bean:list){
+            if (bean.getPresent()<100){
+                uploadPicsBeanList.add(bean);
+            }
+        }
+        return  uploadPicsBeanList;
+    }
+
+    public void remove(int postion){
+        this.list.remove(postion);
+    }
     //
     public class ViewHolder{
         public ProcessImageView img;
@@ -150,7 +178,12 @@ public class ConsultPicsAdapter extends BaseAdapter{
     public interface DeletePicture{
         public void Detele(int postion);
     }
-    public interface AdapterRefreshListener{
-        public void Refresh();
+    public ProcessImageView getProcessImageView(String id){
+        return  this.hashMap.get(id);
     }
+    public interface EditTextListener{
+        public void AdapterTextChaged(int postion,String str);
+    }
+
+
 }

@@ -5,8 +5,10 @@ import android.content.Context;
 import android.util.Log;
 import java.io.File;
 
+import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.util.SQLHelper;
 import com.dawnlightning.ucqa.util.SdCardUtil;
+import com.iflytek.cloud.SpeechUtility;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -31,6 +33,7 @@ public class MyApp extends Application{
         initImageLoader(getApplicationContext());
         initJpush(getApplicationContext());
         initShareSdk(getApplicationContext());
+        initSpeechSdk(getApplicationContext());
         mAppApplication = this;
     }
 
@@ -90,6 +93,9 @@ public class MyApp extends Application{
     }
     public static  void initShareSdk(Context context){
         ShareSDK.initSDK(context);
+    }
+    public static  void initSpeechSdk(Context context){
+        SpeechUtility.createUtility(context, "appid=" + context.getString(R.string.app_id));
     }
     public  static  void creatfilepath(){
         if(SdCardUtil.checkSdCard()==true){

@@ -30,7 +30,7 @@
                     android:src="@mipmap/bg"
                     android:adjustViewBounds="true"
                     />
-                <EditText
+                <com.dawnlightning.ucqa.view.PictureTitleEdittext
                     android:background="@null"
                     android:id="@+id/et_consult_picture_title"
                     android:layout_marginTop="5dp"

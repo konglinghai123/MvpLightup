@@ -24,7 +24,7 @@
                 >
                 <EditText
                     android:id="@+id/et_consult_subject"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:hint="请输入标题"
@@ -102,7 +102,7 @@
                 android:paddingRight="60dp"
                 >
                 <Button
-                    android:id="@+id/bt_setting_submit"
+                    android:id="@+id/bt_consult_submit"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"

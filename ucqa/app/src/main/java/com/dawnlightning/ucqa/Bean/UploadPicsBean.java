@@ -13,6 +13,15 @@ public class UploadPicsBean {
     private String picturetitle;
     private String m_auth;
     private int pictureid;
+    private int present;
+
+    public int getPresent() {
+        return present;
+    }
+
+    public void setPresent(int present) {
+        this.present = present;
+    }
 
     public int getPictureid() {
         return pictureid;
@@ -60,12 +69,13 @@ public class UploadPicsBean {
         this.picture = picture;
     }
 
-    public UploadPicsBean(int pictureid, String m_auth, String picturetitle, File picture, String uid) {
-        this.pictureid = pictureid;
-        this.m_auth = m_auth;
-        this.picturetitle = picturetitle;
+    public UploadPicsBean(File picture, String uid, String picturetitle, String m_auth, int pictureid, int present) {
         this.picture = picture;
         this.uid = uid;
+        this.picturetitle = picturetitle;
+        this.m_auth = m_auth;
+        this.pictureid = pictureid;
+        this.present = present;
     }
 
     @Override
@@ -76,6 +86,7 @@ public class UploadPicsBean {
                 ", picturetitle='" + picturetitle + '\'' +
                 ", m_auth='" + m_auth + '\'' +
                 ", pictureid=" + pictureid +
+                ", present=" + present +
                 '}';
     }
 }

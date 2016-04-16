@@ -10,6 +10,7 @@ import com.dawnlightning.ucqa.model.ConsultModel;
 import com.dawnlightning.ucqa.presenterinterface.IConsultPresenter;
 import com.dawnlightning.ucqa.viewinterface.IConsultView;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -36,12 +37,12 @@ public class ConsultPresenter implements IConsultPresenter,ConsultModel.SendCons
 
     @Override
     public void SendSuccess(int code, String msg) {
-        view.showerror(code,msg);
+       view.sendconsultSuccess(code,msg);
     }
 
     @Override
     public void SendFailure(int code, String msg) {
-        view.showerror(code,msg);
+       view.sendconsultFailure(code,msg);
     }
 
     public  Handler mHandle=new Handler(){
@@ -55,7 +56,7 @@ public class ConsultPresenter implements IConsultPresenter,ConsultModel.SendCons
                    view.updatepb(msg.arg1,Integer.parseInt(msg.obj.toString()));
                    break;
                case Code.UPLOADFAILURE:
-                   view.showerror(msg.arg1,msg.obj.toString());
+                   view.uploadpicerror(msg.arg1,(File)msg.obj);
                    break;
            }
             super.handleMessage(msg);

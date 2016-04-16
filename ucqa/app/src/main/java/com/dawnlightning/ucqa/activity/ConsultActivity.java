@@ -41,6 +41,7 @@ public class ConsultActivity extends BaseActivity{
     private ArrayList<Fragment> fragmentList=new ArrayList<Fragment>();
     private ConsultPageOneFragment consultPageOneFragment;
     private ConsultPageTwoFragment consultPageTwoFragment;
+
     public static ConsultBean consultBean=new ConsultBean();
     public UserBean userBean;
     public List<ConsultClassifyBean> consultClassifyBeanList;
