@@ -203,6 +203,8 @@ public class MainActivity extends BaseActivity implements IMainView{
                 vp_activity.setCurrentItem(0);
                 break;
             case 1:
+                ((Menu)menuadapter.getItem(1)).setStatus(0);
+                menuadapter.notifyDataSetChanged();
                 dl_main.close();
                 showtitleclassift("消息列表");
                 vp_activity.setCurrentItem(1);

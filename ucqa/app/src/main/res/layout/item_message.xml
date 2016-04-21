@@ -18,13 +18,25 @@
             android:layout_height="36dp"
             android:src="@mipmap/mylogo"
             android:scaleType="center"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             />
+        <TextView
+            android:id="@+id/tv_message_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/holo_red_light"
+            android:text="NEW"
+            android:visibility="gone"
+            android:textColor="@color/white"
+            android:gravity="center_horizontal|center_vertical"
+            android:textSize="5sp"
+            android:layout_toRightOf="@+id/left_menu_img"
+            android:layout_toEndOf="@+id/left_menu_img" />
         <LinearLayout
-            android:layout_marginLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:paddingLeft="15dp"
             >
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -34,7 +46,7 @@
                     android:id="@+id/tv_messsage_note"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15.0sp"
+                    android:textSize="16.0sp"
                     android:textColor="#020202"
                     android:text="如何有效地在海外市场推广产品？"
                     />
@@ -47,7 +59,7 @@
                     android:layout_below="@+id/tv_messsage_note"
                     android:text="2分钟前"
                     android:textColor="@color/nomalGray"
-                    android:textSize="10.0sp"
+                    android:textSize="12.0sp"
                     />
             </RelativeLayout>
         </LinearLayout>

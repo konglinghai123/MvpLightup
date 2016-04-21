@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
@@ -59,6 +60,7 @@ public class MainFragment extends Fragment implements IConsultListView,IXListVie
     private int Page=1;
     private int Bwztclassid=0;
     private static int clickpostion=0;
+    private static int postion=0;
     @Override
     public void doloadlist() {
         consultListPresenter.loadclassify();
@@ -114,9 +116,12 @@ public class MainFragment extends Fragment implements IConsultListView,IXListVie
         {
             mListView.stopLoadMore();//停止更新
             consultAdapter.addList(list);//尾插
+
         }
         mListView.setAdapter(consultAdapter);
         consultAdapter.notifyDataSetChanged();//刷新列表
+
+        mListView.setSelection(postion+1);
     }
 
     @Override
@@ -243,6 +248,25 @@ public class MainFragment extends Fragment implements IConsultListView,IXListVie
         progressBar=(ProgressBar) view.findViewById(R.id.consult_list_progressbar);
         headerView=getActivity().getLayoutInflater().inflate(R.layout.listview_header_girdview,null);
         gv_listview_header=(OtherGridView)headerView.findViewById(R.id.gv_classify);
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            /**
+             * 滚动状态改变时调用
+             */
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // 不滚动时保存当前滚动到的位置
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    postion = mListView.getFirstVisiblePosition();
+                }
+            }
+            /**
+             * 滚动时调用
+             */
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+        });
         initdata();
         initevent();
         return view;

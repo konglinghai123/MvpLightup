@@ -4,11 +4,14 @@ import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.dawnlightning.ucqa.activity.MainActivity;
+import com.dawnlightning.ucqa.activity.WelcomeActivity;
 import com.dawnlightning.ucqa.base.Code;
 import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.db.SharedPreferenceDb;
@@ -51,32 +54,37 @@ public class MyReceiver extends BroadcastReceiver {
         	
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
             Log.d(TAG, "[MyReceiver] 用户点击打开了通知");
-			if (!MainActivity.isForeground){
-				//如果在后台
-				String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
-				com.alibaba.fastjson.JSONObject extraJson = (com.alibaba.fastjson.JSONObject) JSON.parse(extras);
-				if (null != extraJson) {
-					String id=extraJson.getString("id");
-					String uid=extraJson.getString("uid");
-					KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(context.KEYGUARD_SERVICE);
-					KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("");
-					keyguardLock.disableKeyguard();
-					Intent i = new Intent(context, MainActivity.class);
-					i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					Bundle userbundle = new Bundle();
-					userbundle.putSerializable("userdata", MainActivity.userBean);
-					userbundle.putString("id", id);
-					userbundle.putString("uid",uid);
-					i.putExtras(userbundle);
-					context.startActivity(i);
+			if(!checkBrowser("com.dawnlightning.ucqa",context)){
+				Intent i = new Intent(context, WelcomeActivity.class);
+				i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(i);
+			}else {
+				if (!MainActivity.isForeground) {
+					//如果在后台
+					String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+					com.alibaba.fastjson.JSONObject extraJson = (com.alibaba.fastjson.JSONObject) JSON.parse(extras);
+					if (null != extraJson) {
+						String id = extraJson.getString("id");
+						String uid = extraJson.getString("uid");
+						KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(context.KEYGUARD_SERVICE);
+						KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("");
+						keyguardLock.disableKeyguard();
+						Intent i = new Intent(context, MainActivity.class);
+						i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						Bundle userbundle = new Bundle();
+						userbundle.putSerializable("userdata", MainActivity.userBean);
+						userbundle.putString("id", id);
+						userbundle.putString("uid", uid);
+						i.putExtras(userbundle);
+						context.startActivity(i);
+						processCustomMessage(context, bundle);
+					}
+
+				} else {
+					//如果不在后台
 					processCustomMessage(context, bundle);
 				}
-
-			}else{
-				//如果不在后台
-				processCustomMessage(context, bundle);
 			}
-
             //processCustomMessage(context, bundle);
         	//打开自定义的Activity
         
@@ -107,7 +115,14 @@ public class MyReceiver extends BroadcastReceiver {
 		}
 		return sb.toString();
 	}
-	
+	private boolean checkBrowser(String packageName,Context context) {
+		Intent intent = new Intent();
+		intent.setClassName(packageName,"MainActivity");
+		if (context.getPackageManager().resolveActivity(intent, 0) == null) {
+			return false;
+		}
+		return  true;
+	}
 	//send msg to MainActivity
 	private void processCustomMessage(Context context, Bundle bundle) {
 	

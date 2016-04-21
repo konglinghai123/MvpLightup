@@ -78,6 +78,7 @@ public class MessageAdapter extends BaseAdapter {
             viewHolder.message_icon=(RoundImageView)convertView.findViewById(R.id.rv_message_icon);
             viewHolder.message_note=(TextView)convertView.findViewById(R.id.tv_messsage_note);
             viewHolder.message_content=(TextView)convertView.findViewById(R.id.tv_message_content);
+            viewHolder.message_status=(TextView)convertView.findViewById(R.id.tv_message_status);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -89,6 +90,11 @@ public class MessageAdapter extends BaseAdapter {
             }
             viewHolder.message_note.setText(bean.getNote());
             viewHolder.message_content.setText(bean.getMessage());
+            if (bean.getIsnew().equals("1")){
+                viewHolder.message_status.setVisibility(View.VISIBLE);
+            }else{
+                viewHolder.message_status.setVisibility(View.GONE);
+            }
         }
         return convertView;
     }
@@ -96,5 +102,6 @@ public class MessageAdapter extends BaseAdapter {
         public RoundImageView message_icon;
         public TextView message_note;
         public TextView message_content;
+        public TextView message_status;
     }
 }

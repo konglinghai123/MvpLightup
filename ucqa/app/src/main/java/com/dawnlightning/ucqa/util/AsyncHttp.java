@@ -49,5 +49,10 @@ public class AsyncHttp {
 	public static void removecache(String url){
 		mCache.remove(url);
 	}
+
+	public static void getnotice(String url,RequestParams params,JsonHttpResponseHandler responseHandler){
+		client.setURLEncodingEnabled(false);
+		client.get(url, params, responseHandler);
+	}
 }
 

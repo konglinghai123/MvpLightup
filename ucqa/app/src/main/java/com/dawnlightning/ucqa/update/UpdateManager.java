@@ -56,8 +56,8 @@ public class UpdateManager {
             updatenote = j.getString("note");
             updateurl= j.getString("url");
             updatename = j.getString("name");
-//                int serviceCode = Integer.parseInt(j.getString("version"));
-            int serviceCode = 2;
+            int serviceCode = Integer.parseInt(j.getString("version"));
+
             // 版本判断
             if (serviceCode > versionCode)
             {
@@ -84,8 +84,8 @@ public class UpdateManager {
                     updatenote = j.getString("note");
                     updateurl= j.getString("url");
                     updatename = j.getString("name");
-//                int serviceCode = Integer.parseInt(j.getString("version"));
-                    int serviceCode = 2;
+                    int serviceCode = Integer.parseInt(j.getString("version"));
+
                     // 版本判断
                     if (serviceCode > versionCode)
                     {

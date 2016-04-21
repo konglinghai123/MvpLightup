@@ -47,6 +47,7 @@ public class SettingPresenter implements ISettingPresenter,LoginModel.loginliste
                         if (isShowupdatedialog){
                             updateManager.showNoticeDialog();
                         }
+
                         view.showupdatestatus();
                         break;
                     case UpdateStatus.UPDATA_ERROR:

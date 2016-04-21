@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -57,6 +58,7 @@ public class MessageFragment extends Fragment implements IMessageView,IXListView
     private List<ConsultClassifyBean> consultClassifyBeanList;
     private int Page=1;
     private static int clickpostion=0;
+    private static int postion=0;
     @Override
     public void doloadmessagelist(int page, int operate, String m_auth) {
         Page=1;
@@ -96,6 +98,7 @@ public class MessageFragment extends Fragment implements IMessageView,IXListView
                 viewdetail(bean.getLink().substring(bean.getLink().indexOf("=") + 1, bean.getLink().indexOf("&")), bean.getBwztid(), mainActivity.userBean);
             }
         });
+        mListview.setSelection(postion+1);
     }
 
     @Override
@@ -189,6 +192,25 @@ public class MessageFragment extends Fragment implements IMessageView,IXListView
         mListview = (XListView) view.findViewById(R.id.lv_consult);
         mListview.NotRefreshAtBegin();
         progressBar = (ProgressBar) view.findViewById(R.id.consult_list_progressbar);
+        mListview.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            /**
+             * 滚动状态改变时调用
+             */
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // 不滚动时保存当前滚动到的位置
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    postion = mListview.getFirstVisiblePosition();
+                }
+            }
+            /**
+             * 滚动时调用
+             */
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+        });
         return view;
     }
 

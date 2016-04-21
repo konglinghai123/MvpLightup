@@ -30,10 +30,10 @@ public class MessageModel implements IMessageModel {
 
     @Override
     public void loadmessagelist(final int page,String m_auth,final int operate,final messagelistener messagelistener) {
-        RequestParams params = new RequestParams();
-        params.put("do","notice");
-        params.put("m_auth",m_auth);
-        AsyncHttp.get(HttpConstants.HTTP_SELECTION,params, new JsonHttpResponseHandler() {
+
+        String url=String.format(HttpConstants.HTTP_SELECTION+"do=notice&m_auth=%s&page=%s",m_auth,page);
+        Log.e("url",url);
+        AsyncHttp.getnotice(url, null, new JsonHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers,
                                   Throwable throwable, JSONObject errorResponse) {
@@ -47,7 +47,7 @@ public class MessageModel implements IMessageModel {
                 super.onSuccess(statusCode, headers, response);
                 BaseBean b = JSON.parseObject(response.toString(), BaseBean.class);
                 if ("0".equals(b.getCode())) {
-                    Log.e("response",response.toString());
+                    Log.e("response", response.toString());
                     com.alibaba.fastjson.JSONObject j = (com.alibaba.fastjson.JSONObject) JSON.parse(b.getData());
                     com.alibaba.fastjson.JSONObject js = (com.alibaba.fastjson.JSONObject) JSON.parse(j.getString("notices"));
                     int totalpages = Integer.parseInt(js.getString("pages").toString());

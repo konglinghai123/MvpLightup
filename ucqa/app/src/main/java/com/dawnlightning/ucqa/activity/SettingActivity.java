@@ -52,10 +52,11 @@ public class SettingActivity extends BaseActivity implements ISettingView{
     @Override
     public void initdata() {
         settingPresenter=new SettingPresenter(this,getcontext());
-        settingPresenter.getcachesize();
-        settingPresenter.getversion();
-        settingPresenter.getpushstatus();
+
         docheckupdate(false);
+        settingPresenter.getcachesize();
+        settingPresenter.getpushstatus();
+        settingPresenter.getversion();
 
     }
 

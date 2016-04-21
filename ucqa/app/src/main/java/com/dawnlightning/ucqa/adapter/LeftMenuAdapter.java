@@ -57,6 +57,8 @@ public class LeftMenuAdapter extends BaseAdapter{
 				viewholder.tv.setText(menu.get(position).getMenuname());
 				if (menu.get(position).getStatus()==1){
 					viewholder.update.setVisibility(View.VISIBLE);
+				}else{
+					viewholder.update.setVisibility(View.GONE);
 				}
 				break;
 			case 1:
@@ -64,6 +66,8 @@ public class LeftMenuAdapter extends BaseAdapter{
 				viewholder.tv.setText(menu.get(position).getMenuname());
 				if (menu.get(position).getStatus()==1){
 					viewholder.update.setVisibility(View.VISIBLE);
+				}else{
+					viewholder.update.setVisibility(View.GONE);
 				}
 				break;
 			case 2:
@@ -71,6 +75,8 @@ public class LeftMenuAdapter extends BaseAdapter{
 				viewholder.tv.setText(menu.get(position).getMenuname());
 				if (menu.get(position).getStatus()==1){
 					viewholder.update.setVisibility(View.VISIBLE);
+				}else{
+					viewholder.update.setVisibility(View.GONE);
 				}
 				break;
 			case 3:
@@ -78,6 +84,8 @@ public class LeftMenuAdapter extends BaseAdapter{
 				viewholder.tv.setText(menu.get(position).getMenuname());
 				if (menu.get(position).getStatus()==1){
 					viewholder.update.setVisibility(View.VISIBLE);
+				}else{
+					viewholder.update.setVisibility(View.GONE);
 				}
 			break;
 			case 4:
@@ -85,6 +93,8 @@ public class LeftMenuAdapter extends BaseAdapter{
 				viewholder.tv.setText(menu.get(position).getMenuname());
 				if (menu.get(position).getStatus()==1){
 					viewholder.update.setVisibility(View.VISIBLE);
+				}else{
+					viewholder.update.setVisibility(View.GONE);
 				}
 				break;
 				
