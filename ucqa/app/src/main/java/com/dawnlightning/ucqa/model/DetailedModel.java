@@ -15,6 +15,8 @@ import com.dawnlightning.ucqa.util.HttpConstants;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import org.json.JSONObject;
+
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import cz.msebera.android.httpclient.Header;
@@ -47,6 +49,42 @@ public class DetailedModel implements IDetailedModel{
         public void deleteSuccess(String msg);
         public void deleteFailure(int code,String msg);
     }
+    public interface reportlistener{
+        public void reportSuccess(String msg);
+        public void reportFailure(int code,String msg);
+    }
+
+    @Override
+    public void report(String m_auth, int id, String reason, final reportlistener reportlistener) {
+        String url=String.format(HttpConstants.HTTP_COMMENT+"ac=common&op=report&idtype=bwztid&id=%s&m_auth=%s",id,m_auth);
+        RequestParams params = new RequestParams();
+        params.put("reportsubmit",true);
+        params.put("reason",reason);
+        AsyncHttp.post(url,params,new JsonHttpResponseHandler(){
+            @Override
+            public void onFailure(int statusCode, Header[] headers,
+                                  Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+              reportlistener.reportFailure(1,"举报失败");
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers,
+                                  JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                BaseBean b = JSON.parseObject(response.toString(), BaseBean.class);
+                if ("0".equals(b.getCode())) {
+
+                    reportlistener.reportSuccess(b.getMsg());
+                } else {
+                    reportlistener.reportFailure(1, b.getMsg());
+                }
+            }
+
+        });
+
+    }
 
     @Override
     public void loadconsultdetailed(int uid, int classid, String m_auth, final  detailedlistener detailedlistener) {
@@ -63,7 +101,6 @@ public class DetailedModel implements IDetailedModel{
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 detailedlistener.detailedFailure(Code.SERVER_LOAD_FAILURE, "获取咨询详细失败");
             }
-
             @Override
             public void onSuccess(int statusCode, Header[] headers,
                                   JSONObject response) {
@@ -265,8 +302,8 @@ public class DetailedModel implements IDetailedModel{
         params.put("id",classid);
         params.put("idtype","bwztid");
         params.put("formhash",formhash);
-        params.put("commentsubmit",true);
-        Log.e("comment", "评论中");
+        params.put("commentsubmit", true);
+
         AsyncHttp.post(url, params, new JsonHttpResponseHandler() {
 
             @Override
@@ -274,6 +311,12 @@ public class DetailedModel implements IDetailedModel{
                                   Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 setcommentlistener.setcommentFailure(1, "评论失败");
+            }
+
+            @Override
+            public URI getRequestURI() {
+                Log.e("url",super.getRequestURI().toString());
+                return super.getRequestURI();
             }
 
             @Override
@@ -291,11 +334,17 @@ public class DetailedModel implements IDetailedModel{
                     setcommentlistener.setcommentFailure(1, b.getMsg()+11);
                 }
             }});
+
     }
 
     @Override
     public void setreply(final  CommentBean bean,final  String username, final int postion,int classid, int cid, final String message, String formhash, String m_auth, final  replytlistener replylistener) {
         String url=String.format(HttpConstants.HTTP_COMMENT+"ac=comment&inajax=1&m_auth=%s",m_auth);
+//        RequestParams getparams=new RequestParams();
+//        getparams.put("ac","comment");
+//        getparams.put("inajax",1);
+//        getparams.put("m_auth",m_auth);
+//        String url=AsyncHttp.UrlCode(HttpConstants.HTTP_COMMENT, getparams);
         RequestParams params = new RequestParams();
         params.put("message", message);
         params.put("id",classid);
@@ -303,6 +352,7 @@ public class DetailedModel implements IDetailedModel{
         params.put("idtype","bwztid");
         params.put("formhash",formhash);
         params.put("commentsubmit",true);
+        Log.e("oleurl", url);
         AsyncHttp.post(url, params, new JsonHttpResponseHandler() {
 
             @Override
@@ -311,7 +361,11 @@ public class DetailedModel implements IDetailedModel{
                 super.onFailure(statusCode, headers, throwable, errorResponse);
                 replylistener. replyFailure(1, "回复失败");
             }
-
+            @Override
+            public URI getRequestURI() {
+                Log.e("url", super.getRequestURI().toString());
+                return super.getRequestURI();
+            }
             @Override
             public void onSuccess(int statusCode, Header[] headers,
                                   JSONObject response) {

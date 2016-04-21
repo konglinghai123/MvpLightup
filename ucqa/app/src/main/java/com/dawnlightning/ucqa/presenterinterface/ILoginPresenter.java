@@ -6,5 +6,5 @@ import com.dawnlightning.ucqa.model.LoginModel;
  * Created by Administrator on 2016/3/31.
  */
 public interface ILoginPresenter {
-    public  void login(LoginModel model);
+    public  void login(String username,String password);
 }

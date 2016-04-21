@@ -24,8 +24,6 @@ import cz.msebera.android.httpclient.Header;
  * Created by Administrator on 2016/3/31.
  */
 public class ClassifyModel implements IClassifyModel {
-    private List<ConsultClassifyBean> beans=new ArrayList<ConsultClassifyBean>();
-    private  int status=1;
 
     public  interface loadclassifylistener{
         void onSuccess(List<ConsultClassifyBean> bean);
@@ -35,59 +33,90 @@ public class ClassifyModel implements IClassifyModel {
     public void loadclassifybean(final loadclassifylistener listener) {
         RequestParams params = new RequestParams();
         params.put("do", "bwzt");
-        params.put("view","class");
-        AsyncHttp.get(HttpConstants.HTTP_SELECTION, params, new JsonHttpResponseHandler() {
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers,
-                                  Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                listener.onFailure(1,"获取分类失败");
+        params.put("view", "class");
+        final String url = HttpConstants.HTTP_SELECTION+params.toString();
+        if (AsyncHttp.getcache(url)!=null&&AsyncHttp.getcache(url).length()>0){
+            List<ConsultClassifyBean> beans=new ArrayList<ConsultClassifyBean>();
+            String strcache=AsyncHttp.getcache(url);
+            BaseBean b = JSON.parseObject(strcache, BaseBean.class);
+            com.alibaba.fastjson.JSONObject js=(com.alibaba.fastjson.JSONObject) JSON.parse(b.getData());
+            com.alibaba.fastjson.JSONObject bwztid=(com.alibaba.fastjson.JSONObject) JSON.parse(js.getString("bwztclassarr"));
+            com.alibaba.fastjson.JSONObject bwztname=(com.alibaba.fastjson.JSONObject) JSON.parse(js.getString("bwztdivisionarr"));
+            Iterator it=bwztname.keySet().iterator();
+            Iterator iterator=bwztid.keySet().iterator();
+            while (iterator.hasNext()){
+                ConsultClassifyBean bean=new ConsultClassifyBean();
+                String s=iterator.next().toString();
+                bean.setBwztclassarrid(s);
+                bean.setBwztclassarrname(bwztid.getString(s));
+                bean.setBwztdivisionarrid("1");
+                bean.setBwztdivisionarrname("眼科");
+                while(it.hasNext()){
+                    String version=it.next().toString();
+                    bean.setBwztdivisionarrid(version);
+                    bean.setBwztdivisionarrname(bwztname.getString(version));
+                }
+                beans.add(bean);
             }
+            listener.onSuccess(beans);
+        }else{
+            AsyncHttp.removecache(url);
+            AsyncHttp.get(HttpConstants.HTTP_SELECTION, params, new JsonHttpResponseHandler() {
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers,
-                                  JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-
-                BaseBean b = JSON.parseObject(response.toString(), BaseBean.class);
-
-                if ("0".equals(b.getCode())) {
-                    try{
-                        status=0;
-                        Log.e("tag",b.getData());
-                        com.alibaba.fastjson.JSONObject js=(com.alibaba.fastjson.JSONObject) JSON.parse(b.getData());
-                        com.alibaba.fastjson.JSONObject bwztid=(com.alibaba.fastjson.JSONObject) JSON.parse(js.getString("bwztclassarr"));
-                        com.alibaba.fastjson.JSONObject bwztname=(com.alibaba.fastjson.JSONObject) JSON.parse(js.getString("bwztdivisionarr"));
-                        Iterator it=bwztname.keySet().iterator();
-                        Iterator iterator=bwztid.keySet().iterator();
-                        while (iterator.hasNext()){
-                            ConsultClassifyBean bean=new ConsultClassifyBean();
-                            String s=iterator.next().toString();
-                            bean.setBwztclassarrid(s);
-                            bean.setBwztclassarrname(bwztid.getString(s));
-                            bean.setBwztdivisionarrid("1");
-                            bean.setBwztdivisionarrname("眼科");
-                            while(it.hasNext()){
-                                String version=it.next().toString();
-                                bean.setBwztdivisionarrid(version);
-                                bean.setBwztdivisionarrname(bwztname.getString(version));
-
-                            }
-                            beans.add(bean);
-                        }
-                        listener.onSuccess(beans);
-                    }catch (Exception e){
-                        listener.onFailure(1,b.getData());
-                    }
-
-                } else {
-                    status=1;
-                    listener.onFailure(1,b.getMsg());
+                @Override
+                public void onFailure(int statusCode, Header[] headers,
+                                      Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    listener.onFailure(1,"获取分类失败");
                 }
 
-            }
+                @Override
+                public void onSuccess(int statusCode, Header[] headers,
+                                      JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
 
-        });
+                    BaseBean b = JSON.parseObject(response.toString(), BaseBean.class);
+
+                    if ("0".equals(b.getCode())) {
+                        try{
+                            List<ConsultClassifyBean> beans=new ArrayList<ConsultClassifyBean>();
+                            com.alibaba.fastjson.JSONObject js=(com.alibaba.fastjson.JSONObject) JSON.parse(b.getData());
+                            com.alibaba.fastjson.JSONObject bwztid=(com.alibaba.fastjson.JSONObject) JSON.parse(js.getString("bwztclassarr"));
+                            com.alibaba.fastjson.JSONObject bwztname=(com.alibaba.fastjson.JSONObject) JSON.parse(js.getString("bwztdivisionarr"));
+                            Iterator it=bwztname.keySet().iterator();
+                            Iterator iterator=bwztid.keySet().iterator();
+                            while (iterator.hasNext()){
+                                ConsultClassifyBean bean=new ConsultClassifyBean();
+                                String s=iterator.next().toString();
+                                bean.setBwztclassarrid(s);
+                                bean.setBwztclassarrname(bwztid.getString(s));
+                                bean.setBwztdivisionarrid("1");
+                                bean.setBwztdivisionarrname("眼科");
+                                while(it.hasNext()){
+                                    String version=it.next().toString();
+                                    bean.setBwztdivisionarrid(version);
+                                    bean.setBwztdivisionarrname(bwztname.getString(version));
+
+                                }
+                                beans.add(bean);
+                            }
+                            AsyncHttp.savecache(url,response.toString(),4*60*60);
+                            listener.onSuccess(beans);
+                        }catch (Exception e){
+                            listener.onFailure(1,b.getData());
+                        }
+
+                    } else {
+
+                        listener.onFailure(1,b.getMsg());
+                    }
+
+                }
+
+            });
+        }
+
+
     }
+
 }

@@ -13,7 +13,7 @@
             android:id="@+id/iv_comment_icon"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:src="@drawable/mylogo"
+            android:src="@mipmap/mylogo"
             android:scaleType="center"
             />
         <LinearLayout
@@ -71,7 +71,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/lv_comment_reply"
                 android:divider="#00000000"
-                ></com.dawnlightning.ucqa.view.ExpandListView>
+                android:listSelector="@drawable/main_listview_selector"
+                />
 
         </LinearLayout>
     </LinearLayout>

@@ -1,10 +1,10 @@
 package com.dawnlightning.ucqa.fragment;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +19,9 @@ import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.activity.MainActivity;
 import com.dawnlightning.ucqa.activity.WelcomeActivity;
 import com.dawnlightning.ucqa.db.SharedPreferenceDb;
-import com.dawnlightning.ucqa.model.LoginModel;
 import com.dawnlightning.ucqa.model.RegisterModel;
 import com.dawnlightning.ucqa.presenter.LoginPresenter;
 import com.dawnlightning.ucqa.presenter.ResigterPresenter;
-import com.dawnlightning.ucqa.presenterinterface.ILoginPresenter;
 import com.dawnlightning.ucqa.util.AppUtils;
 import com.dawnlightning.ucqa.view.EditTextWithDel;
 import com.dawnlightning.ucqa.view.PassWordShow;
@@ -43,9 +41,7 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
     private boolean IsLogin=true;
     private ResigterPresenter resigterPresenter;
     private SharedPreferenceDb sharedPreferenceDb;
-    public LoginFragment(){
 
-    }
     @Override
     public View initview(LayoutInflater inflater,ViewGroup container) {
         View view =inflater.inflate(R.layout.fragment_login, container,false);
@@ -84,8 +80,7 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
                                             .getWindowToken(),
                                     InputMethodManager.HIDE_NOT_ALWAYS);
                     if (IsLogin){
-                        LoginModel model = new LoginModel(password.getText().toString().trim(), phone.getText().toString().trim());
-                        dologin(model);
+                        loginpresenter.login(phone.getText().toString().trim(), password.getText().toString().trim());
                     }else{
 
                         activity.showmessage("请再次输入密码",Toast.LENGTH_SHORT);
@@ -163,9 +158,9 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
     }
 
     @Override
-    public void dologin(LoginModel model) {
+    public void dologin(String phone,String password) {
 
-        loginpresenter.login(model);
+        loginpresenter.login(phone,password);
     }
 
     @Override
@@ -188,7 +183,12 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
 
     @Override
     public void showloadingdialog(String msg) {
-        activity.initdialog(msg);
+        activity.initdialog(msg, new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+
+            }
+        });
     }
 
     @Override
@@ -229,9 +229,9 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
 
     @Override
     public void registerSuccess(RegisterModel model) {
+        loginpresenter.login(model.getUsename(),model.getPassword());
         dissmissloadingdialog();
-        LoginModel m =new LoginModel(model.getPassword(),model.getUsename());
-        dologin(m);
+
     }
 
     @Override

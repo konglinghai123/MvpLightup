@@ -43,7 +43,6 @@
             android:layout_below="@id/lefe_content"
             android:layout_marginBottom="30dp"
             android:layout_marginTop="20dp"
-     
             android:cacheColorHint="#00000000"
             android:divider="@null"
             android:textColor="#ffffff" />
@@ -54,7 +53,8 @@
     <com.dawnlightning.ucqa.view.MyRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@mipmap/bg_white" >
+        android:background="@android:color/white"
+        >
 
         <RelativeLayout
             android:id="@+id/rl_title"
@@ -96,58 +96,14 @@
 
         </RelativeLayout>
 
-        <me.maxwin.view.XListView
-            android:id="@+id/lv_consult"
+        <com.dawnlightning.ucqa.view.MyViewPager
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/rl_title"
-            android:cacheColorHint="#00000000"
-            android:fadingEdge="none"
-            />
-        <ProgressBar
-            android:id="@+id/consult_list_progressbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_centerInParent="true"
-            android:visibility="invisible"
-            />
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical"
-            android:id="@+id/ll_error"
-            android:visibility="invisible"
+            android:layout_below="@+id/rl_title"
+            android:id="@+id/mvp_mainactivity"
             >
-            <ImageView
-                android:id="@+id/iv_error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@mipmap/nomessage"
-                />
-            <TextView
-                android:id="@+id/tv_error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/nomalGray"
-                android:textSize="12sp"
-                android:text="暂无咨询"
-                />
-            <Button
-                android:id="@+id/bt_error"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:background="#549D37"
-                android:textColor="@color/white"
-                android:layout_marginTop="20dp"
-                android:text="发布咨询"
-                />
-        </LinearLayout>
+
+        </com.dawnlightning.ucqa.view.MyViewPager>
 
     </com.dawnlightning.ucqa.view.MyRelativeLayout>
 

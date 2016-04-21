@@ -5,7 +5,7 @@ package com.dawnlightning.ucqa.presenterinterface;
  */
 public interface ISettingPresenter {
 
-  public void checkupdate();
+  public void checkupdate(Boolean isShowupdatedialog);
     public void getversion();
     public void getcachesize();
     public void getpushstatus();

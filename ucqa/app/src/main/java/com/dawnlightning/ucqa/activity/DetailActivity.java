@@ -1,18 +1,25 @@
 package com.dawnlightning.ucqa.activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.os.Handler.Callback;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,10 +36,10 @@ import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.dialog.ActionItem;
 import com.dawnlightning.ucqa.dialog.TitlePopup;
 import com.dawnlightning.ucqa.presenter.DetailedPresenter;
+import com.dawnlightning.ucqa.share.ShareAdapter;
 import com.dawnlightning.ucqa.share.ShareModel;
 import com.dawnlightning.ucqa.share.ShareTool;
 import com.dawnlightning.ucqa.tools.ImageLoaderOptions;
-import com.dawnlightning.ucqa.util.LvHeightUtil;
 import com.dawnlightning.ucqa.util.TimeUtil;
 import com.dawnlightning.ucqa.view.ExpandListView;
 import com.dawnlightning.ucqa.view.OtherGridView;
@@ -92,7 +99,9 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
     private static int commentpage=1;//默认是评论列表第一页
     private boolean IsLoadMore=false;
     private TitlePopup titlePopup;
+    private PopupWindow reportdialog;
     private  ShareTool  Share;
+
     @Override
     public void initview() {
         setContentView(R.layout.activity_detail);
@@ -187,20 +196,6 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
 
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 
     @Override
     public void getuserdate(Intent intent) {
@@ -212,16 +207,6 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
         this.userBean=userBean;
 
         doloadconsultdetailed(uid, bwztid, userBean.getM_auth());
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     @Override
@@ -406,9 +391,10 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
         model.setImageUrl("http://image.baidu.com/search/detail?ct=503316480&z=0&ipn=false&word=美女&pn=0&spn=0&di=0&pi=0&rn=1&tn=baiduimagedetail&is=0%2C0&ie=utf-8&oe=utf-8&in=3354&cl=2&lm=-1&cs=1735880100%2C3223346182&os=2896705163%2C2839266134&simid=&adpicid=0&fr=ala&fm=&sme=&statnum=girl&cg=girl&bdtype=-1&oriquery=&objurl=http%3A%2F%2Fe.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fe7cd7b899e510fb34395d1c3de33c895d0430cd1.jpg&fromurl=http%3A%2F%2Fimage.baidu.com%2Fdetail%2Fnewindex%3Fcol%3D%26tag%3D%26pn%3D0%26pid%3D31752171852%26aid%3D400266147%26user_id%3D980778976%26setid%3D-1%26sort%3D0%26newsPn%3D%26star%3D%26fr%3D%26from%3D2&gsm=0");
         model.setText(detailedBean.getContent());
         model.setTitle(detailedBean.getSubject());
-        String url=String.format("https://ucqa.dawnlightning.com/space.php?uid=%s&do=bwzt&id=%s",detailedBean.getUid(),detailedBean.getBwztid());
+        String url=String.format("https://ucqa.dawnlightning.com/space.php?uid=%s&do=bwzt&id=%s", detailedBean.getUid(), detailedBean.getBwztid());
         model.setUrl(url);
         Share.initShareParams(model);
+
         Share.showShareWindow();
     }
 
@@ -426,7 +412,6 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
     public void onComplete(Platform plat, int action, HashMap<String, Object> res)
     {
         Message msg = new Message();
-        Log.e("Tag", "sharecomplete");
         msg.arg1 = 1;
         msg.arg2 = action;
         msg.obj = plat;
@@ -436,7 +421,7 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
 
     @Override
     public void onError(Platform arg0, int arg1, Throwable arg2)
-    {	 Log.e("Tag", "error");
+    {
         Message msg = new Message();
         msg.what = 1;
         UIHandler.sendMessage(msg, this);
@@ -515,24 +500,27 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
 
         this.commentBean=bean;
         this.ReplyPostion=postion;
-        showreplydialog();
+        showreplydialog(postion);
     }
 
     @Override
-    public void showreplydialog() {
+    public void showreplydialog(int postion) {
         showketboard();
         operate=Code.REPLY;
-        ed_setcomment.setHint("@" + username());
+        CommentBean bean=(CommentBean)commentAdapter.getItem(postion);
+        String replyname="";
+        if (bean.getName().length()>0){
+            replyname=bean.getName();
+        }else{
+            replyname=bean.getAuthor();
+        }
+        ed_setcomment.setHint("@" + replyname);
     }
 
     @Override
     public void hidekeyboard() {
-        InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (imm.isActive()) {
-            //如果开启
-            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
-            //关闭软键盘，开启方法相同，这个方法是切换开启与关闭状态的
-        }
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(ed_setcomment.getWindowToken(), 0);
     }
 
     @Override
@@ -558,11 +546,88 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
     }
 
     @Override
+    public void reportSuceess(String msg) {
+        reportdialog.dismiss();
+        showmessage(msg,Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    public void reportFailure(int code, String msg) {
+        showmessage(msg,Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    public void doreport(String m_auth, int classid, String reason) {
+        detailedPresenter.report(m_auth,classid,reason);
+    }
+
+    @Override
+    public void showreportdialog() {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_report, null);
+        reportdialog = new PopupWindow(view, ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,true);
+        final  ImageView iv_consult_report_close=(ImageView)view.findViewById(R.id.iv_consult_report_close);
+        final EditText et_consult_report_reason=(EditText)view.findViewById(R.id.et_consult_report_reason);
+        final  Button bt_consult_report_sent= (Button) view.findViewById(R.id.bt_consult_report_sent);
+        bt_consult_report_sent.setClickable(false);
+        bt_consult_report_sent.setBackgroundColor(getResources().getColor(R.color.lightgray));
+        iv_consult_report_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reportdialog.dismiss();
+            }
+        });
+        et_consult_report_reason.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 20) {
+                    bt_consult_report_sent.setClickable(true);
+                    bt_consult_report_sent.setBackgroundColor(getResources().getColor(R.color.green));
+                } else {
+                    bt_consult_report_sent.setClickable(false);
+                    bt_consult_report_sent.setBackgroundColor(getResources().getColor(R.color.lightgray));
+                }
+            }
+        });
+        bt_consult_report_sent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doreport(userBean.getM_auth(), detailedBean.getBwztid(), et_consult_report_reason.getText().toString());
+
+            }
+        });
+
+        reportdialog.setFocusable(true);
+        // 必须设置背景
+        reportdialog.setBackgroundDrawable(new BitmapDrawable());
+        // 设置点击其他地方 就消失 (只设置这个，没有效果)
+        reportdialog.setOutsideTouchable(true);
+        reportdialog.showAtLocation(view, Gravity.CENTER_HORIZONTAL, 0, 0);
+
+        reportdialog.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                reportdialog=null;
+            }
+        });
+    }
+
+    @Override
     public void initdialoglistview() {
         //实例化标题栏弹窗
         titlePopup = new TitlePopup(this, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         //给标题栏弹窗添加子类
         titlePopup.addAction(new ActionItem(this, "分享", R.mipmap.ic_share));
+        titlePopup.addAction(new ActionItem(this,"举报",R.mipmap.ic_report));
         if(detailedBean.getUid().equals(userBean.getUserdata().getUid())){
             titlePopup.addAction(new ActionItem(this, "采纳", R.mipmap.ic_slove));
             titlePopup.addAction(new ActionItem(this, "删除",  R.mipmap.ic_delete));
@@ -572,13 +637,15 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
             public void onItemClick(ActionItem item, int position) {
                 if (position==0){
                     shareconsult();//分享
+                }else if(position==1){
+                    showreportdialog();//举报
                 }else{
                     if(detailedBean.getUid().equals(userBean.getUserdata().getUid())) {
                         switch (position){
-                            case 1:
+                            case 2:
                                 dosolve(detailedBean.getBwztid(),userBean.getM_auth());
                                 break;
-                            case 2:
+                            case 3:
                                 dodelete(detailedBean.getBwztid(), userBean.getM_auth());
                                 break;
                         }
@@ -599,9 +666,10 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
 
     @Override
     public void solveSuccess(String msg) {
-        showmessage(msg,Toast.LENGTH_SHORT);
+        showmessage(msg, Toast.LENGTH_SHORT);
         iv_status.setBackgroundResource(R.mipmap.ic_consult_status);
         Intent intent=new Intent();
+        intent.putExtra("bwztid",detailedBean.getBwztid());
         this.setResult(Code.DetailForResultSolve, intent);
     }
 
@@ -614,6 +682,7 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
     public void deleteSuceess(String msg) {
         showmessage(msg,Toast.LENGTH_SHORT);
         Intent intent=new Intent();
+        intent.putExtra("bwztid",detailedBean.getBwztid());
         this.setResult(Code.DetailForResultDelete, intent);
         this.finish();
     }

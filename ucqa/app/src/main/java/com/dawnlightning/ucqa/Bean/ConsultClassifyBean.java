@@ -55,5 +55,13 @@ public class ConsultClassifyBean implements Serializable{
 
     }
 
-
+    @Override
+    public String toString() {
+        return "ConsultClassifyBean{" +
+                "bwztclassarrname='" + bwztclassarrname + '\'' +
+                ", bwztclassarrid=" + bwztclassarrid +
+                ", bwztdivisionarrname='" + bwztdivisionarrname + '\'' +
+                ", bwztdivisionarrid=" + bwztdivisionarrid +
+                '}';
+    }
 }

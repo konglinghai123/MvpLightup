@@ -30,8 +30,6 @@
        android:layout_width="match_parent"
        android:layout_height="48dp"
        android:orientation="horizontal"
-       android:paddingRight="15dp"
-       android:paddingLeft="15dp"
        >
 
            <Button
@@ -39,12 +37,13 @@
                android:id="@+id/bt_consult_page1"
                android:layout_weight="1"
                android:layout_width="0dp"
-               android:layout_height="wrap_content"
+               android:layout_height="match_parent"
                android:text="(1)患者信息"
                android:layout_gravity="center_horizontal|center_vertical"
                android:layout_centerInParent="true"
                android:textColor="@color/green"
                android:textSize="16sp"
+
                />
 
 
@@ -54,7 +53,7 @@
                android:background="@null"
                android:layout_weight="1"
                android:layout_width="0dp"
-               android:layout_height="wrap_content"
+               android:layout_height="match_parent"
                android:text="(2)病情介绍"
                android:layout_gravity="center_horizontal|center_vertical"
                android:layout_centerInParent="true"

@@ -22,6 +22,7 @@
         <activity android:name=".activity.MainActivity"/>
         <activity android:name=".activity.DetailActivity"/>
         <activity android:name=".activity.SettingActivity"/>
+        <activity android:name=".activity.PersonalDataActivity"/>
         <activity android:name=".activity.ConsultActivity" android:windowSoftInputMode="stateHidden"
             />
         <activity android:name=".activity.DisplayActivity"
@@ -181,6 +182,8 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true" />
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
 
     </application>
     <permission

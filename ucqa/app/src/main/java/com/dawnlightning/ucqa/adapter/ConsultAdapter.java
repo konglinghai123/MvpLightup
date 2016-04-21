@@ -14,6 +14,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.dawnlightning.ucqa.Bean.ConsultBean;
 import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.tools.ImageLoaderOptions;
@@ -85,7 +86,7 @@ public class ConsultAdapter extends BaseAdapter{
 	}
 	public void removeItem(int position){
 		if(list.size() > 0){
-			list.remove(position);
+			list.remove(position-1);
 		}
 	}
 	@Override

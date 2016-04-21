@@ -14,4 +14,5 @@ import java.util.List;
 public interface IConsultModel {
     public void uploadpic(List<UploadPicsBean> beans,Handler mhandler);
     public void sendconsult(ConsultBean bean,ConsultModel.SendConsultListener sendConsultListener);
+
 }

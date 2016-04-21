@@ -7,4 +7,5 @@ import com.dawnlightning.ucqa.model.MessageModel;
  */
 public interface IMessageModel{
   public void loadmessagelist(int page,String m_auth,int operate,MessageModel.messagelistener messagelistener);//获取消息列表
+
 }

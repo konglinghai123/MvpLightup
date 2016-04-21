@@ -19,6 +19,7 @@ import com.dawnlightning.ucqa.model.DetailedModel.commentlistener;
 import com.dawnlightning.ucqa.model.DetailedModel.replytlistener;
 import com.dawnlightning.ucqa.model.DetailedModel.solvelistener;
 import com.dawnlightning.ucqa.model.DetailedModel.deletelistener;
+import com.dawnlightning.ucqa.model.DetailedModel.reportlistener;
 import com.dawnlightning.ucqa.viewinterface.IDetailView;
 
 import java.util.List;
@@ -26,7 +27,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/4/9.
  */
-public class DetailedPresenter implements IDetailedPresenter,commentlistener,detailedlistener,setcommentlistener,replytlistener,deletelistener,solvelistener{
+public class DetailedPresenter implements IDetailedPresenter,commentlistener,detailedlistener,setcommentlistener,replytlistener,deletelistener,solvelistener,reportlistener{
     private DetailedModel model;
     private IDetailView view;
     private MyApp myApp;
@@ -48,6 +49,11 @@ public class DetailedPresenter implements IDetailedPresenter,commentlistener,det
         int uid=Integer.parseInt(intent.getStringExtra("uid"));
         view.setuserdata(user, bwztid, uid);
 
+    }
+
+    @Override
+    public void report(String m_auth, int id, String reason) {
+        model.report(m_auth,id,reason,this);
     }
 
     @Override
@@ -135,5 +141,15 @@ public class DetailedPresenter implements IDetailedPresenter,commentlistener,det
     @Override
     public void solveFailure(int code, String msg) {
         view.solveFailure(code,msg);
+    }
+
+    @Override
+    public void reportSuccess(String msg) {
+        view.reportSuceess(msg);
+    }
+
+    @Override
+    public void reportFailure(int code, String msg) {
+        view.replyFailure(code,msg);
     }
 }

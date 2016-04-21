@@ -25,6 +25,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -109,42 +110,36 @@ public class UpdateService extends Service {
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case DOWN_OK:
-				
-				/*********������ɣ������װ***********/
 				Uri uri = Uri.fromFile(SdCardUtil.updateFile);
 				Intent intent = new Intent(Intent.ACTION_VIEW);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.setDataAndType(uri,"application/vnd.android.package-archive");
 				pendingIntent = PendingIntent.getActivity(UpdateService.this, 0, intent, 0);
-				
 				notification.flags = Notification.FLAG_AUTO_CANCEL;
-				Notification.Builder builder = new Notification.Builder(getApplicationContext());
-				//api>=16
-				notification = builder.setContentIntent(pendingIntent).setContentTitle(app_name).setContentText(getString(R.string.down_sucess)).build();
-				//notification.setLatestEventInfo(UpdateService.this,app_name, app_name + getString(R.string.down_sucess), null);
-				notificationManager.notify(R.layout.item_notification, notification);
-				
-				/*****��װAPK******/
-				//installApk();	
-				
-				//stopService(updateIntent);
-				/***stop service*****
+				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(R.drawable.mylogo);
+				mBuilder.setContentTitle(app_name);
+				mBuilder.setAutoCancel(true);//自己维护通知的消失
+				mBuilder.setContentText(getString(R.string.down_sucess));
+				mBuilder.setDeleteIntent(pendingIntent);
+				notificationManager.notify(R.layout.item_notification,mBuilder.build());
+				installApk();
 				stopSelf();
 				break;
 				
 			case DOWN_ERROR:
-				notification.flags = Notification.FLAG_AUTO_CANCEL;
-				//notification.setLatestEventInfo(UpdateService.this,app_name, getString(R.string.down_fail), pendingIntent);
-				notification.setLatestEventInfo(UpdateService.this,app_name, getString(R.string.down_fail), null);
-				/***stop service*****/
-				//onDestroy();
+				NotificationCompat.Builder Builder = new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(R.drawable.mylogo);
+				Builder.setContentTitle(app_name);
+				Builder.setAutoCancel(true);//自己维护通知的消失
+				Builder.setContentText(getString(R.string.down_fail));
+				Builder.setAutoCancel(true);
+				notificationManager.notify(R.layout.item_notification, Builder.build());
+				onDestroy();
 				stopSelf();
 				break;
 				
 			default:
-				//stopService(updateIntent);
-				/******Stop service******/
-				//stopService(intentname)
-				//stopSelf();
+				onDestroy();
+				stopSelf();
 				break;
 			}
 		}
@@ -208,21 +203,15 @@ public class UpdateService extends Service {
 		
 		//notification = new Notification(R.drawable.dot_enable,app_name + getString(R.string.is_downing) ,System.currentTimeMillis());
 		notification = new Notification(
-				//R.drawable.video_player,//Ӧ�õ�ͼ��
-				R.drawable.mylogo,//Ӧ�õ�ͼ��
+				R.drawable.mylogo,
 				app_name + getString(R.string.is_downing),
 				System.currentTimeMillis());
 		notification.flags = Notification.FLAG_ONGOING_EVENT;
-		//notification.flags = Notification.FLAG_AUTO_CANCEL;
-		
-		 /*** �Զ���  Notification ����ʾ****/		 
 		contentView = new RemoteViews(getPackageName(), R.layout.item_notification);
 		contentView.setTextViewText(R.id.notificationTitle, app_name + getString(R.string.is_downing));
 		contentView.setTextViewText(R.id.notificationPercent, "0%");
-		
 		contentView.setProgressBar(R.id.notificationProgress, 100, 0, false);
 		notification.contentView = contentView;
-		
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(R.layout.item_notification, notification);
 	}
@@ -264,14 +253,7 @@ public class UpdateService extends Service {
 		
 		while ((readsize = inputStream.read(buffer)) != -1) {
 			
-//			/*********������ع���г��ִ��󣬾͵���������ʾ�����Ұ�notificationManagerȡ��*********/
-//			if (httpURLConnection.getResponseCode() == 404) {
-//				notificationManager.cancel(R.layout.notification_item);
-//				throw new Exception("fail!");
-//				//����ط�Ӧ�ü�һ������ʧ�ܵĴ��?���ǣ���Ϊ�������������һ��try---catch���Ѿ�������Exception,
-//				//���Բ��ô���						
-//			}
-						
+
 			outputStream.write(buffer, 0, readsize);
 			downloadCount += readsize;// ʱʱ��ȡ���ص��Ĵ�С
 			/*** ÿ������3%**/

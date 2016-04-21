@@ -1,23 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="#80000000"
+
     >
-
-    <TextView
-        android:id="@+id/share_title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dip"
-        android:text="分享到"
-        android:textSize="20sp" />
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"
+        >
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="#B7B7B7" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="80dp"
+        android:paddingRight="80dp"
+
+        >
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_height="0.5dp"
+            android:background="#B7B7B7" />
+        <TextView
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
+            android:id="@+id/share_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="分享到"
+            android:gravity="center_horizontal"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_height="0.5dp"
+            android:background="#B7B7B7" />
+
+    </LinearLayout>
+
 
     <GridView
         android:id="@+id/share_gridview"
@@ -27,5 +59,5 @@
         android:padding="10dip"
         android:stretchMode="columnWidth"
         android:verticalSpacing="20dip" />
-
-</LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

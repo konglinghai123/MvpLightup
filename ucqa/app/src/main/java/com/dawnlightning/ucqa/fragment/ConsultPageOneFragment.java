@@ -22,6 +22,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
+import com.dawnlightning.ucqa.Listener.IBase;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.activity.ConsultActivity;
 import com.dawnlightning.ucqa.adapter.OtherAdapter;
@@ -53,7 +54,7 @@ import android.widget.PopupWindow.OnDismissListener;
 /**
  * Created by Administrator on 2016/4/13.
  */
-public class ConsultPageOneFragment extends Fragment implements OnItemClickListener {
+public class ConsultPageOneFragment extends Fragment implements OnItemClickListener,IBase {
     private ConsultActivity consultActivity;
     private OtherGridView gv_sex_select;
     private OtherGridView gv_classify_select;
@@ -67,11 +68,12 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
     private EditText et_consult_name;
     private RelativeLayout rl_consult_age;
     private RelativeLayout rl_consult_name;
+
+    private Button bt_consult_nextpage;
     private WheelView tv_dialog_year;
     private WheelView tv_dialog_month;
     private WheelView tv_dialog_day;
     private TextView  tv_dialog_age;
-    private Button bt_consult_nextpage;
     PopupWindow menuWindow;
     /** 是否在移动，由于这边是动画结束后才进行的数据更替，设置这个限制为了避免操作太频繁造成的数据错乱。 */
     boolean isMove = false;
@@ -80,11 +82,28 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view =inflater.inflate(R.layout.fragment_patient_info, container,false);
         gv_sex_select=(OtherGridView)view.findViewById(R.id.gv_sex_select);
+        gv_classify_select=(OtherGridView)view.findViewById(R.id.gv_consult_classify);
+        tv_consult_sex=(TextView)view.findViewById(R.id.tv_consult_sex);
+        tv_consult_clssify=(TextView)view.findViewById(R.id.tv_consult_classifyname);
+        tv_consult_age=(TextView)view.findViewById(R.id.tv_consult_age);
+        rl_consult_age=(RelativeLayout)view.findViewById(R.id.rl_consult_age);
+        et_consult_name=(EditText)view.findViewById(R.id.et_consult_name);
+        rl_consult_name=(RelativeLayout)view.findViewById(R.id.rl_consult_name);
+        bt_consult_nextpage=(Button)view.findViewById(R.id.bt_consult_nextstep);
+        initdata();
+        initevent();
+        return view;
+    }
+
+    @Override
+    public void initview() {
+
+    }
+
+    @Override
+    public void initdata() {
         sexlist.add("男");
         sexlist.add("女");
-        sexadapter=new OtherAdapter(getActivity(),sexlist);
-        gv_sex_select.setAdapter(sexadapter);
-        gv_sex_select.setOnItemClickListener(this);
         for (ConsultClassifyBean bean:consultActivity.consultClassifyBeanList)
         {
             if (bean.getBwztclassarrname().contains("全部")){
@@ -93,16 +112,18 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
                 classify.add(bean.getBwztclassarrname());
             }
         }
+        sexadapter=new OtherAdapter(getActivity(),sexlist);
+        gv_sex_select.setAdapter(sexadapter);
         classifyadapter=new OtherAdapter(getActivity(),classify);
-        gv_classify_select=(OtherGridView)view.findViewById(R.id.gv_consult_classify);
         gv_classify_select.setAdapter(classifyadapter);
+
+        bt_consult_nextpage.setClickable(false);//不可点击
+    }
+
+    @Override
+    public void initevent() {
+        gv_sex_select.setOnItemClickListener(this);
         gv_classify_select.setOnItemClickListener(this);
-
-        tv_consult_sex=(TextView)view.findViewById(R.id.tv_consult_sex);
-        tv_consult_clssify=(TextView)view.findViewById(R.id.tv_consult_classifyname);
-        tv_consult_age=(TextView)view.findViewById(R.id.tv_consult_age);
-
-        rl_consult_age=(RelativeLayout)view.findViewById(R.id.rl_consult_age);
         rl_consult_age.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +132,6 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
 
             }
         });
-        et_consult_name=(EditText)view.findViewById(R.id.et_consult_name);
         et_consult_name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -128,7 +148,6 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
                 setnextbuttonbackgroundcolor();
             }
         });
-        rl_consult_name=(RelativeLayout)view.findViewById(R.id.rl_consult_name);
         rl_consult_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,18 +155,14 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
                 setnextbuttonbackgroundcolor();
             }
         });
-
-        bt_consult_nextpage=(Button)view.findViewById(R.id.bt_consult_nextstep);
         bt_consult_nextpage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 consultActivity.selectpage(1);
-                consultActivity.PageOneSetConsultBean(et_consult_name.getText().toString(),tv_consult_age.getText().toString()
-                ,tv_consult_sex.getText().toString().replace("岁", ""),tv_consult_clssify.getText().toString());
+                consultActivity.PageOneSetConsultBean(et_consult_name.getText().toString(), tv_consult_age.getText().toString()
+                        , tv_consult_sex.getText().toString().replace("岁", ""), tv_consult_clssify.getText().toString());
             }
         });
-        bt_consult_nextpage.setClickable(false);//不可点击
-        return view;
     }
 
     @Override
@@ -156,41 +171,6 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
         this.consultActivity=(ConsultActivity)activity;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Nullable
-    @Override
-    public View getView() {
-        return super.getView();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
     /**
      * 初始化popupWindow
      * @param view
@@ -272,7 +252,7 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
             calculateAge(str);
         }
     };
-    public void calculateAge(String str){
+    private void calculateAge(String str){
         SimpleDateFormat myFormatter = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date date=new Date();
         java.util.Date mydate;
@@ -356,8 +336,6 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
                                 tv_consult_sex.setText(channel);
                                 setnextbuttonbackgroundcolor();
                                 hidekeyboard();
-                                //mTextView.setText(channel);
-                                //userGridView.getChildAt(userGridView.getLastVisiblePosition()).getLocationInWindow(endLocation);
                                 MoveAnim(movesexImageView, startLocation, endLocation, channel, gv_sex_select);
                                 sexadapter.setRemove(position);
                             } catch (Exception localException) {
@@ -382,8 +360,6 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
                                 tv_consult_clssify.setText(channel);
                                 setnextbuttonbackgroundcolor();
                                 hidekeyboard();
-                                //mTextView.setText(channel);
-                                //userGridView.getChildAt(userGridView.getLastVisiblePosition()).getLocationInWindow(endLocation);
                                 MoveAnim(moveclassifyImageView, startLocation, endLocation, channel, gv_classify_select);
                                 classifyadapter.setRemove(position);
                             } catch (Exception localException) {
@@ -485,13 +461,13 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
         return iv;
     }
 
-    public void hidekeyboard() {
+    private void hidekeyboard() {
         InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(et_consult_name.getWindowToken(), 0);
     }
 
 
-    public void showketboard() {
+    private void showketboard() {
         et_consult_name.requestFocus();
         et_consult_name.setCursorVisible(true);
         InputMethodManager imm = (InputMethodManager) et_consult_name.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -509,4 +485,5 @@ public class ConsultPageOneFragment extends Fragment implements OnItemClickListe
             consultActivity.vp_consult_contentview.setPagingEnabled(false);
         }
     }
+
 }

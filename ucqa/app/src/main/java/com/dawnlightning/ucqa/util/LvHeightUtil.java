@@ -62,7 +62,7 @@ public class LvHeightUtil {
 
 		ViewGroup.LayoutParams params = listView.getLayoutParams();
 		params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount()))+addedrow*itemheight;
-		Log.e("commentheight",String.valueOf(totalHeight));
+
 		listView.setLayoutParams(params);
 	}
 	/**

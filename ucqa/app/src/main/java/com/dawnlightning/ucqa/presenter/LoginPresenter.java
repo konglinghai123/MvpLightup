@@ -22,13 +22,13 @@ public class LoginPresenter implements ILoginPresenter,loginlistener {
         this.context=context;
     }
     @Override
-    public void login(LoginModel model) {
+    public void login(String username,String password) {
 
         if (model.getUsername()!=""&&model.getPassword()!=""){
             if (model.getUsername()!=""){
                 if (AppUtils.checkNetwork(context)){
                     view.showloadingdialog("登陆中");
-                   model.login(model, this);
+                   model.login(username,password, this);
                 }else{
                     view.loginFailure(1, "请检查当前网络连接");
                 }

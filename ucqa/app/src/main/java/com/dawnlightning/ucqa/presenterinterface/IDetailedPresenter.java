@@ -15,4 +15,5 @@ public interface IDetailedPresenter {
     public void setreply(CommentBean bean,String username,int postion,int classid,int cid,String message,String formhash,String m_auth);//回复
     public void solve(int classid,String m_auth);//采纳
     public void delete(int classid,String m_auth);//关闭咨询
+    public void report(String m_auth,int id,String reason);//举报
 }

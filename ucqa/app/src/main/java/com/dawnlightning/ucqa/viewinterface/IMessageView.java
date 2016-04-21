@@ -13,4 +13,5 @@ public interface IMessageView {
     public void loadmessageSuccess(List<MessageBean> beans,int code,int operate);
     public void loadmessageFailure(int code,String msg,int operate);
     public  void messagelistrefresh(int  operate);
+    public void showerror(int code,String msg);
 }

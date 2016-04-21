@@ -10,20 +10,31 @@ import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
+import com.dawnlightning.ucqa.util.AsyncHttp;
 import com.dawnlightning.ucqa.util.HttpConstants;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import java.util.HashMap;
+
+import cz.msebera.android.httpclient.Header;
+
 public class UpdateManager {
 	 
 	
 	 private Context mContext;
-	 private HashMap<String, String> mHashMap = null;
 	 private Handler handler;
+     private String updatenote="";
+     private String updatename="";
+     private String updateurl="";
 	 public UpdateManager(Context context,Handler handler)
 	    {
 	        this.mContext = context;
@@ -34,8 +45,68 @@ public class UpdateManager {
      * 检测软件更新
      */
     public void checkUpdate()
-    {	new Thread(new CheckVersionTask()).start();
-    	
+    {
+        if (AsyncHttp.getcache(HttpConstants.Update)!=null&&AsyncHttp.getcache(HttpConstants.Update).length()>0){
+            Message msg = new Message();
+            com.alibaba.fastjson.JSONObject js = (com.alibaba.fastjson.JSONObject) JSON.parse(AsyncHttp.getcache(HttpConstants.Update).toString());
+            com.alibaba.fastjson.JSONObject update = (com.alibaba.fastjson.JSONObject) JSON.parse(js.getString("update"));
+            com.alibaba.fastjson.JSONObject j = (com.alibaba.fastjson.JSONObject) JSON.parse(update.getString("Android"));
+            // 获取当前软件版本
+            int versionCode = getVersionCode(mContext);
+            updatenote = j.getString("note");
+            updateurl= j.getString("url");
+            updatename = j.getString("name");
+//                int serviceCode = Integer.parseInt(j.getString("version"));
+            int serviceCode = 2;
+            // 版本判断
+            if (serviceCode > versionCode)
+            {
+                msg.what=UpdateStatus.UPDATA_CLIENT;
+                handler.sendMessage(msg);
+            }else{
+                msg.what=UpdateStatus.UPDATA_NO;
+                handler.sendMessage(msg);
+            }
+        }else{
+            AsyncHttp.removecache(HttpConstants.Update);
+            AsyncHttp.get(HttpConstants.Update, null, new JsonHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    AsyncHttp.savecache(HttpConstants.Update, response.toString(), 60*60*24);
+                    Message msg = new Message();
+                    com.alibaba.fastjson.JSONObject js = (com.alibaba.fastjson.JSONObject) JSON.parse(response.toString());
+                    com.alibaba.fastjson.JSONObject update = (com.alibaba.fastjson.JSONObject) JSON.parse(js.getString("update"));
+                    com.alibaba.fastjson.JSONObject j = (com.alibaba.fastjson.JSONObject) JSON.parse(update.getString("Android"));
+                    // 获取当前软件版本
+                    int versionCode = getVersionCode(mContext);
+                    updatenote = j.getString("note");
+                    updateurl= j.getString("url");
+                    updatename = j.getString("name");
+//                int serviceCode = Integer.parseInt(j.getString("version"));
+                    int serviceCode = 2;
+                    // 版本判断
+                    if (serviceCode > versionCode)
+                    {
+                        msg.what=UpdateStatus.UPDATA_CLIENT;
+                        handler.sendMessage(msg);
+                    }else{
+                        msg.what=UpdateStatus.UPDATA_NO;
+                        handler.sendMessage(msg);
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    Message msg = new Message();
+                    msg.what =UpdateStatus.UPDATA_ERROR;
+                    handler.sendMessage(msg);
+                }
+            });
+        }
+
     	
     	
     	
@@ -47,57 +118,7 @@ public class UpdateManager {
      * @return
      */
     
-    /* 
-     * 从服务器获取xml解析并进行比对版本号  
-     */  
-    public class CheckVersionTask implements Runnable {
-      
-        public void run() {  
-            try {  
-            	  Message msg = new Message();
-                //从资源文件获取服务器 地址   
-                String path = HttpConstants.Update;
-                //包装成url的对象   
-                URL url = new URL(path);
-                HttpURLConnection conn =  (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(5000);  
-                InputStream is =conn.getInputStream();
-                ParseXmlService service = new ParseXmlService();
-                // 获取当前软件版本
-                int versionCode = getVersionCode(mContext);
-                // 把version.xml放到网络上，然后获取文件信
-        		try
-                {	
-                    mHashMap = service.parseXml(is);
-                } catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                if (null != mHashMap)
-                {
-                    int serviceCode = Integer.valueOf(mHashMap.get("version"));
-                    // 版本判断
-                    if (serviceCode > versionCode)
-                    {
-                        msg.what=UpdateStatus.UPDATA_CLIENT;
-                    	handler.sendMessage(msg);
-                    }else{
-                    	 msg.what=UpdateStatus.UPDATA_NO;
-                     	handler.sendMessage(msg);
-                    }
-                }
-               
-               
-            } catch (Exception e) {
-                // 待处理   
-                Message msg = new Message();
-                msg.what =UpdateStatus.UPDATA_ERROR;
-                handler.sendMessage(msg);  
-                e.printStackTrace();  
-            }   
-        }  
-    }  
-      
+
   
     /**
      * 获取软件版本号
@@ -126,7 +147,7 @@ public class UpdateManager {
         // 构造对话框
         AlertDialog.Builder builder = new Builder(mContext);
         builder.setTitle("更新提醒");
-        builder.setMessage(mHashMap.get("note"));
+        builder.setMessage(updatenote);
         // 更新
         builder.setPositiveButton("更新", new OnClickListener()
         {
@@ -135,8 +156,8 @@ public class UpdateManager {
             {
                 dialog.dismiss();
                 Intent intent = new Intent(mContext,UpdateService.class);
-    			intent.putExtra("Key_App_Name",mHashMap.get("name"));
-    			intent.putExtra("Key_Down_Url",mHashMap.get("url"));						
+    			intent.putExtra("Key_App_Name",updatename);
+    			intent.putExtra("Key_Down_Url",updateurl);
     			mContext.startService(intent);
             }
         });

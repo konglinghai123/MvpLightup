@@ -31,7 +31,7 @@ public interface IDetailView {
     public void stoploadpb();//停止加载
     public void replySuccess(CommentBean bean,int postion);//回复成功
     public void replyFailure(int code,String msg);//回复失败
-    public void showreplydialog();
+    public void showreplydialog(int postion);//显示回复栏
     public void hidekeyboard();
     public void showketboard();
     public void updatecommentview();
@@ -42,5 +42,9 @@ public interface IDetailView {
     public void deleteSuceess(String msg);
     public void deleteFailure(int code,String msg);
     public void dodelete(int classid,String m_auth);//关闭咨询
+    public void reportSuceess(String msg);
+    public void reportFailure(int code,String msg);
+    public void doreport(String m_auth,int classid,String reason);//举报
+    public void showreportdialog();
 
 }

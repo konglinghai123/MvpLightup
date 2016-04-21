@@ -148,7 +148,7 @@ public class DragLayout extends FrameLayout {
 		super.onFinishInflate();
 		if (isShowShadow) {
 			iv_shadow = new ImageView(context);
-			iv_shadow.setImageResource(R.drawable.shadow);
+			iv_shadow.setImageResource(R.mipmap.shadow);
 			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
 					LayoutParams.MATCH_PARENT);
 			addView(iv_shadow, 1, lp);
@@ -212,9 +212,7 @@ public class DragLayout extends FrameLayout {
 				if (xMoved) {
 
 					if (xDiff > yDiff * 4) {
-						// 如果X>Y就是左滑趋势，为了做更严格的判断，X>4Y那就肯定的左滑了，4是一个敏感度的标量
-						Log.e("有左滑趋势", "111111");
-						
+
 							return true;
 						
 

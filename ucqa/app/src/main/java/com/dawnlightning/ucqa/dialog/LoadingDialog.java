@@ -3,6 +3,7 @@ package com.dawnlightning.ucqa.dialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -17,11 +18,17 @@ import com.dawnlightning.ucqa.R;
 public class LoadingDialog extends ProgressDialog {
     private  Context context;
     private  String msg;
-    public LoadingDialog(Context context, String strMessage) {
+    private OnDismissListener onDismissListener;
+    public LoadingDialog(Context context, String strMessage,OnDismissListener onDismissListener) {
         super(context);
         this.context=context;
         this.msg=strMessage;
+        this.onDismissListener=onDismissListener;
+    }
 
+    @Override
+    public void setOnDismissListener(OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
     }
 
     @Override
@@ -50,6 +57,9 @@ public class LoadingDialog extends ProgressDialog {
                     frameAnimation.start();
                 }
             });
+        }
+        if (onDismissListener!=null){
+            this.setOnDismissListener(onDismissListener);
         }
     }
 }

@@ -110,7 +110,6 @@ public class CommentAdapter extends BaseAdapter{
                 if (bean.getReplylist().size() > 0) {
                     replyAdapter = new ReplyAdapter(context, bean.getReplylist());
                     viewHolder.comment_replylist.setAdapter(replyAdapter);
-                    //LvHeightUtil.setListViewHeightBasedOnChildren(viewHolder.comment_replylist, 1);
                     replyAdapter.notifyDataSetChanged();
                 }
             }

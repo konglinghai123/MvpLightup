@@ -59,7 +59,7 @@ public class DisplayActivity extends BaseActivity{
         getWindow().setGravity(Gravity.CENTER);                 //设置靠右对齐
         myView = (ImageTouchView)findViewById(R.id.itv_display);
         psit=getIntent().getStringExtra("image");
-        options = ImageLoaderOptions.getListOptions();
+        options = ImageLoaderOptions.getLoadPictureOptions();
         imageLoader.displayImage(psit, myView, options);
 
     }

@@ -70,7 +70,6 @@ public class ReplyAdapter extends BaseAdapter {
         }
         String message=list.get(position);
         if (message!=null) {
-            Log.e("reply",message);
            viewHolder.reply_msg.setText(message);
         }
         return convertView;

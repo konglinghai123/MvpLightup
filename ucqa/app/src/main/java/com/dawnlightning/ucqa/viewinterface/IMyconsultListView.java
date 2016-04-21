@@ -13,5 +13,6 @@ public interface IMyconsultListView {
     public  void getmylistSuccess(int code,List<ConsultMessageBean> list, int operate);
     public  void getmylistFailure(int code,String msg,int  operate);
     public  void mylistrefresh(int  operate);
+    public void  showerror(int code,String msg);
 
 }

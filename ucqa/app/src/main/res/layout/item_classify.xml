@@ -5,7 +5,6 @@
     android:layout_centerVertical="true"
     android:layout_centerHorizontal="true"
     android:gravity="center_horizontal"
-
     >
     <ImageView
         android:layout_width="wrap_content"

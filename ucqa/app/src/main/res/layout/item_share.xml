@@ -6,10 +6,10 @@
 
     <ImageView
         android:id="@+id/share_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_centerHorizontal="true"
-    
+
         android:src="@mipmap/share_wecat" />
 
     <TextView
@@ -20,6 +20,7 @@
         android:layout_centerHorizontal="true"
         android:paddingTop="5dip"
         android:text="微信"
-        android:textSize="13sp" />
+        android:textColor="@color/white"
+        android:textSize="14sp" />
 
 </RelativeLayout>

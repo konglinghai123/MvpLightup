@@ -23,10 +23,7 @@ public class LoginModel implements ILoginModel {
     private String username;
     private  String password;
 
-    public LoginModel(String password, String username) {
-        this.password = password;
-        this.username = username;
-    }
+
     public  LoginModel(){
 
     }
@@ -84,11 +81,16 @@ public class LoginModel implements ILoginModel {
     }
 
     @Override
-    public void login(LoginModel model, final loginlistener listener) {
+    public void stopresquest() {
+        AsyncHttp.stopresquest();
+    }
+
+    @Override
+    public void login(String username,String password, final loginlistener listener) {
         RequestParams params = new RequestParams();
         params.put("ac", "login");
-        params.put("username", model.getUsername());
-        params.put("password",model.getPassword());
+        params.put("username",username);
+        params.put("password",password);
         params.put("loginsubmit",true);
         AsyncHttp.get(HttpConstants.HTTP_LOGIN, params, new JsonHttpResponseHandler() {
 

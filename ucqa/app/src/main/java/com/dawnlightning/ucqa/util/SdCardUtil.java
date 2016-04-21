@@ -15,7 +15,7 @@ public class SdCardUtil {
 	public static final String FILEPHOTO="/photos";
 	
 	//应用程序图片存放
-	public static final String FILEIMAGE="images";
+	public static final String FILEAPK="apk";
 	
 	//应用程序缓存
 	public static final String FILECACHE="cache";
@@ -64,9 +64,6 @@ public class SdCardUtil {
 	}
 	public static File updateDir = null;
 	public static File updateFile = null;
-	/***********������APK��Ŀ¼***********/
-	public static final String KonkaApplication = "konkaUpdateApplication";
-
 	public static boolean isCreateFileSucess;
 
 	/**
@@ -80,7 +77,7 @@ public class SdCardUtil {
 		if (android.os.Environment.MEDIA_MOUNTED.equals(android.os.Environment.getExternalStorageState())) {
 			isCreateFileSucess = true;
 
-			updateDir = new File(Environment.getExternalStorageDirectory()+ "/" + KonkaApplication +"/");
+			updateDir = new File(Environment.getExternalStorageDirectory()+"/lightup"+ "/" + FILEAPK +"/");
 			updateFile = new File(updateDir + "/" + app_name + ".apk");
 
 			if (!updateDir.exists()) {

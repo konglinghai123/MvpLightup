@@ -1,6 +1,9 @@
 package com.dawnlightning.ucqa.fragment;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -24,8 +28,10 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 import com.dawnlightning.ucqa.Bean.ConsultBean;
 import com.dawnlightning.ucqa.Bean.UploadPicsBean;
+import com.dawnlightning.ucqa.Listener.IBase;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.activity.ConsultActivity;
+import com.dawnlightning.ucqa.activity.DetailActivity;
 import com.dawnlightning.ucqa.adapter.ConsultPicsAdapter;
 import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.presenter.ConsultPresenter;
@@ -55,7 +61,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/4/13.
  */
-public class ConsultPageTwoFragment extends Fragment implements IConsultView{
+public class ConsultPageTwoFragment extends Fragment implements IConsultView,IBase{
     private ExpandListView lv_pic;
     private View headview;
     private ConsultPicsAdapter consultPicsAdapter;
@@ -76,6 +82,53 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
         View view =inflater.inflate(R.layout.fragment_condition, container,false);
         lv_pic=( ExpandListView)view.findViewById(R.id.lv_consult_pic);
         et_consult_subject=(EditText)view.findViewById(R.id.et_consult_subject);
+        consultPicsAdapter =new ConsultPicsAdapter(getActivity(),list);
+        headview= LayoutInflater.from(getActivity()).inflate(R.layout.consult_girdview_head,null);
+        et_consult_message=(EditText)headview.findViewById(R.id.et_consult_message);
+        iv_consult_sentvoice=(ImageView)view.findViewById(R.id.iv_consult_sentvoice);
+        iv_consult_sentphotos=(ImageView)view.findViewById(R.id.iv_consult_sentphotos);
+        iv_consult_sentcamera=(ImageView)view.findViewById(R.id.iv_consult_sentcamera);
+        bt_consult_sumbit=(Button)view.findViewById(R.id.bt_consult_submit);
+        initdata();
+        initevent();
+        return view;
+    }
+
+
+
+
+
+    @Override
+    public void onDestroy() {
+        mIatDialog.destroy();
+        super.onDestroy();
+
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        consultActivity=(ConsultActivity)activity;
+        consultPresenter=new ConsultPresenter(this, MyApp.getApp());
+        initSpeechRecognizer();
+    }
+
+    @Override
+    public void initview() {
+
+    }
+
+    @Override
+    public void initdata() {
+        lv_pic.addHeaderView(headview);
+        lv_pic.setAdapter(consultPicsAdapter);
+        bt_consult_sumbit.setClickable(false);
+
+    }
+
+    @Override
+    public void initevent() {
+        //标题的输入监听
         et_consult_subject.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -92,8 +145,7 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
                 setButtonBackground();
             }
         });
-
-        consultPicsAdapter =new ConsultPicsAdapter(getActivity(),list);
+        //删除图片的点击事件
         consultPicsAdapter.setDeletePicture(new ConsultPicsAdapter.DeletePicture() {
             @Override
             public void Detele(int postion) {
@@ -101,7 +153,7 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
                 consultPicsAdapter.notifyDataSetChanged();
             }
         });
-
+        //图片描述的输入监听
         consultPicsAdapter.setEditTextListener(new ConsultPicsAdapter.EditTextListener() {
             @Override
             public void AdapterTextChaged(int postion, String str) {
@@ -109,8 +161,7 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
                 bean.setPicturetitle(str);
             }
         });
-        headview= LayoutInflater.from(getActivity()).inflate(R.layout.consult_girdview_head,null);
-        et_consult_message=(EditText)headview.findViewById(R.id.et_consult_message);
+        //咨询正文的输入监听
         et_consult_message.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -127,96 +178,41 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
                 setButtonBackground();
             }
         });
-
-        iv_consult_sentvoice=(ImageView)view.findViewById(R.id.iv_consult_sentvoice);
-        iv_consult_sentphotos=(ImageView)view.findViewById(R.id.iv_consult_sentphotos);
-        iv_consult_sentcamera=(ImageView)view.findViewById(R.id.iv_consult_sentcamera);
-
-
-        lv_pic.addHeaderView(headview);
-        lv_pic.setAdapter(consultPicsAdapter);
-
+        //语言输入的点击事件
         iv_consult_sentvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showlanguagedialog();
             }
         });
+        //从相册中选图片
         iv_consult_sentphotos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getImageForAlbum();
             }
         });
+        //照相机选取
         iv_consult_sentcamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getImageFromCamera();
             }
         });
-
-        bt_consult_sumbit=(Button)view.findViewById(R.id.bt_consult_submit);
-        bt_consult_sumbit.setClickable(false);
+        //提交
         bt_consult_sumbit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (consultPicsAdapter.getUploadPicsBeans().size() > 0) {
                     uploadpic(consultPicsAdapter.getlist());
-                }else{
+                } else {
                     sendconsult();
                 }
                 setButtonClickable();
             }
         });
-        return view;
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-
-    @Override
-    public View getView() {
-        return super.getView();
-    }
-
-    @Override
-    public void onResume() {
-
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-
-        super.onDestroy();
-
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        consultActivity=(ConsultActivity)activity;
-        consultPresenter=new ConsultPresenter(this, MyApp.getApp());
-        initSpeechRecognizer();
-    }
+    //设置提交的背景颜色
     private  void setButtonBackground(){
         if (et_consult_subject.getText().toString().length()>0&&et_consult_message.getText().toString().length()>0){
             bt_consult_sumbit.setBackgroundColor(getActivity().getResources().getColor(R.color.green));
@@ -226,6 +222,7 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
             bt_consult_sumbit.setClickable(false);
         }
     }
+    //设置提交按钮是否可点击
     private void setButtonClickable(){
         if (bt_consult_sumbit.isClickable()){
             bt_consult_sumbit.setBackgroundColor(getActivity().getResources().getColor(R.color.lightgray));
@@ -236,6 +233,7 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
             bt_consult_sumbit.setClickable(true);
         }
     }
+    //从相册中获取
     private void  getImageForAlbum(){
 
         if(SdCardUtil.checkSdCard()==true){
@@ -246,7 +244,7 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
             Toast.makeText(getActivity(), "SD卡不存在", Toast.LENGTH_LONG).show();
         }
     }
-
+    //从照相机获取图片
     private void getImageFromCamera()
     {
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -254,7 +252,7 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
         openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         this.startActivityForResult(openCameraIntent, 1);
     }
-
+    //获取回调的图片url
     public void getImaged(Intent data){
 
         Uri uri = null;
@@ -339,8 +337,9 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
             }
 
     }
-
-    public void saveImageToFile(Bitmap bitmap){
+    //保存图片并压缩
+    private void saveImageToFile(Bitmap bitmap){
+        shownotification("正在保存图片...");
         SdCardUtil.createFileDir(SdCardUtil.FILEDIR + "/" + SdCardUtil.FILEPHOTO+"/");
         String fileName=SdCardUtil.getSdPath()+SdCardUtil.FILEDIR+"/"+SdCardUtil.FILEPHOTO+"/"+ TimeUtil.getCurrentTimeForImage();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -369,8 +368,10 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
             bean.setPictureid(consultPicsAdapter.getCount());
             bean.setUid(consultActivity.userBean.getUserdata().getUid());
             bean.setPresent(0);
+            cancelnotification();
             consultPicsAdapter.addlist(bean);
             consultPicsAdapter.notifyDataSetChanged();
+
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -388,7 +389,7 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
        consultPicsAdapter.notifyDataSetChanged();
         picids.add(strpicid);
         if (picids.size()==consultPicsAdapter.getCount()){
-            Log.e("tag","发布咨询");
+
             sendconsult();
         }
 
@@ -423,12 +424,24 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
 
     @Override
     public void sendconsultSuccess(int code, String msg) {
+        Log.e("url",msg);
+        String bwztid=msg.substring(msg.lastIndexOf("=")+1);
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), DetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userdata",consultActivity.userBean);
+        bundle.putString("bwztid", bwztid);
+        bundle.putString("uid",consultActivity.userBean.getUserdata().getUid());
+        intent.putExtras(bundle);
+        startActivity(intent);
         showerror(code,"发布成功");
+        getActivity().finish();
     }
 
     @Override
     public void sendconsultFailure(int code, String msg) {
-        showerror(code,msg);
+        setButtonClickable();
+        showerror(code, msg);
     }
 
     // 语音听写UI
@@ -493,22 +506,17 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
      */
     private RecognizerDialogListener mRecognizerDialogListener = new RecognizerDialogListener() {
         public void onResult(RecognizerResult results, boolean isLast) {
-
                 if (!isLast) {
-                    Log.e("last","false");
+
                     printResult(results);
-                }else{
-                    Log.e("last","true");
                 }
-
-
         }
 
         /**
          * 识别回调错误.
          */
         public void onError(SpeechError error) {
-            //showTip(error.getPlainDescription(true));
+
         }
 
     };
@@ -526,8 +534,7 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
         mIatDialog.setParameter(SpeechConstant.ENGINE_TYPE, mEngineType);
         // 设置返回结果格式
         mIatDialog.setParameter(SpeechConstant.RESULT_TYPE, "json");
-        //yuyan
-
+        //语言
         if (lag.equals("en_us")) {
             // 设置语言
             mIatDialog.setParameter(SpeechConstant.LANGUAGE, "en_us");
@@ -613,5 +620,20 @@ public class ConsultPageTwoFragment extends Fragment implements IConsultView{
         }else{
             return et_consult_message;
         }
+    }
+    private void cancelnotification(){
+        mNotificationManager.cancel(0);
+    }
+    private NotificationManager  mNotificationManager;
+    //显示照片保存通知
+    private void shownotification(String msg){
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+                getActivity()).setSmallIcon(R.drawable.mylogo);
+        mBuilder.setTicker(msg);
+        mBuilder.setAutoCancel(true);//自己维护通知的消失
+        //获取通知管理器对象
+        mNotificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
+
     }
 }

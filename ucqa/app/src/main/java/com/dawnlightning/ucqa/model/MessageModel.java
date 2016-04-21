@@ -30,10 +30,10 @@ public class MessageModel implements IMessageModel {
 
     @Override
     public void loadmessagelist(final int page,String m_auth,final int operate,final messagelistener messagelistener) {
-        String url=String.format("https://ucqa.dawnlightning.com/capi/space.php?do=notice&m_auth=%s", m_auth.trim());
-        Log.e("url",url);
         RequestParams params = new RequestParams();
-        AsyncHttp.get(url,params, new JsonHttpResponseHandler() {
+        params.put("do","notice");
+        params.put("m_auth",m_auth);
+        AsyncHttp.get(HttpConstants.HTTP_SELECTION,params, new JsonHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers,
                                   Throwable throwable, JSONObject errorResponse) {

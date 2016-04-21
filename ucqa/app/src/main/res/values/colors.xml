@@ -10,7 +10,7 @@
     <color name="red">#FFFF0000</color>
     <color name="green">#549D37</color>
     <color name="lightgray">#DCDCDC</color>
-
+    <color name="morelightgray">#EEEEEE</color>
     <color name="default_text_night">#ff747474</color>
     <color name="subscribe_item_text_color_pressed">#ffb9b9b9</color>
     <item name="subscribe_item_text_color_normal_night" type="color">@color/default_text_night</item>

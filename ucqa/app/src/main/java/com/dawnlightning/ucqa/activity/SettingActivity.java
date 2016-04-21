@@ -14,6 +14,7 @@ import android.widget.ToggleButton;
 import com.dawnlightning.ucqa.Bean.UserBean;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.base.BaseActivity;
+import com.dawnlightning.ucqa.base.Code;
 import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.presenter.SettingPresenter;
 import com.dawnlightning.ucqa.viewinterface.ISettingView;
@@ -33,6 +34,7 @@ public class SettingActivity extends BaseActivity implements ISettingView{
     private SettingPresenter settingPresenter;
     private UserBean userBean;
     private ImageView iv_back;
+    private TextView tv_update;
     @Override
     public void initview() {
         re_help= (RelativeLayout) findViewById(R.id.re_setting_help);
@@ -44,16 +46,16 @@ public class SettingActivity extends BaseActivity implements ISettingView{
         tv_version=(TextView)findViewById(R.id.tv_setting_version);
         tv_cachesize=(TextView)findViewById(R.id.tv_setting_cahesize);
         iv_back=(ImageView)findViewById(R.id.iv_setting_back);
+        tv_update=(TextView)findViewById(R.id.tv_setting_update_status);
     }
 
     @Override
     public void initdata() {
-        settingPresenter=new SettingPresenter(this, MyApp.getApp());
-        settingPresenter.checkupdate();
+        settingPresenter=new SettingPresenter(this,getcontext());
         settingPresenter.getcachesize();
         settingPresenter.getversion();
         settingPresenter.getpushstatus();
-
+        docheckupdate(false);
 
     }
 
@@ -68,7 +70,7 @@ public class SettingActivity extends BaseActivity implements ISettingView{
         re_checkupdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              docheckupdate();
+              docheckupdate(true);
             }
         });
         bt_loginoff.setOnClickListener(new View.OnClickListener() {
@@ -105,8 +107,8 @@ public class SettingActivity extends BaseActivity implements ISettingView{
     }
 
     @Override
-    public void docheckupdate() {
-        settingPresenter.checkupdate();
+    public void docheckupdate(Boolean isShowupdatedialog) {
+        settingPresenter.checkupdate(isShowupdatedialog);
     }
 
     @Override
@@ -141,12 +143,14 @@ public class SettingActivity extends BaseActivity implements ISettingView{
 
     @Override
     public void loginoff() {
-      settingPresenter.logoff(userBean.getUhash(),userBean.getM_auth());
+        setResult(Code.LoginoffForResult);
+        finish();
+      settingPresenter.logoff(userBean.getUhash(), userBean.getM_auth());
         Intent i = getBaseContext().getPackageManager()
                 .getLaunchIntentForPackage(getBaseContext().getPackageName());
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
-        finish();
+
     }
 
     @Override
@@ -157,5 +161,10 @@ public class SettingActivity extends BaseActivity implements ISettingView{
     @Override
     public void closepush() {
         settingPresenter.Push(toggleButton.isChecked());
+    }
+
+    @Override
+    public void showupdatestatus() {
+        tv_update.setVisibility(View.VISIBLE);
     }
 }

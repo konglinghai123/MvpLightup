@@ -1,5 +1,6 @@
 package com.dawnlightning.ucqa.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.Bean.UserBean;
 import com.dawnlightning.ucqa.R;
@@ -27,42 +30,28 @@ import com.dawnlightning.ucqa.fragment.LoginFragment;
 import com.dawnlightning.ucqa.model.LoginModel;
 import com.dawnlightning.ucqa.presenter.ClassifyPresenter;
 import com.dawnlightning.ucqa.presenter.ConsultListPresenter;
+import com.dawnlightning.ucqa.presenter.LoginPresenter;
 import com.dawnlightning.ucqa.tools.Blur;
-import com.dawnlightning.ucqa.util.SQLHelper;
+import com.dawnlightning.ucqa.util.AsyncHttp;
+import com.dawnlightning.ucqa.util.HttpConstants;
 import com.dawnlightning.ucqa.viewinterface.IConsultListView;
 import com.dawnlightning.ucqa.viewinterface.IWelcomeView;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONObject;
 
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by Administrator on 2016/3/31.
  */
-public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsultListView,LoginModel.loginlistener {
+public class WelcomeActivity extends BaseActivity implements IWelcomeView,LoginModel.loginlistener {
 
 
     private RelativeLayout contentview = null;
-    private Bitmap bitmap = null;
     private AlphaAnimation start_anima;//开动画始
-
-    @Override
-    public void onSuccess(UserBean bean) {
-
-        Intent intent = new Intent();
-        intent.setClass(this, MainActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("userdata",bean);
-        intent.putExtras(bundle);
-        startActivity(intent);
-        dismissdialog();
-        finish();
-    }
-
-    @Override
-    public void onFailure(int code, String msg) {
-        dismissdialog();
-        blurbackground();
-    }
-
     private ImageView iv_top = null;
     private ImageView iv_buttom = null;
     private ImageView introduction = null;
@@ -72,16 +61,30 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsu
     private Boolean allowSlide=false; //是否允许滑动
     float x1 = 0;  float x2 = 0;  float y1 = 0;  float y2 = 0;
     private ClassifyPresenter classifyPresenter=null;
-    private ConsultListPresenter consultListPresenter =null;
-    private SQLHelper sqlHelper;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-
+    private LoginModel loginModel;
 
     @Override
+    public void onSuccess(UserBean bean) {
 
+
+        Intent intent = new Intent();
+        intent.setClass(this, MainActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userdata", bean);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        dismissdialog();
+        finish();
+
+    }
+
+    @Override
+    public void onFailure(int code, String msg) {
+        dismissdialog();
+        blurbackground();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initview();
@@ -101,7 +104,7 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsu
         iv_buttom = (ImageView) findViewById(R.id.up_buttom);
         introduction=(ImageView) findViewById(R.id.introduction);
         start_anima = new AlphaAnimation(0.3f, 1.0f);
-        start_anima.setDuration(3000);
+        start_anima.setDuration(1500);
         view.post(new Runnable() {
             @Override
             public void run() {
@@ -115,37 +118,10 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsu
     @Override
     public void initdata() {
         classifyPresenter=new ClassifyPresenter(this);
-        consultListPresenter =new ConsultListPresenter(this,MyApp.getApp());
-        sqlHelper=((MyApp)getApplication()).getSQLHelper();
+        loginModel=new LoginModel();
+        classifyPresenter.load();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -179,28 +155,13 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsu
     }
 
     @Override
-    public void setconsultclassifybean(List<ConsultClassifyBean> beans) {
-        sqlHelper.deleteclassify();
-        sqlHelper.insertclassify(beans);
-        //List<ConsultClassifyBean> list=sqlHelper.queryclassify("眼科");
-    }
-
-    @Override
     public void showerror(String msg) {
         showmessage(msg, Toast.LENGTH_SHORT);
     }
 
     @Override
     public void AnimationStart() {
-        if(checknetwork(getcontext())){
-            classifyPresenter.load();
-            doloadassignlist(1,-1,Code.ALL,Code.REFRESH);
 
-        }
-        else
-        {
-            showerror("请检查网络连接");
-        }
     }
 
     @Override
@@ -223,7 +184,6 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsu
 
     @Override
     public void blurbackground() {
-
 
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 2;
@@ -271,16 +231,15 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsu
         }
 
         else{
-            if(checknetwork(getcontext())) {
+                loginModel.login(phone,password,this);
+                this.initdialog("登陆中", new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        loginModel.stopresquest();
+                        IsSlide=false;
+                    }
+                });
 
-                LoginModel loginModel = new LoginModel();
-                loginModel.setUsername(phone);
-                loginModel.setPassword(password);
-                loginModel.login(loginModel, this);
-                this.initdialog("加载中");
-            }else{
-                showerror("请检查网络连接");
-            }
         }
         }
     }
@@ -300,24 +259,4 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,IConsu
         transaction.add(R.id.farm_content,login).commit();
     }
 
-    @Override
-    public void doloadassignlist(int page, int bwztclassid, int identity, int operate) {
-
-            consultListPresenter.loadassignlist(page,bwztclassid,"",identity,operate);
-
-    }
-
-    @Override
-    public void getSuccess(int code,List<ConsultMessageBean> list,int indentity,int  operate) {
-
-    }
-
-    @Override
-    public void getFailure(int code, String msg,int indentity,int  operate) {
-
-    }
-    @Override
-    public void refresh(int operate) {
-
-    }
 }

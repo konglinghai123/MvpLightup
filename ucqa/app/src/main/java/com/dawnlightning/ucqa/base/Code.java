@@ -38,7 +38,9 @@ public class Code {
     public static final int DetailForResult=1;//咨询详细的Activity回调
     public static final int DetailForResultDelete=2;//咨询详细的Activity回调删除咨询
     public static final int DetailForResultSolve=3;//咨询详细的Activity回调采纳咨询
-
+    public static final int ConsultForResult=4;//发布咨询成功后的回调
+    public static final int LoginoffForResult=5;//注销登陆
+    public static final int ModifyPersonaldataForResult=6;//修改用户资料;
     public static final int UPLOADCHANGE=1;//图片正在上传中
     public static final int UPLOADSUCCESS=0;//图片上传成功
     public static final int UPLOADFAILURE=-1;//图片上传失败

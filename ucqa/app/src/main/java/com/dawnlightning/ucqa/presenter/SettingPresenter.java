@@ -1,5 +1,6 @@
 package com.dawnlightning.ucqa.presenter;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
@@ -23,38 +24,47 @@ import java.io.Serializable;
  */
 public class SettingPresenter implements ISettingPresenter,LoginModel.loginlistener {
     public ISettingView view;
-    public MyApp myApp;
+    public Context mContext;
     private UpdateManager updateManager;
     private SharedPreferenceDb sharedPreferenceDb;
     private LoginModel model;
-    public SettingPresenter(ISettingView view,MyApp myApp){
+    public SettingPresenter(ISettingView view,Context mContext){
         this.view=view;
-        this.myApp=myApp;
-        sharedPreferenceDb=new SharedPreferenceDb(myApp);
+        this.mContext=mContext;
+        sharedPreferenceDb=new SharedPreferenceDb(mContext);
 
         model=new LoginModel();
     }
     @Override
-    public void checkupdate() {
-        updateManager=new UpdateManager(myApp.getApplicationContext(),new Handler() {
+    public void checkupdate(final Boolean isShowupdatedialog) {
+        updateManager=new UpdateManager(mContext,new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 // TODO Auto-generated method stub
                 super.handleMessage(msg);
                 switch (msg.what) {
-
                     case UpdateStatus.UPDATA_CLIENT:
-                        updateManager.showNoticeDialog();
+                        if (isShowupdatedialog){
+                            updateManager.showNoticeDialog();
+                        }
+                        view.showupdatestatus();
                         break;
                     case UpdateStatus.UPDATA_ERROR:
-                        view.showmsg("获取版本错误");
+                        if (isShowupdatedialog){
+                            view.showmsg("获取版本错误");
+                        }
+
                         break;
                     case UpdateStatus.UPDATA_NO:
-                        view.showmsg("已为最新版本");
+                        if (isShowupdatedialog){
+                            view.showmsg("已为最新版本");
+                        }
+
                         break;
                 }
             }
         });
+        updateManager.checkUpdate();
     }
 
     @Override
@@ -73,7 +83,7 @@ public class SettingPresenter implements ISettingPresenter,LoginModel.loginliste
 
     @Override
     public void getcachesize() {
-        File cacheDir = StorageUtils.getOwnCacheDirectory(myApp, SdCardUtil.FILEDIR + "/" + SdCardUtil.FILECACHE);//获取到缓存的目录地址
+        File cacheDir = StorageUtils.getOwnCacheDirectory(mContext, SdCardUtil.FILEDIR + "/" + SdCardUtil.FILECACHE);//获取到缓存的目录地址
         try{
 
             view.showcachesize(DataCleanManager.getCacheSize(cacheDir));
@@ -85,7 +95,7 @@ public class SettingPresenter implements ISettingPresenter,LoginModel.loginliste
 
     @Override
     public void clearcache() {
-        File cacheDir = StorageUtils.getOwnCacheDirectory(myApp, SdCardUtil.FILEDIR + "/" + SdCardUtil.FILECACHE);//获取到缓存的目录地址
+        File cacheDir = StorageUtils.getOwnCacheDirectory(mContext, SdCardUtil.FILEDIR + "/" + SdCardUtil.FILECACHE);//获取到缓存的目录地址
         try{
             DataCleanManager.deleteFilesByDirectory(cacheDir);
         }
@@ -101,7 +111,12 @@ public class SettingPresenter implements ISettingPresenter,LoginModel.loginliste
     @Override
     public void Push(Boolean isOpen) {
         sharedPreferenceDb.setPush(isOpen);
-        view.showmsg("设置成功");
+        if (isOpen==true){
+            view.showmsg("开");
+        }else{
+            view.showmsg("关");
+        }
+
     }
 
     @Override

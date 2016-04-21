@@ -2,11 +2,10 @@ package com.dawnlightning.ucqa.base;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
+
 import java.io.File;
 
 import com.dawnlightning.ucqa.R;
-import com.dawnlightning.ucqa.util.SQLHelper;
 import com.dawnlightning.ucqa.util.SdCardUtil;
 import com.iflytek.cloud.SpeechUtility;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -23,8 +22,6 @@ import cn.sharesdk.framework.ShareSDK;
  */
 public class MyApp extends Application{
     private static MyApp mAppApplication;
-    private SQLHelper sqlHelper;
-
     @Override
     public void onCreate() {
         // TODO Auto-generated method stub
@@ -34,6 +31,7 @@ public class MyApp extends Application{
         initJpush(getApplicationContext());
         initShareSdk(getApplicationContext());
         initSpeechSdk(getApplicationContext());
+
         mAppApplication = this;
     }
 
@@ -45,22 +43,13 @@ public class MyApp extends Application{
     @Override
     public void onTerminate() {
         // TODO Auto-generated method stub
-        if (sqlHelper != null)
-            {
-            sqlHelper.close();
-            }
+
         super.onTerminate();
         //整体摧毁的时候调用这个方法
     }
-    /** 获取数据库Helper */
-    public SQLHelper getSQLHelper() {
-        if (sqlHelper == null)
-            sqlHelper = new SQLHelper(mAppApplication);
-        return sqlHelper;
-    }
-    public void initSqlHelper(){
 
-    }
+
+
     /** 初始化ImageLoader */
     public static void initImageLoader(Context context) {
         File cacheDir = StorageUtils.getOwnCacheDirectory(context, SdCardUtil.FILEDIR+"/"+SdCardUtil.FILECACHE);//获取到缓存的目录地址
@@ -101,7 +90,7 @@ public class MyApp extends Application{
         if(SdCardUtil.checkSdCard()==true){
             SdCardUtil.createFileDir(SdCardUtil.FILEDIR);
             SdCardUtil.createFileDir(SdCardUtil.FILEDIR+"/"+SdCardUtil.FILEPHOTO);
-            SdCardUtil.createFileDir(SdCardUtil.FILEDIR+"/"+SdCardUtil.FILEIMAGE);
+            SdCardUtil.createFileDir(SdCardUtil.FILEDIR+"/"+SdCardUtil.FILEAPK);
             SdCardUtil.createFileDir(SdCardUtil.FILEDIR+"/"+SdCardUtil.FILECACHE);
             SdCardUtil.createFileDir(SdCardUtil.FILEDIR+"/"+SdCardUtil.FILEUSER+"/icon");
         }else{

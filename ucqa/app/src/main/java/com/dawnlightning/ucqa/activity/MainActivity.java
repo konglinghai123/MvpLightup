@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -32,9 +33,14 @@ import com.dawnlightning.ucqa.adapter.ClassifyAdapter;
 import com.dawnlightning.ucqa.adapter.ConsultAdapter;
 import com.dawnlightning.ucqa.adapter.LeftMenuAdapter;
 import com.dawnlightning.ucqa.adapter.MessageAdapter;
+import com.dawnlightning.ucqa.adapter.MyFragmentPagerAdapter;
 import com.dawnlightning.ucqa.base.BaseActivity;
 import com.dawnlightning.ucqa.base.Code;
+import com.dawnlightning.ucqa.base.Menu;
 import com.dawnlightning.ucqa.base.MyApp;
+import com.dawnlightning.ucqa.fragment.MainFragment;
+import com.dawnlightning.ucqa.fragment.MessageFragment;
+import com.dawnlightning.ucqa.fragment.MyConsultFragment;
 import com.dawnlightning.ucqa.presenter.ConsultListPresenter;
 import com.dawnlightning.ucqa.presenter.MainViewPresenter;
 import com.dawnlightning.ucqa.presenter.MessagePresenter;
@@ -42,6 +48,7 @@ import com.dawnlightning.ucqa.push.ExampleUtil;
 import com.dawnlightning.ucqa.tools.ImageLoaderOptions;
 import com.dawnlightning.ucqa.util.LvHeightUtil;
 import com.dawnlightning.ucqa.view.DragLayout;
+import com.dawnlightning.ucqa.view.MyViewPager;
 import com.dawnlightning.ucqa.viewinterface.IConsultListView;
 import com.dawnlightning.ucqa.viewinterface.IMainView;
 import com.dawnlightning.ucqa.viewinterface.IMessageView;
@@ -50,52 +57,41 @@ import com.nineoldandroids.view.ViewHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
-import me.maxwin.view.IXListViewLoadMore;
-import me.maxwin.view.IXListViewRefreshListener;
-import me.maxwin.view.XListView;
 
-public class MainActivity extends BaseActivity implements IMainView,IConsultListView,IXListViewLoadMore,IXListViewRefreshListener,IMyconsultListView,IMessageView{
+
+public class MainActivity extends BaseActivity implements IMainView{
     private DragLayout dl_main;
-    private LinearLayout ll_error;
     private ListView lv_menu;
-    private TextView tv_error;
-    private ImageView iv_error;
-    private Button bt_error;
-    private TextView tv_title;
+    public TextView tv_title;
     private TextView tv_unreadmsg;
     private TextView tv_username;
     private ImageView iv_menu, iv_icon;
-    private XListView mListview=null;
-    private ConsultAdapter consultAdapter;
     private LeftMenuAdapter menuadapter;
-    private MessageAdapter messageAdapter;
     private MainViewPresenter mainViewPresenter;
-    private ConsultListPresenter consultListPresenter;
-    private MessagePresenter messagePresenter;
     public static UserBean userBean;
-    private List<ConsultMessageBean> consultMessageBeanList;
-    private List<ConsultClassifyBean> consultClassifyBeanList;
-    private GridView gv_listview_header;
-    private ClassifyAdapter classifyAdapter;
-    private  View headerView;
-    private ProgressBar progressBar;
-    private int Page=1;
-    private int Bwztclassid=0;
+    public static List<ConsultClassifyBean> consultClassifyBeanList;
     private static boolean isExit = false;
-    private static int MenuPostion=0;
-    private MessageReceiver mMessageReceiver;//推送
+    public MessageReceiver mMessageReceiver;//推送
+    public MyViewPager vp_activity;
+    private MyFragmentPagerAdapter myFragmentPagerAdapter;
+    public ArrayList<Fragment> fragmentList=new ArrayList<Fragment>();
+    private MainFragment mainFragment;
+    private MessageFragment messageFragment;
+    private MyConsultFragment myConsultFragment;
+    private List<Menu> menuList=new ArrayList<Menu>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                         WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
         );
         setContentView(R.layout.activity_main);
@@ -103,14 +99,10 @@ public class MainActivity extends BaseActivity implements IMainView,IConsultList
         initdata();
         initevent();
         doloaduserdata(getIntent());
-        doloadlist();
-
+        docheckupdate();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
+
 
     @Override
     protected void onDestroy() {
@@ -119,45 +111,17 @@ public class MainActivity extends BaseActivity implements IMainView,IConsultList
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-
-    @Override
     public void initview() {
 
         dl_main = (DragLayout) findViewById(R.id.dl_main);
-
-        ll_error=(LinearLayout)findViewById(R.id.ll_error);
-        tv_error=(TextView)findViewById(R.id.tv_error);
-        iv_error=(ImageView)findViewById(R.id.iv_error);
-        bt_error=(Button)findViewById(R.id.bt_error);
-
         lv_menu=(ListView)findViewById(R.id.lv_menu);
         iv_icon = (ImageView) findViewById(R.id.iv_icon);
         tv_username=(TextView)findViewById(R.id.tv_username);
-
         iv_menu = (ImageView) findViewById(R.id.iv_menu);
         tv_unreadmsg=(TextView)findViewById(R.id.unread_msg_number);
         tv_title = (TextView) findViewById(R.id.title);
-
-        mListview=(XListView) findViewById(R.id.lv_consult);
-        mListview.NotRefreshAtBegin();
-        progressBar=(ProgressBar) findViewById(R.id.consult_list_progressbar);
-        headerView=getLayoutInflater().inflate(R.layout.listview_header_girdview,null);
-        gv_listview_header=(GridView)headerView.findViewById(R.id.gv_classify);
+        vp_activity=(MyViewPager)findViewById(R.id.mvp_mainactivity);
+        vp_activity.setPagingEnabled(false);//不允许滑动
 
 
     }
@@ -188,37 +152,66 @@ public class MainActivity extends BaseActivity implements IMainView,IConsultList
 
             }
         });
+
+        iv_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dl_main.open();
+            }
+        });
         iv_icon.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View arg0) {
-                dl_main.open();
+            public void onClick(View v) {
+                Intent intent=new Intent();
+                intent.setClass(MainActivity.this, PersonalDataActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("userdata",userBean);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, Code.ModifyPersonaldataForResult);
             }
         });
     }
         @Override
     public void initdata() {
-            mainViewPresenter=new MainViewPresenter(this, MyApp.getApp());
-            consultListPresenter =new ConsultListPresenter(this, MyApp.getApp());
-            consultAdapter=new ConsultAdapter(getApplication(),consultMessageBeanList);
-            messagePresenter=new MessagePresenter(this,MyApp.getApp());
-            menuadapter=new LeftMenuAdapter(MainActivity.this);
+            mainViewPresenter=new MainViewPresenter(this,getcontext());
+             mainFragment=new MainFragment();
+            messageFragment=new MessageFragment();
+            myConsultFragment=new MyConsultFragment();
+
+            menuList.add(new Menu("主        页", 0));
+            menuList.add(new Menu("我的消息", 0));
+            menuList.add(new Menu("我的咨询",0));
+            menuList.add(new Menu("我要咨询",0));
+            menuList.add(new Menu("设        置",0));
+            menuadapter=new LeftMenuAdapter(MainActivity.this,menuList);
             lv_menu.setAdapter(menuadapter);
+
+            fragmentList.add(mainFragment);
+            fragmentList.add(messageFragment);
+            fragmentList.add(myConsultFragment);
+            myFragmentPagerAdapter=new MyFragmentPagerAdapter(getSupportFragmentManager(),fragmentList);
+            vp_activity.setAdapter(myFragmentPagerAdapter);
+            vp_activity.setCurrentItem(0);
+
     }
     @Override
     public void selectview(int id) {
         switch (id) {
             case 0:
                 dl_main.close();
-                backhome();
+                showtitleclassift("全部");
+                vp_activity.setCurrentItem(0);
                 break;
             case 1:
                 dl_main.close();
-                doloadmessagelist(Page,Code.REFRESH,userBean.getM_auth());
+                showtitleclassift("消息列表");
+                vp_activity.setCurrentItem(1);
                 //消息列表
                 break;
             case 2:
                 dl_main.close();
-                doloadmylist(Page, Integer.parseInt(userBean.getUserdata().getUid()), userBean.getM_auth(), Code.ME,Code.REFRESH);
+                showtitleclassift("我的咨询");
+                vp_activity.setCurrentItem(2);
                 //我的咨询
                 break;
             case 3:
@@ -228,7 +221,7 @@ public class MainActivity extends BaseActivity implements IMainView,IConsultList
                 consultbundle.putSerializable("userdata",userBean);
                 consultbundle.putSerializable("classifybeanlist", (Serializable) consultClassifyBeanList);
                 consultintent.putExtras(consultbundle);
-                startActivity(consultintent);
+                startActivityForResult(consultintent, Code.ConsultForResult);
                 //发布咨询
                 break;
             case 4:
@@ -237,136 +230,35 @@ public class MainActivity extends BaseActivity implements IMainView,IConsultList
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("userdata",userBean);
                 intent.putExtras(bundle);
-                startActivity(intent);
+                startActivityForResult(intent, Code.LoginoffForResult);
                 //设置
                 break;
             default:
                 break;
         }
     }
-    /*
-    * 加载数据库内容，分类和咨询列表
-    * */
-    @Override
-    public void doloadlist() {
-        mainViewPresenter.loadlist();
-        mainViewPresenter.loadclassify();
-    }
-    /*
-   * 显示咨询列表
-   * */
-    @Override
-    public void showconsultlist(List<ConsultMessageBean> list) {
-        consultAdapter.setList(list);
-        mListview.setAdapter(consultAdapter);
-        consultAdapter.notifyDataSetChanged();
-        stopprgressBar();
-        mListview.setPullLoadEnable(this);
-        mListview.setPullRefreshEnable(this);
-        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ConsultMessageBean bean = (ConsultMessageBean) parent.getAdapter().getItem(position);
-                viewdetail(bean.getUid(), bean.getBwztid(), userBean);
-            }
-        });
-    }
-    /*
-    * 加载相应的咨询列表
-    * */
-    @Override
-    public void doloadassignlist(int page, int bwztclassid,int identity, int operate) {
-        consultListPresenter.loadassignlist(page, bwztclassid, "", Code.ALL, operate);
-    }
-    @Override
-    public void getSuccess(int code,List<ConsultMessageBean> list,int identity,int  operate) {
-             if (identity==Code.ALL)//如果加载的主页
-            {
-            stopprgressBar();//停止进度条
-            if (code==Code.LOAD_FULL_SUCCESS)//可能有下一页
-            {
-                mListview.setPullLoadEnable(MainActivity.this);
-            }else if(code==Code.LOAD_NOFULL_SUCCESS)//不可能有下一页
-            {
-                mListview.disablePullLoad();
-            }
 
-            if (operate== Code.REFRESH)//如果是下拉刷新
-            {
-                mListview.stopRefresh();//停止刷新
-                consultAdapter.setList(list);
-                //consultAdapter.headinsert(list);//list头插
 
-            }
-            else if(operate==Code.CHANGE) //如果是点击Girdview
-            {
 
-                mListview.stopRefresh();//停止刷新
-                consultAdapter.setList(list);
-
-            }
-            else if(operate==Code.LOADMORD)//如果是上拉加载
-            {
-                mListview.stopLoadMore();//停止更新
-                consultAdapter.addList(list);//尾插
-            }
-            consultAdapter.notifyDataSetChanged();//刷新列表
-        }
-        else if (identity==Code.ME)//如果加载的是我的咨询
-        {
-            getmylistSuccess(code, list, operate);
-        }
-
-    }
-
-    @Override
-    public void getFailure(int code, String msg,int identity ,int operate) {
-        if (identity==Code.ALL) {
-            stopprgressBar();
-            //停止一切上拉下拉刷新
-            if (code == Code.SERVER_LOAD_FAILURE)
-            {
-                mListview.disablePullRefreash();
-                mListview.disablePullLoad();
-            } else if (code == Code.LOAD_FAILURE) {
-                mListview.disablePullRefreash();
-                mListview.disablePullLoad();
-            }
-
-            if (operate == Code.REFRESH) {
-                mListview.stopRefresh();
-            }
-            else if (operate == Code.CHANGE) {
-
-                if (code == Code.LOAD_NODATA) {
-                    consultAdapter.clearList();
-                    mListview.disablePullLoad();
-                    mListview.disablePullRefreash();
-                }
-                mListview.stopRefresh();
-            } else {
-                mListview.stopLoadMore();
-            }
-            consultAdapter.notifyDataSetChanged();
-            if (operate == Code.CHANGE) {
-                showerror(code, msg);
-            } else {
-                showmessage(msg, Toast.LENGTH_SHORT);
-            }
-        }else if(identity==Code.ME){
-            getmylistFailure(code, msg, operate);
-        }
-    }
     /*
      * 检查版本更新
      * */
     @Override
     public void docheckupdate() {
 
+        mainViewPresenter.checkupdate();
+
     }
+
+    @Override
+    public void showupdate() {
+        ((Menu)menuadapter.getItem(4)).setStatus(1);
+        menuadapter.notifyDataSetChanged();
+    }
+
     /*
-    * 获取welcome的传值
-    * */
+        * 获取welcome的传值
+        * */
     @Override
     public void doloaduserdata(Intent intent) {
         mainViewPresenter.loaduserdata(intent);
@@ -381,49 +273,6 @@ public class MainActivity extends BaseActivity implements IMainView,IConsultList
     }
 
     /*
-    * 显示分类
-    * */
-
-    @Override
-    public void showclassifylist(List<ConsultClassifyBean> list) {
-        consultClassifyBeanList=list;
-        classifyAdapter=new ClassifyAdapter(getApplicationContext(),list);
-        gv_listview_header.setAdapter(classifyAdapter);
-        LvHeightUtil.setListViewHeightBasedOnChildren(gv_listview_header, 3);
-        classifyAdapter.notifyDataSetChanged();
-        mListview.addHeaderView(headerView);
-        gv_listview_header.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ConsultClassifyBean bean = (ConsultClassifyBean) classifyAdapter.getItem(position);
-                girdviewonclick(bean);
-
-            }
-        });
-        showtitleclassift("全部");
-
-    }
-    /*
-    * 圆形进度条开始
-    * */
-    @Override
-    public void startprogressBar() {
-        progressBar.setVisibility(View.VISIBLE);
-        mListview.disablePullLoad();
-        mListview.disablePullRefreash();
-
-    }
-    /*
-* 圆形进度条结束
-* */
-    @Override
-    public void stopprgressBar() {
-
-        progressBar.setVisibility(View.GONE);
-        mListview.setPullLoadEnable(this);
-        mListview.setPullRefreshEnable(this);
-
-    }
     /*
     * 保存用户数据
     * */
@@ -444,196 +293,20 @@ public class MainActivity extends BaseActivity implements IMainView,IConsultList
             tv_unreadmsg.setVisibility(View.GONE);
         }
 
-    }
-    @Override
-    public void showerror(int code, String msg) {
-        ll_error.setVisibility(View.VISIBLE);//显示错误背景
-        tv_error.setText(msg);//显示错误原因
-        final ConsultClassifyBean bean=new ConsultClassifyBean();
-        bean.setBwztclassarrname(tv_title.getText().toString());
-        bean.setBwztclassarrid(String.valueOf(Bwztclassid));
-        switch (code){
-            case Code.LOAD_NODATA:
-                iv_error.setBackgroundResource(R.mipmap.nomessage);
-                bt_error.setText("发布咨询");
-                bt_error.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //发布咨询
-                    }
-                });
-                break;
-            case Code.SERVER_LOAD_FAILURE:
-                bt_error.setText("重新加载");
-                iv_error.setBackgroundResource(R.mipmap.server_error);
-                bt_error.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(MenuPostion==0){
-                            girdviewonclick(bean);
-                        }else if (MenuPostion==2){
-                            startprogressBar();
-                            consultListPresenter.loadassignlist(Page,Integer.parseInt(userBean.getUserdata().getUid()),userBean.getM_auth(), Code.ME, Code.REFRESH);
-                        }
-
-
-                    }
-                });
-                break;
-            case Code.LOAD_FAILURE:
-                bt_error.setText("重新加载");
-                iv_error.setBackgroundResource(R.mipmap.server_error);
-                bt_error.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(MenuPostion==0){
-                            girdviewonclick(bean);
-                        }else if (MenuPostion==2){
-                            startprogressBar();
-                            consultListPresenter.loadassignlist(Page,Integer.parseInt(userBean.getUserdata().getUid()),userBean.getM_auth(), Code.ME, Code.REFRESH);
-                        }
-
-                    }
-                });
-                break;
-        }
-
-    }
-
-    @Override
-    public void onRefresh() {
-        if (MenuPostion==0){
-            refresh(Code.REFRESH);
-
-        } else if(MenuPostion==1){
-            messagelistrefresh(Code.REFRESH);
-        }else if (MenuPostion==2){
-            mylistrefresh(Code.REFRESH);
-        }
-
-    }
-
-    @Override
-    public void onLoadMore() {
-        if (MenuPostion==0){
-            refresh(Code.LOADMORD);
-
-        }else if(MenuPostion==1){
-            messagelistrefresh(Code.LOADMORD);
-        }
-        else if (MenuPostion==2){
-            mylistrefresh(Code.LOADMORD);
-        }
-
-
-    }
-    @Override
-    public void refresh(int operate) {
-        if (operate==Code.REFRESH){
-            Page=1;
-        }else if(operate==Code.LOADMORD){
-            Page=Page+1;
-        }else if(operate==Code.CHANGE){
-            Page=1;
-        }
-        if(tv_title.getText().toString()=="全部"){
-            doloadassignlist(Page, -1, Code.ALL, operate);
-        }else{
-            doloadassignlist(Page, Bwztclassid, Code.ALL, operate);
+        if (userBean.getUserdata().getAllnotenum()>0){
+            ((Menu)menuadapter.getItem(1)).setStatus(1);
+            menuadapter.notifyDataSetChanged();
         }
     }
 
-    @Override
-    public void girdviewonclick(ConsultClassifyBean bean) {
-        mListview.setPullLoadEnable(this);
-        mListview.setPullRefreshEnable(this);
-        ll_error.setVisibility(View.GONE);
-        Bwztclassid=bean.getBwztclassarrid();
-        showtitleclassift(bean.getBwztclassarrname());
-        consultAdapter.clearList();
-        consultAdapter.notifyDataSetChanged();
-        startprogressBar();
-        refresh(Code.CHANGE);
-    }
 
-    @Override
-    public void doloadmylist(int page, int bwztclassid,String m_auth ,int identity, int operate) {
-        if (MenuPostion==1){
-            messageAdapter.clearlist();
-            messageAdapter.notifyDataSetChanged();
-        }
-        if (MenuPostion!=2) {
-            MenuPostion=2;
-            Page=1;
-            showtitleclassift("我的咨询");
-            ll_error.setVisibility(View.GONE);
-            mListview.removeHeaderView(headerView);
-            consultAdapter.clearList();
-            consultAdapter.notifyDataSetChanged();
-            mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ConsultMessageBean bean = (ConsultMessageBean) parent.getAdapter().getItem(position);
-                    viewdetail(bean.getUid(), bean.getBwztid(), userBean);
-                }
-            });
-            startprogressBar();
-            consultListPresenter.loadassignlist(page, bwztclassid, m_auth, Code.ME, Code.REFRESH);
-        }
-    }
 
-    @Override
-    public void getmylistSuccess(int code, List<ConsultMessageBean> list, int operate) {
-        stopprgressBar();
-        if (code==Code.LOAD_FULL_SUCCESS){
-            mListview.setPullLoadEnable(MainActivity.this);
-        }else if(code==Code.LOAD_NOFULL_SUCCESS){
-            mListview.disablePullLoad();
-        }
-        if (operate== Code.REFRESH){
-            mListview.stopRefresh();
-            consultAdapter.setList(list);
 
-        }else if(operate==Code.LOADMORD){
-            mListview.stopLoadMore();
-            consultAdapter.addList(list);
-        }
-        mListview.setAdapter(consultAdapter);
-        consultAdapter.notifyDataSetChanged();
-    }
 
-    @Override
-    public void getmylistFailure(int code, String msg, int operate) {
-        stopprgressBar();
-        if (code == Code.SERVER_LOAD_FAILURE) {
-            mListview.disablePullLoad();
-            mListview.disablePullRefreash();
-        } else if (code == Code.LOAD_FAILURE) {
-            mListview.disablePullLoad();
-            mListview.disablePullRefreash();
-        }else if(code==Code.LOAD_NODATA){
-            mListview.disablePullLoad();
-            mListview.disablePullRefreash();
-        }
-        if (operate == Code.REFRESH) {
-            mListview.stopRefresh();
-        } else {
-            mListview.stopLoadMore();
-        }
-        showerror(code, msg);
-    }
 
-    @Override
-    public void mylistrefresh(int operate) {
-        if (operate==Code.REFRESH){
-            Page = 1;
-        } else if (operate == Code.LOADMORD) {
-            Page = Page + 1;
-        }
-        startprogressBar();
-        consultListPresenter.loadassignlist(Page, Integer.parseInt(userBean.getUserdata().getUid()), userBean.getM_auth(), Code.ME, operate);
 
-    }
+
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -669,95 +342,9 @@ public class MainActivity extends BaseActivity implements IMainView,IConsultList
         }
     };
 
-    @Override
-    public void backhome() {
-        if (MenuPostion==1){
-            messageAdapter.clearlist();
-            messageAdapter.notifyDataSetChanged();
-        }
-        if (MenuPostion!=0){
-            Page=1;
-            MenuPostion=0;
-            ll_error.setVisibility(View.GONE);
-            consultAdapter.clearList();
-            consultAdapter.notifyDataSetChanged();
 
-            startprogressBar();
-            doloadlist();
-        }
 
-    }
 
-    @Override
-    public void doloadmessagelist(int page,int operate,String m_auth) {
-        if (MenuPostion!=1) {
-            MenuPostion=1;
-            Page=1;
-            showtitleclassift("消息列表");
-            ll_error.setVisibility(View.GONE);
-            mListview.removeHeaderView(headerView);
-            consultAdapter.clearList();
-            consultAdapter.notifyDataSetChanged();
-            messageAdapter=new MessageAdapter(getcontext());
-            startprogressBar();
-            messagePresenter.messagelist(page, operate, m_auth);
-        }
-
-    }
-
-    @Override
-    public void loadmessageSuccess(List<MessageBean> beans, int code,int operate) {
-        stopprgressBar();
-        if (code==Code.NONEXTPAGE){
-            mListview.disablePullLoad();
-        }else if(code==Code.HAVENEXTPAGE){
-           mListview.setPullLoadEnable(MainActivity.this);
-        }
-        if (operate== Code.REFRESH){
-            messageAdapter.setlist(beans);
-            mListview.stopRefresh();
-
-        }else if(operate==Code.LOADMORD){
-            messageAdapter.addlist(beans);
-            mListview.stopLoadMore();
-
-        }
-        mListview.setAdapter(messageAdapter);
-        messageAdapter.notifyDataSetChanged();
-        mListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-          @Override
-          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-              MessageBean bean = (MessageBean) parent.getAdapter().getItem(position);
-              viewdetail(bean.getLink().substring(bean.getLink().indexOf("=")+1,bean.getLink().indexOf("&")),bean.getBwztid(),userBean);
-          }
-      });
-    }
-
-    @Override
-    public void loadmessageFailure(int code, String msg,int operate) {
-        stopprgressBar();
-
-        mListview.disablePullRefreash();
-        mListview.disablePullLoad();
-        if (operate==Code.LOADMORD){
-            mListview.stopLoadMore();
-        }else if(operate==Code.REFRESH){
-
-            mListview.stopRefresh();
-        }
-         showerror(code,msg);
-    }
-
-    @Override
-    public void messagelistrefresh(int operate) {
-        if (operate==Code.REFRESH){
-            Page=1;
-        }else if(operate==Code.LOADMORD){
-            Page=Page+1;
-        }
-        startprogressBar();
-        messagePresenter.messagelist(Page, operate, userBean.getM_auth());
-    }
     //注册推送
     public void registerMessageReceiver() {
         mMessageReceiver = new MessageReceiver();
@@ -772,10 +359,10 @@ public class MainActivity extends BaseActivity implements IMainView,IConsultList
         @Override
         public void onReceive(Context context, Intent intent) {
             if (Code.MESSAGE_RECEIVED_ACTION.equals(intent.getAction())) {
-                Log.e("收到通知", "---------------");
                 String uid=intent.getStringExtra("uid");
                 String bwztid=intent.getStringExtra("id");
-                viewdetail(uid,bwztid,userBean);
+                ((MainFragment)fragmentList.get(0)).viewdetail(uid,bwztid,userBean);
+                vp_activity.setCurrentItem(0);
             }
         }
     }
@@ -840,26 +427,23 @@ public class MainActivity extends BaseActivity implements IMainView,IConsultList
     }
 
     @Override
-    public void viewdetail(String  uid,String bwztid, UserBean bean) {
-        Intent intent = new Intent();
-        intent.setClass(MainActivity.this, DetailActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("userdata", bean);
-        bundle.putString("bwztid", bwztid);
-        bundle.putString("uid",uid );
-        intent.putExtras(bundle);
-        startActivityForResult(intent, Code.DetailForResult);
-    }
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         if (requestCode==requestCode) {
             switch (resultCode) {
-                case Code.DetailForResultDelete:
-                    mListview.startRefresh();
+                case Code.ConsultForResult:
+                    ((MainFragment)fragmentList.get(0)).update();
+                    vp_activity.setCurrentItem(0);
                     break;
-                case Code.DetailForResultSolve:
-                    mListview.startRefresh();
+                case Code.LoginoffForResult:
+                    finish();
+                    break;
+                case Code.ModifyPersonaldataForResult:
+                    String username=data.getStringExtra("username");
+                    String avater=data.getStringExtra("avatar");
+                    userBean.getUserdata().setName(username);
+                    ImageLoader.getInstance().displayImage(avater,iv_icon,ImageLoaderOptions.getListOptions());
+                    tv_username.setText(username);
                     break;
                 default:
                     break;

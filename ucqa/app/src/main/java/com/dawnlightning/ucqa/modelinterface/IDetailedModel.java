@@ -13,4 +13,5 @@ public interface IDetailedModel {
     public void delete(int classid,String m_auth,DetailedModel.deletelistener deletelistener);//关闭咨询
     public void setcomment(int classid,String message,String formhash,String m_auth,DetailedModel.setcommentlistener setcommentlistener);//评论
     public void setreply(CommentBean bean,String username,int postion,int classid,int cid,String message,String formhash,String m_auth,DetailedModel.replytlistener replylistener);//回复
+    public void report(String m_auth,int id,String reason,DetailedModel.reportlistener reportlistener);
 }

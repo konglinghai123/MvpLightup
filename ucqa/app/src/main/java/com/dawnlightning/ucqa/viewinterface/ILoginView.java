@@ -13,7 +13,7 @@ import com.dawnlightning.ucqa.model.LoginModel;
  */
 public interface ILoginView {
     public  View initview(LayoutInflater inflater,ViewGroup container);//初始化视图
-    public  void dologin(LoginModel model);//登陆操作
+    public  void dologin(String phone,String pssword);//登陆操作
     public  void loginSuccess(UserBean bean);//登陆完成后保存用户数据
     public  void loginFailure(int code,String msg);
     public  void clearpassword();//登陆失败后清除输入框

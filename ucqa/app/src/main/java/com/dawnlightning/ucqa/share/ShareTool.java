@@ -4,13 +4,19 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+import android.widget.PopupWindow;
 
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.dialog.LoadingDialog;
@@ -36,16 +42,21 @@ public class ShareTool
     private PlatformActionListener platformActionListener;
     private ShareParams shareParams;
     private ProgressDialog pd;
-
+    private  PopupWindow shareWindow;
     public ShareTool(Context context)
     {
         this.context = context;
-        initdialog("分享中");
+
 
     }
     public void initdialog(String msg){
         if (pd == null) {
-            pd = new LoadingDialog(context,msg);
+            pd = new LoadingDialog(context, msg, new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+
+                }
+            });
             pd.show();
         } else {
             pd.show();
@@ -82,33 +93,31 @@ public class ShareTool
         GridView gridView = (GridView) view.findViewById(R.id.share_gridview);
         ShareAdapter adapter = new ShareAdapter(context);
         gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                initdialog("分享中");
+                share(position);
+                shareWindow.dismiss();
+            }
+        });
+        shareWindow = new PopupWindow(view, ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.MATCH_PARENT,true);
+        shareWindow.setFocusable(true);
+        // 必须设置背景
+        shareWindow.setBackgroundDrawable(new BitmapDrawable());
+        // 设置点击其他地方 就消失 (只设置这个，没有效果)
+        shareWindow.setOutsideTouchable(true);
+        shareWindow.showAtLocation(view, Gravity.CENTER_HORIZONTAL, 0, 0);
 
-        AlertDialog dialog=new AlertDialog.Builder(context).create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.setView(view,0,0,0,0);
-        dialog.show();
-        gridView.setOnItemClickListener(new ShareItemClickListener(dialog));
+        shareWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                shareWindow=null;
+            }
+        });
+
     }
 
-    private class ShareItemClickListener implements OnItemClickListener
-    {
-        private AlertDialog dialog;
-
-        public ShareItemClickListener(AlertDialog dialog)
-        {
-            this.dialog = dialog;
-        }
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-        {
-            initdialog("分享中");
-            share(position);
-            dialog.dismiss();
-        }
-
-    };
 
     /**
      * 分享

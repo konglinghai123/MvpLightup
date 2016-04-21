@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <GridView
+    android:layout_height="wrap_content"
+    >
+    <com.dawnlightning.ucqa.view.OtherGridView
         android:id="@+id/gv_classify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -10,5 +11,6 @@
         android:verticalSpacing="10dp"
         android:numColumns="3"
         android:scrollbars="none"
+        android:listSelector="@drawable/main_listview_selector"
         />
 </LinearLayout>

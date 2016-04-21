@@ -21,20 +21,6 @@ public class HttpConstants {
 	/*用户登录后的动作*/
 	public final static String HTTP_SELECTION=HTTP_REQUEST+"space.php?";
 
-	/*上传用户头像*/
-	public final static String HTTP_UPLOAD_AVATAR=HTTP_HEAD+HTTP_IP+"ucenter/index.php?a=uploadavatar4m&m=user&agent=!&avatartype=@&input=#&appid=$&inajax=1";
-	
-	/*修改用户资料*/
-	public final static String HTTP_EDIT_USEINFO=HTTP_REQUEST+"cp.php?ac=profile&m_auth=!&op=base";
-	
-	/*改变咨询状态*/
-	public final static String HTTP_EDIT_CONSULT_STAUTS=HTTP_REQUEST+"cp.php?ac=bwzt&bwztid=!&m_auth=@&bwztsubmit=true&status=1&op=alterstatus";
-	
-	/*获取用户头像*/
-	public final static String HTTP_GET_USERICON=HTTP_REQUEST+"cp.php?ac=avatar&m_auth=!&get_avatar=true&avatar_size=middle";
-	
-
-	
-	public final static String Update="https://ucqa.dawnlightning.com/m/version.xml";
+	public final static String Update="https://ucqa.dawnlightning.com/m/index.php/version.json";
 	
 }

@@ -20,7 +20,7 @@ public class ShareAdapter extends BaseAdapter
 {
     private static String[] shareNames = new String[] {"微信", "微信朋友圈", "QQ好友", "QQ空间"};
     private int[] shareIcons = new int[] {R.mipmap.share_wecat, R.mipmap.share_friends,
-            R.mipmap.share_qzone, R.mipmap.share_qq};
+            R.mipmap.share_qq, R.mipmap.share_qzone};
 
     private LayoutInflater inflater;
 
