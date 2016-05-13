@@ -1,6 +1,5 @@
 package com.dawnlightning.ucqa.modelinterface;
 
-import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.model.ConsultListModel;
 
 /**

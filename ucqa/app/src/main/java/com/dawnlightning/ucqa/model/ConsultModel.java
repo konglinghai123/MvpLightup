@@ -17,7 +17,6 @@ import com.loopj.android.http.RequestParams;
 
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class ConsultModel implements IConsultModel{
                 params.put("albumid", 0);
                 params.put("attach", bean.getPicture(),"image/jpeg");
                 params.put("uploadsubmit2", true);
-                params.put("title", bean.getPicturetitle());
+                params.put("pic_title", bean.getPicturetitle());
                 Log.e("pic",bean.getPicturetitle());
                 params.setForceMultipartEntityContentType(true);
                 AsyncHttp.post(url, params, new JsonHttpResponseHandler() {

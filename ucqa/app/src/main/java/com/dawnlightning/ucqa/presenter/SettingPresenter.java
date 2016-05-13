@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.dawnlightning.ucqa.Bean.UserBean;
-import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.db.SharedPreferenceDb;
 import com.dawnlightning.ucqa.model.LoginModel;
 import com.dawnlightning.ucqa.presenterinterface.ISettingPresenter;
@@ -17,12 +16,11 @@ import com.dawnlightning.ucqa.viewinterface.ISettingView;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import java.io.File;
-import java.io.Serializable;
 
 /**
  * Created by Administrator on 2016/4/13.
  */
-public class SettingPresenter implements ISettingPresenter,LoginModel.loginlistener {
+public class SettingPresenter extends BasePresenter implements ISettingPresenter,LoginModel.loginlistener {
     public ISettingView view;
     public Context mContext;
     private UpdateManager updateManager;
@@ -32,7 +30,6 @@ public class SettingPresenter implements ISettingPresenter,LoginModel.loginliste
         this.view=view;
         this.mContext=mContext;
         sharedPreferenceDb=new SharedPreferenceDb(mContext);
-
         model=new LoginModel();
     }
     @Override

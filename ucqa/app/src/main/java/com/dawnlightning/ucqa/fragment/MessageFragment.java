@@ -16,19 +16,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
-import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.Bean.MessageBean;
 import com.dawnlightning.ucqa.Bean.UserBean;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.activity.ConsultActivity;
 import com.dawnlightning.ucqa.activity.DetailActivity;
 import com.dawnlightning.ucqa.activity.MainActivity;
-import com.dawnlightning.ucqa.adapter.ClassifyAdapter;
-import com.dawnlightning.ucqa.adapter.ConsultAdapter;
 import com.dawnlightning.ucqa.adapter.MessageAdapter;
 import com.dawnlightning.ucqa.base.Code;
 import com.dawnlightning.ucqa.base.MyApp;
-import com.dawnlightning.ucqa.presenter.ConsultListPresenter;
 import com.dawnlightning.ucqa.presenter.MessagePresenter;
 import com.dawnlightning.ucqa.viewinterface.IMessageView;
 

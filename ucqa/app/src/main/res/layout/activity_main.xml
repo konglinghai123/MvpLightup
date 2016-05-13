@@ -2,14 +2,14 @@
     android:id="@+id/dl_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/left_menu_bg">"
+   >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="30dp"
         android:paddingTop="100dp"
-         >
+        >
 
         <LinearLayout
             android:id="@+id/lefe_content"
@@ -36,7 +36,7 @@
                 android:textSize="18.0sp" />
         </LinearLayout>
 
-       <ListView
+        <ListView
             android:id="@+id/lv_menu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
 
 
     </RelativeLayout>
-	       
+
     <com.dawnlightning.ucqa.view.MyRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

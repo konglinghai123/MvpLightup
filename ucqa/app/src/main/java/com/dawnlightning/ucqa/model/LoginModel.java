@@ -1,7 +1,5 @@
 package com.dawnlightning.ucqa.model;
 
-import android.util.Log;
-
 import com.alibaba.fastjson.JSON;
 import com.dawnlightning.ucqa.Bean.BaseBean;
 import com.dawnlightning.ucqa.Bean.UserBean;
@@ -23,10 +21,6 @@ public class LoginModel implements ILoginModel {
     private String username;
     private  String password;
 
-
-    public  LoginModel(){
-
-    }
 
     public String getUsername() {
         return username;
@@ -92,6 +86,19 @@ public class LoginModel implements ILoginModel {
         params.put("username",username);
         params.put("password",password);
         params.put("loginsubmit",true);
+        final String url =HttpConstants.HTTP_LOGIN+params.toString();
+        if (AsyncHttp.getcache(url)!=null&&AsyncHttp.getcache(url).length()>0){
+            String strcache=AsyncHttp.getcache(url);
+            BaseBean b = JSON.parseObject(strcache, BaseBean.class);
+            UserBean bean =new UserBean();
+            bean.setM_auth(JSON.parseObject(b.getData().toString()).getString("m_auth"));
+            bean.setFormhash(JSON.parseObject(b.getData().toString()).getString("formhash"));
+            String space=JSON.parseObject(b.getData().toString()).getString("space");
+            UserData data=JSON.parseObject(space, UserData.class);
+            bean.setUserdata(data);
+            listener.onSuccess(bean);
+        }else{
+            AsyncHttp.removecache(url);
         AsyncHttp.get(HttpConstants.HTTP_LOGIN, params, new JsonHttpResponseHandler() {
 
             @Override
@@ -113,6 +120,7 @@ public class LoginModel implements ILoginModel {
                     String space=JSON.parseObject(b.getData().toString()).getString("space");
                     UserData data=JSON.parseObject(space, UserData.class);
                     bean.setUserdata(data);
+                    AsyncHttp.savecache(url, response.toString(), 60*60*24*7);
                     listener.onSuccess(bean);
                 } else {
                     listener.onFailure(1,b.getMsg());
@@ -120,6 +128,6 @@ public class LoginModel implements ILoginModel {
 
             }
 
-        });
+        });}
     }
 }

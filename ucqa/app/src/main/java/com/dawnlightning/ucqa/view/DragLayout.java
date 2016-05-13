@@ -1,8 +1,12 @@
 package com.dawnlightning.ucqa.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
@@ -19,6 +23,8 @@ import android.widget.RelativeLayout;
 
 import com.dawnlightning.ucqa.R;
 import com.nineoldandroids.view.ViewHelper;
+
+import java.io.InputStream;
 
 
 public class DragLayout extends FrameLayout {
@@ -274,11 +280,28 @@ public class DragLayout extends FrameLayout {
 			ViewHelper.setScaleX(iv_shadow, f1 * 1.4f * (1 - percent * 0.12f));
 			ViewHelper.setScaleY(iv_shadow, f1 * 1.85f * (1 - percent * 0.12f));
 		}
-		getBackground().setColorFilter(
-				evaluate(percent, Color.BLACK, Color.TRANSPARENT),
-				Mode.SRC_OVER);
+
+		  setAndRecycleBackground(this, R.mipmap.left_menu_bg);//放缩图片后显示，节省内存
+
+			getBackground().setColorFilter(
+					evaluate(percent, Color.BLACK, Color.TRANSPARENT),
+					Mode.SRC_OVER);
+
 	}
 
+	private   void setAndRecycleBackground(View v, int resID) {
+		// 获得ImageView当前显示的图片
+		Bitmap bitmap1 = null;
+		BitmapFactory.Options opt = new BitmapFactory.Options();
+		opt.inPreferredConfig = Bitmap.Config.RGB_565;
+		opt.inPurgeable = true;
+		opt.inInputShareable = true;
+		InputStream is = getResources().openRawResource(resID);
+		bitmap1=BitmapFactory.decodeStream(is,null,opt);
+		Drawable drawable =new BitmapDrawable(bitmap1);
+		v.setBackgroundDrawable(drawable);
+
+	}
 	private Integer evaluate(float fraction, Object startValue, Integer endValue) {
 		int startInt = (Integer) startValue;
 		int startA = (startInt >> 24) & 0xff;

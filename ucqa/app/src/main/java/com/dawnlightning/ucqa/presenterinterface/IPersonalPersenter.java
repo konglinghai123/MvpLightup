@@ -10,4 +10,5 @@ import java.io.File;
 public interface IPersonalPersenter {
     public void douploadavater(File avater,String m_auth);
     public void domodifypersonaldata(PersonalDataBean bean,String m_auth);
+    public void doclearlogincache(String phone,String password);
 }

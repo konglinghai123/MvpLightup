@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.blur.MainActivity"
     android:id="@+id/contentview"
-    android:background="@mipmap/bg"
+
     >
     <FrameLayout
         android:id="@+id/farm_content"
@@ -18,35 +18,16 @@
 
 
     </FrameLayout>
-
     <ImageView
         android:id="@+id/introduction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/introduction"
-        android:layout_alignBottom="@+id/up_top"
-        android:layout_margin="20dp"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        />
-    <ImageView
-        android:id="@+id/up_buttom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/up"
         android:visibility="gone"
         />
 
-    <ImageView
-        android:id="@+id/up_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/up_buttom"
-        android:layout_alignLeft="@+id/up_buttom"
-        android:src="@mipmap/up"
-        android:visibility="gone"
-        />
 
 </RelativeLayout>

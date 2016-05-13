@@ -1,13 +1,12 @@
 package com.dawnlightning.ucqa.presenter;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
 import com.dawnlightning.ucqa.Bean.PersonalDataBean;
 import com.dawnlightning.ucqa.base.Code;
-import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.model.PersonalDataModel;
-import com.dawnlightning.ucqa.modelinterface.IPersonalDataModel;
 import com.dawnlightning.ucqa.presenterinterface.IPersonalPersenter;
 import com.dawnlightning.ucqa.util.DataCleanManager;
 import com.dawnlightning.ucqa.util.SdCardUtil;
@@ -19,23 +18,40 @@ import java.io.File;
 /**
  * Created by Administrator on 2016/4/20.
  */
-public class PersonalPersenter implements IPersonalPersenter, PersonalDataModel.modifylistener {
+public class PersonalPersenter extends  BasePresenter implements IPersonalPersenter, PersonalDataModel.modifylistener {
     private IPersonalView view;
     private PersonalDataModel model;
-    private MyApp myApp;
-    public PersonalPersenter(IPersonalView view,MyApp myApp){
+    private Context context;
+    public PersonalPersenter(IPersonalView view,Context context){
         this.view=view;
-        this.myApp=myApp;
+        this.context=context;
         model=new PersonalDataModel();
     }
+
+    @Override
+    public void doclearlogincache(String phone,String password) {
+
+        model.clearlogincache(phone,password);
+    }
+
     @Override
     public void douploadavater(File avater, String m_auth) {
-        model.uploadavater(avater, m_auth,  mHandle);
+        if (checkNetwork(context)){
+            model.uploadavater(avater, m_auth,  mHandle);
+        }else{
+            view.showerror(-1,"网络连接不可用");
+        }
+
     }
 
     @Override
     public void domodifypersonaldata(PersonalDataBean bean, String m_auth) {
-        model.modifypersonaldata(bean, m_auth, this);
+        if (checkNetwork(context)){
+            model.modifypersonaldata(bean, m_auth, this);
+        }else {
+            view.showerror(-1,"网络连接不可用");
+        }
+
     }
 
     @Override
@@ -67,7 +83,7 @@ public class PersonalPersenter implements IPersonalPersenter, PersonalDataModel.
         }
     };
     public void clearcache() {
-        File cacheDir = StorageUtils.getOwnCacheDirectory(myApp, SdCardUtil.FILEDIR + "/" + SdCardUtil.FILECACHE);//获取到缓存的目录地址
+        File cacheDir = StorageUtils.getOwnCacheDirectory(context, SdCardUtil.FILEDIR + "/" + SdCardUtil.FILECACHE);//获取到缓存的目录地址
         try{
             DataCleanManager.deleteFilesByDirectory(cacheDir);
         }

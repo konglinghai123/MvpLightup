@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +15,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.dawnlightning.ucqa.Bean.ConsultBean;
 import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
 import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.Bean.UserBean;
-import com.dawnlightning.ucqa.Listener.IBase;
+import com.dawnlightning.ucqa.gesture.IBase;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.activity.ConsultActivity;
 import com.dawnlightning.ucqa.activity.DetailActivity;
@@ -30,9 +28,7 @@ import com.dawnlightning.ucqa.adapter.ConsultAdapter;
 import com.dawnlightning.ucqa.base.Code;
 import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.presenter.ConsultListPresenter;
-import com.dawnlightning.ucqa.view.OtherGridView;
 import com.dawnlightning.ucqa.viewinterface.IConsultListView;
-import com.dawnlightning.ucqa.viewinterface.IMyconsultListView;
 
 import java.io.Serializable;
 import java.util.List;
@@ -92,10 +88,12 @@ public class MyConsultFragment extends Fragment implements IConsultListView,IXLi
             mListview.setPullLoadEnable(this);
         }else if(code==Code.LOAD_NOFULL_SUCCESS){
             mListview.disablePullLoad();
+            mListview.setFooterText("已加载全部内容");
         }
         if (operate== Code.REFRESH){
             mListview.stopRefresh();
-            consultAdapter.setList(list);
+            //consultAdapter.setList(list);
+            consultAdapter.headinsert(list);
 
         }else if(operate==Code.LOADMORD){
             mListview.stopLoadMore();

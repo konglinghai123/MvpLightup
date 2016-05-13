@@ -5,7 +5,6 @@ package com.dawnlightning.ucqa.viewinterface;
 import android.content.Intent;
 
 import com.dawnlightning.ucqa.Bean.CommentBean;
-import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.Bean.DetailedBean;
 import com.dawnlightning.ucqa.Bean.UserBean;
 

@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,17 +21,15 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
-import com.dawnlightning.ucqa.Listener.IBase;
+import com.dawnlightning.ucqa.gesture.IBase;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.activity.ConsultActivity;
 import com.dawnlightning.ucqa.adapter.OtherAdapter;
-import com.dawnlightning.ucqa.dialog.TitlePopup;
 import com.dawnlightning.ucqa.view.OtherGridView;
 import com.dawnlightning.ucqa.view.wheelview.NumericWheelAdapter;
 import com.dawnlightning.ucqa.view.wheelview.OnWheelScrollListener;
 import com.dawnlightning.ucqa.view.wheelview.WheelView;
 
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;

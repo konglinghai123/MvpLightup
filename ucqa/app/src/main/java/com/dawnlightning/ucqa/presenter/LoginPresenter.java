@@ -6,13 +6,12 @@ import com.dawnlightning.ucqa.Bean.UserBean;
 import com.dawnlightning.ucqa.model.LoginModel;
 import com.dawnlightning.ucqa.model.LoginModel.loginlistener;
 import com.dawnlightning.ucqa.presenterinterface.ILoginPresenter;
-import com.dawnlightning.ucqa.util.AppUtils;
 import com.dawnlightning.ucqa.viewinterface.ILoginView;
 
 /**
  * Created by Administrator on 2016/3/31.
  */
-public class LoginPresenter implements ILoginPresenter,loginlistener {
+public class LoginPresenter extends BasePresenter implements ILoginPresenter,loginlistener {
     private ILoginView view;
     private LoginModel model;
     private Context context;
@@ -24,20 +23,28 @@ public class LoginPresenter implements ILoginPresenter,loginlistener {
     @Override
     public void login(String username,String password) {
 
-        if (model.getUsername()!=""&&model.getPassword()!=""){
-            if (model.getUsername()!=""){
-                if (AppUtils.checkNetwork(context)){
-                    view.showloadingdialog("登陆中");
-                   model.login(username,password, this);
+            if (model.getUsername()!=""&&model.getPassword()!=""){
+                if (model.getUsername()!=""){
+                   if(isMobileNO(username)) {
+                        if (checkNetwork(context)) {
+                            model.login(username, password, this);
+                            view.showloadingdialog("登陆中");
+                        }else{
+                            view.loginFailure(1, "当前网络不可用");
+                        }
+                    }else {
+                        view.loginFailure(1,"请输入手机号码");
+                    }
+
+
                 }else{
-                    view.loginFailure(1, "请检查当前网络连接");
+                    view.loginFailure(1, "请输入手机号码");
                 }
             }else{
-                view.loginFailure(1, "请输入手机号码");
+                view.loginFailure(1, "请输入账号密码");
             }
-        }else{
-            view.loginFailure(1, "请输入账号密码");
-        }
+
+
 
     }
 

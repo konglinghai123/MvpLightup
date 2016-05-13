@@ -1,6 +1,5 @@
 package com.dawnlightning.ucqa.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,41 +7,23 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.Bean.UserBean;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.base.BaseActivity;
-import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
-import com.dawnlightning.ucqa.base.Code;
-import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.db.SharedPreferenceDb;
 import com.dawnlightning.ucqa.fragment.LoginFragment;
 import com.dawnlightning.ucqa.model.LoginModel;
 import com.dawnlightning.ucqa.presenter.ClassifyPresenter;
-import com.dawnlightning.ucqa.presenter.ConsultListPresenter;
-import com.dawnlightning.ucqa.presenter.LoginPresenter;
 import com.dawnlightning.ucqa.tools.Blur;
-import com.dawnlightning.ucqa.util.AsyncHttp;
-import com.dawnlightning.ucqa.util.HttpConstants;
-import com.dawnlightning.ucqa.viewinterface.IConsultListView;
 import com.dawnlightning.ucqa.viewinterface.IWelcomeView;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONObject;
-
-import java.util.List;
-
-import cz.msebera.android.httpclient.Header;
+import java.io.InputStream;
 
 /**
  * Created by Administrator on 2016/3/31.
@@ -52,36 +33,21 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,LoginM
 
     private RelativeLayout contentview = null;
     private AlphaAnimation start_anima;//开动画始
-    private ImageView iv_top = null;
-    private ImageView iv_buttom = null;
     private ImageView introduction = null;
-    private AlphaAnimation animaTop = null;//上箭头动画
-    private AlphaAnimation animabuttom = null;//下箭头动画
-    private Boolean IsSlide=false;//是否滑动过
-    private Boolean allowSlide=false; //是否允许滑动
-    float x1 = 0;  float x2 = 0;  float y1 = 0;  float y2 = 0;
     private ClassifyPresenter classifyPresenter=null;
     private LoginModel loginModel;
-
+    private UserBean userBean;
     @Override
     public void onSuccess(UserBean bean) {
 
+        this.userBean=bean;
 
-        Intent intent = new Intent();
-        intent.setClass(this, MainActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("userdata", bean);
-        intent.putExtras(bundle);
-        startActivity(intent);
-        dismissdialog();
-        finish();
 
     }
 
     @Override
     public void onFailure(int code, String msg) {
-        dismissdialog();
-        blurbackground();
+
     }
 
     @Override
@@ -93,18 +59,29 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,LoginM
     }
 
 
+    private   void setAndRecycleBackground(View v, int resID) {
+        // 获得ImageView当前显示的图片
+        Bitmap bitmap1 = null;
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inPreferredConfig = Bitmap.Config.RGB_565;
+        opt.inPurgeable = true;
+        opt.inInputShareable = true;
+        InputStream is = getResources().openRawResource(resID);
+        bitmap1=BitmapFactory.decodeStream(is,null,opt);
+        Drawable drawable =new BitmapDrawable(bitmap1);
+        v.setBackgroundDrawable(drawable);
 
+    }
 
     @Override
     public void initview() {
         final  View view = View.inflate(this, R.layout.activity_welcome, null);
         setContentView(view);
         contentview = (RelativeLayout) findViewById(R.id.contentview);
-        iv_top = (ImageView) findViewById(R.id.up_top);
-        iv_buttom = (ImageView) findViewById(R.id.up_buttom);
+        setAndRecycleBackground(contentview,R.mipmap.welcome_bg);
         introduction=(ImageView) findViewById(R.id.introduction);
         start_anima = new AlphaAnimation(0.3f, 1.0f);
-        start_anima.setDuration(1500);
+        start_anima.setDuration(3000);
         view.post(new Runnable() {
             @Override
             public void run() {
@@ -117,46 +94,21 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,LoginM
 
     @Override
     public void initdata() {
-        classifyPresenter=new ClassifyPresenter(this);
-        loginModel=new LoginModel();
+        classifyPresenter=new ClassifyPresenter(getcontext());
         classifyPresenter.load();
-    }
+        loginModel=new LoginModel();
+        SharedPreferenceDb sharedPreferenceDb=getMySharedPreferenceDb();
+        String phone=sharedPreferenceDb.getPhone();
+        String password=sharedPreferenceDb.getPassword();
+        Boolean IsAutologin=sharedPreferenceDb.getAutoLogin();
+        if (!IsAutologin&&phone!=""&&password!=""){
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+        }
+        else{
+            loginModel.login(phone,password,this);
 
-        if(event.getAction() == MotionEvent.ACTION_DOWN)
-        {
-            x1 = event.getX();
-            y1 = event.getY();  }
-        if(event.getAction() == MotionEvent.ACTION_UP)
-        {
-            y2 = event.getY();
-            if(y1 - y2 > 50)
-            {
+        }
 
-                TouchUp();
-            }
-            else if(y2 - y1 > 50)
-            {
-                //下滑
-            }
-            else if(x1 - x2 > 50)
-
-            {
-                //左滑
-            }
-            else if(x2 - x1 > 50)
-            {
-                //右滑
-
-            }
-        }  return super.onTouchEvent(event);
-    }
-
-    @Override
-    public void showerror(String msg) {
-        showmessage(msg, Toast.LENGTH_SHORT);
     }
 
     @Override
@@ -166,20 +118,21 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,LoginM
 
     @Override
     public void AnimationEnd() {
-        allowSlide=true;
         introduction.setVisibility(View.VISIBLE);
-        iv_top.setVisibility(View.VISIBLE);
-        iv_buttom.setVisibility(View.VISIBLE);
+        if (userBean!=null){
 
-        animaTop=new AlphaAnimation(0,1.0f);
-        animaTop.setDuration(1000);
-        animaTop.setRepeatCount(AlphaAnimation.INFINITE);
-        iv_top.setAnimation(animaTop);
+            Intent intent = new Intent();
+            intent.setClass(this, MainActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("userdata", userBean);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            finish();
 
-        animabuttom=new AlphaAnimation(0.8f,0);
-        animabuttom.setDuration(1000);
-        animabuttom.setRepeatCount(AlphaAnimation.INFINITE);
-        iv_buttom.setAnimation(animabuttom);
+        }else{
+            blurbackground();
+        }
+
     }
 
     @Override
@@ -187,10 +140,10 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,LoginM
 
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 2;
-            Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.bg, options);
+            Bitmap image = BitmapFactory.decodeResource(getResources(), R.mipmap.welcome_bg, options);
             Bitmap newImg = Blur.fastblur(getcontext(), image, 5);
             Drawable drawable =new BitmapDrawable(newImg);
-            contentview.setBackground(drawable);
+            contentview.setBackgroundDrawable(drawable);
             showlogin();
 
     }
@@ -217,42 +170,8 @@ public class WelcomeActivity extends BaseActivity implements IWelcomeView,LoginM
     }
 
     @Override
-    public void TouchUp() {
-        //上滑
-        if(!IsSlide&&allowSlide){
-            IsSlide=true;
-        SharedPreferenceDb sharedPreferenceDb=getMySharedPreferenceDb();
-            String phone=sharedPreferenceDb.getPhone();
-            String password=sharedPreferenceDb.getPassword();
-            Boolean IsAutologin=sharedPreferenceDb.getAutoLogin();
-        if (!IsAutologin&&phone!=""&&password!=""){
-
-            blurbackground();
-        }
-
-        else{
-                loginModel.login(phone,password,this);
-                this.initdialog("登陆中", new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        loginModel.stopresquest();
-                        IsSlide=false;
-                    }
-                });
-
-        }
-        }
-    }
-
-
-
-    @Override
     public void showlogin() {
         introduction.setVisibility(View.GONE);
-        iv_top.clearAnimation();
-        iv_top.setVisibility(View.GONE);
-        iv_buttom.clearAnimation();
-        iv_buttom.setVisibility(View.GONE);
         LoginFragment login=new LoginFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.popshow_anim, R.anim.pophidden_anim);

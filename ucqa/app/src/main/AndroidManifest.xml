@@ -9,7 +9,6 @@
         android:allowBackup="true"
         android:icon="@drawable/mylogo"
         android:theme="@style/AppTheme"
-
         >
         <activity android:name=".activity.WelcomeActivity">
 
@@ -19,7 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"/>
+        <activity android:name=".activity.MainActivity"   android:launchMode="singleTask"/>
         <activity android:name=".activity.DetailActivity"/>
         <activity android:name=".activity.SettingActivity"/>
         <activity android:name=".activity.PersonalDataActivity"/>
@@ -125,6 +124,10 @@
         <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
         <meta-data android:name="JPUSH_APPKEY" android:value="ef2a723f268287591924268e" /> <!--  </>值来自开发者平台取得的AppKey-->
         <!-- sharesdk集成 -->
+
+        <!-- 适配设计稿 -->
+        <meta-data android:name="design_width" android:value="720"/>
+        <meta-data android:name="design_height" android:value="1280"/>
 
         <activity
             android:name="com.mob.tools.MobUIShell"

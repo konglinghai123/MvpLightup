@@ -186,9 +186,13 @@ public class XListView extends ListView implements OnScrollListener {
 	public void disablePullLoad() {
 		mEnablePullLoad = false;
 		mFooterView.hide();
+
 		mFooterView.setOnClickListener(null);
 	}
-
+	public void setFooterText(String note){
+		mFooterView.show();
+		mFooterView.setText(note);
+	}
 	/**
 	 * stop refresh, reset header view.
 	 */

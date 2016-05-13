@@ -188,7 +188,7 @@ public class DetailedModel implements IDetailedModel{
             params.put("uid",uid);
             params.put("id",classid);
             params.put("m_auth",m_auth);
-            params.put("page",1);
+            params.put("page",page);
             AsyncHttp.get(HttpConstants.HTTP_SELECTION, params, new JsonHttpResponseHandler() {
 
                 @Override

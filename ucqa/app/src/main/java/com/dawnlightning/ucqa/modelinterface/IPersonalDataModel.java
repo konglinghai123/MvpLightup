@@ -13,4 +13,5 @@ import java.io.File;
 public interface IPersonalDataModel {
     public void uploadavater(File avater,String m_auth,final Handler mhandler);
     public void modifypersonaldata(PersonalDataBean bean,String m_auth,PersonalDataModel.modifylistener modifylistener);
+    public void clearlogincache(String phone,String password);
 }

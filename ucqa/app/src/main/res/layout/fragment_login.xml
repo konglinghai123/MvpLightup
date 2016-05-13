@@ -1,58 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-     >
-    <RelativeLayout 
-        android:layout_width="match_parent"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	>
+	<RelativeLayout
+		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_marginLeft="20dp"
 		android:layout_marginRight="20dp"
-        >
+		>
 
-	<ImageView
-	    android:id="@+id/logo"
-	    android:layout_width="60dp"
-	    android:layout_height="60dp"
-	    android:layout_marginTop="30dp"
-	    android:layout_alignParentTop="true"
-	    android:layout_centerHorizontal="true"
-	    android:src="@mipmap/whitelogo" />
+		<ImageView
+			android:id="@+id/logo"
+			android:layout_width="60dp"
+			android:layout_height="60dp"
+			android:layout_marginTop="30dp"
+			android:layout_alignParentTop="true"
+			android:layout_centerHorizontal="true"
+			android:src="@mipmap/whitelogo" />
 
-	<com.dawnlightning.ucqa.view.EditTextWithDel
-	    android:id="@+id/phone"
-	    android:layout_width="match_parent"
-	    android:layout_height="36dp"
-	    android:layout_below="@+id/logo"
-	    android:layout_marginTop="10dp"
-	  	android:textColor="@color/white"
-	    android:hint="手机号码"
-	    android:maxLength="11"
+		<com.dawnlightning.ucqa.view.EditTextWithDel
+			android:id="@+id/phone"
+			android:layout_width="match_parent"
+			android:layout_height="36dp"
+			android:layout_below="@+id/logo"
+			android:layout_marginTop="10dp"
+			android:textColor="@color/white"
+			android:hint="手机号码"
+			android:maxLength="11"
+			android:numeric="integer"
+			android:textSize="16.0sp"
+			android:background="@drawable/login_edit_bg"
+			/>
 
-	    android:text="13650421544"
-	    android:textSize="16.0sp" 
-	    android:background="@drawable/login_edit_bg"
-    
-	   
-	    />
-	
 		<com.dawnlightning.ucqa.view.PassWordShow
-		android:id="@+id/password"
-	    android:layout_width="match_parent"
-	    android:layout_height="36dp"
-	    android:password="true"
-	    android:layout_alignParentLeft="true"
-	    android:layout_below="@+id/phone"
-	    android:layout_marginTop="10dp"
-	    android:textColor="@color/white"
-	    android:hint="密码"
-	    android:textSize="16.0sp"
-	    android:singleLine="true"
-	    android:imeOptions="actionGo"
-	  	android:background="@drawable/login_edit_bg"
-    	
-	     />
+			android:id="@+id/password"
+			android:layout_width="match_parent"
+			android:layout_height="36dp"
+			android:password="true"
+			android:layout_alignParentLeft="true"
+			android:layout_below="@+id/phone"
+			android:layout_marginTop="10dp"
+			android:textColor="@color/white"
+			android:hint="密码"
+			android:textSize="16.0sp"
+			android:singleLine="true"
+			android:imeOptions="actionGo"
+			android:background="@drawable/login_edit_bg"
+
+			/>
 		<com.dawnlightning.ucqa.view.PassWordShow
 			android:id="@+id/password2"
 			android:layout_width="match_parent"
@@ -70,28 +67,28 @@
 			android:visibility="gone"
 			/>
 		<TextView
-		    android:id="@+id/forgetpassword"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_alignLeft="@+id/logo"
-		    android:layout_alignParentBottom="true"
-		    android:layout_marginBottom="30dp"
-		    android:layout_marginLeft="32dp"
-		    android:text="忘记密码"
-		    android:textColor="@color/white"
-		    android:textSize="16.0sp" />
+			android:id="@+id/forgetpassword"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignLeft="@+id/logo"
+			android:layout_alignParentBottom="true"
+			android:layout_marginBottom="30dp"
+			android:layout_marginLeft="32dp"
+			android:text="忘记密码"
+			android:textColor="@color/white"
+			android:textSize="16.0sp" />
 
 		<TextView
-		    android:id="@+id/register"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_alignBaseline="@+id/forgetpassword"
-		    android:layout_alignBottom="@+id/forgetpassword"
-		    android:layout_alignParentRight="true"
-		    android:layout_marginRight="18dp"
-		    android:text="注册"
-		    android:textColor="@color/white"
-		    android:textSize="16.0sp" />
+			android:id="@+id/register"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignBaseline="@+id/forgetpassword"
+			android:layout_alignBottom="@+id/forgetpassword"
+			android:layout_alignParentRight="true"
+			android:layout_marginRight="18dp"
+			android:text="注册"
+			android:textColor="@color/white"
+			android:textSize="16.0sp" />
 
 	</RelativeLayout>
 </LinearLayout>

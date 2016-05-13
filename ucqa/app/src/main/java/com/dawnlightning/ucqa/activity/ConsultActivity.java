@@ -4,6 +4,7 @@ package com.dawnlightning.ucqa.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,7 +35,6 @@ public class ConsultActivity extends BaseActivity{
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
     private ArrayList<Fragment> fragmentList=new ArrayList<Fragment>();
     private LinearLayout linearLayout_pageindex;
-
     private ConsultPageOneFragment consultPageOneFragment;
     private ConsultPageTwoFragment consultPageTwoFragment;
     public static ConsultBean consultBean=new ConsultBean();
@@ -88,6 +88,12 @@ public class ConsultActivity extends BaseActivity{
             }
 
         });
+        iv_consult_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
 
@@ -103,12 +109,13 @@ public class ConsultActivity extends BaseActivity{
     //页面切换时的背景切换
     private void setTabSelected(Button btnSelected) {
         if (btnSelected.getId()==R.id.bt_consult_page1){
-            bt_consult_page1.setBackground(getResources().getDrawable(R.mipmap.ic_consult_left_press));
-            bt_consult_page2.setBackground(getResources().getDrawable(R.mipmap.ic_consult_right_normal));
+
+            bt_consult_page1.setBackgroundDrawable(getResources().getDrawable(R.mipmap.ic_consult_left_press));
+            bt_consult_page2.setBackgroundDrawable(getResources().getDrawable(R.mipmap.ic_consult_right_normal));
 
         }else{
-            bt_consult_page1.setBackground(getResources().getDrawable(R.mipmap.ic_consult_left_normal));
-            bt_consult_page2.setBackground(getResources().getDrawable(R.mipmap.ic_consult_right_press));
+            bt_consult_page1.setBackgroundDrawable(getResources().getDrawable(R.mipmap.ic_consult_left_normal));
+            bt_consult_page2.setBackgroundDrawable(getResources().getDrawable(R.mipmap.ic_consult_right_press));
 
         }
 

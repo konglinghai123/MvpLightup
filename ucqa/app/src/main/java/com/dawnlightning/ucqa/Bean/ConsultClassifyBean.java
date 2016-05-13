@@ -1,7 +1,6 @@
 package com.dawnlightning.ucqa.Bean;
 
 import java.io.Serializable;
-import java.util.HashMap;
 
 /**
  * Created by Administrator on 2016/3/31.

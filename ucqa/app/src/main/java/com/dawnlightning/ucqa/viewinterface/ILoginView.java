@@ -4,9 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.Bean.UserBean;
-import com.dawnlightning.ucqa.model.LoginModel;
 
 /**
  * Created by Administrator on 2016/3/31.

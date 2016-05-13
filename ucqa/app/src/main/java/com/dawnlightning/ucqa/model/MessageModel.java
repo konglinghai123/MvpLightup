@@ -1,7 +1,6 @@
 package com.dawnlightning.ucqa.model;
 
 import android.util.Log;
-import android.view.View;
 
 import com.alibaba.fastjson.JSON;
 import com.dawnlightning.ucqa.Bean.BaseBean;
@@ -10,9 +9,8 @@ import com.dawnlightning.ucqa.base.Code;
 import com.dawnlightning.ucqa.modelinterface.IMessageModel;
 import com.dawnlightning.ucqa.util.AsyncHttp;
 import com.dawnlightning.ucqa.util.HttpConstants;
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+
 import org.json.JSONObject;
 
 import java.util.List;

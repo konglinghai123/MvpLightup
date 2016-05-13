@@ -13,6 +13,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.net.CookieStore;
 import java.net.HttpCookie;
@@ -53,6 +54,9 @@ public class AsyncHttp {
 	public static void getnotice(String url,RequestParams params,JsonHttpResponseHandler responseHandler){
 		client.setURLEncodingEnabled(false);
 		client.get(url, params, responseHandler);
+	}
+	public static void getpic(String url,RequestParams params,TextHttpResponseHandler textHttpResponseHandler){
+		client.get(url,params,textHttpResponseHandler);
 	}
 }
 

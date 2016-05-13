@@ -15,7 +15,6 @@ import com.dawnlightning.ucqa.Bean.UserBean;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.base.BaseActivity;
 import com.dawnlightning.ucqa.base.Code;
-import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.presenter.SettingPresenter;
 import com.dawnlightning.ucqa.viewinterface.ISettingView;
 

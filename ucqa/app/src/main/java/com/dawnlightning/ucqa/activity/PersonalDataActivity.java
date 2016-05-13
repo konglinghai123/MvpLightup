@@ -1,18 +1,13 @@
 package com.dawnlightning.ucqa.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,17 +20,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.dawnlightning.ucqa.Bean.PersonalDataBean;
 import com.dawnlightning.ucqa.Bean.UserBean;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.base.BaseActivity;
 import com.dawnlightning.ucqa.base.Code;
 import com.dawnlightning.ucqa.base.MyApp;
+import com.dawnlightning.ucqa.db.SharedPreferenceDb;
 import com.dawnlightning.ucqa.presenter.PersonalPersenter;
 import com.dawnlightning.ucqa.tools.ImageLoaderOptions;
-import com.dawnlightning.ucqa.util.HttpConstants;
 import com.dawnlightning.ucqa.util.SdCardUtil;
 import com.dawnlightning.ucqa.view.ProcessImageView;
 import com.dawnlightning.ucqa.view.wheelview.NumericWheelAdapter;
@@ -51,10 +44,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/4/20.
@@ -401,6 +392,10 @@ public class PersonalDataActivity extends BaseActivity implements IPersonalView 
     @Override
     public void showsuccess(String msg) {
         showmessage(msg, Toast.LENGTH_SHORT);
+        SharedPreferenceDb sharedPreferenceDb=getMySharedPreferenceDb();
+        String phone=sharedPreferenceDb.getPhone();
+        String password=sharedPreferenceDb.getPassword();
+        personalPersenter.doclearlogincache(phone,password);
         finish();
     }
 

@@ -27,5 +27,5 @@ public class PicsBean {
 		this.picurl = url;
 		this.title = title;
 	}
-	
+
 }

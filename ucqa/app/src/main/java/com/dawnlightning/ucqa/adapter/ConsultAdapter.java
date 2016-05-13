@@ -3,22 +3,19 @@ package com.dawnlightning.ucqa.adapter;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dawnlightning.ucqa.Bean.ConsultBean;
 import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.tools.ImageLoaderOptions;
-import com.dawnlightning.ucqa.util.HttpConstants;
+import com.dawnlightning.ucqa.util.TimeUtil;
 import com.dawnlightning.ucqa.view.RoundImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -51,7 +48,7 @@ public class ConsultAdapter extends BaseAdapter{
 		if(this.list.size()>0){
 			for (ConsultMessageBean consultMessageBean:list){
 				for (int i=0;i<this.list.size();i++){
-					if(consultMessageBean.getBwztid().equals(this.list.get(i).getBwztid())){
+					if(consultMessageBean.getDateline().equals(this.list.get(i).getDateline())){
 						break;
 					}else if(i==this.list.size()-1){
 						this.list.add(0,consultMessageBean);
@@ -131,7 +128,7 @@ public class ConsultAdapter extends BaseAdapter{
 			holder.message.setText(Html.fromHtml(item.getMessage()).toString());
 			holder.viewnum.setText(item.getViewnum());
 			holder.replynum.setText(item.getReplynum());
-			holder.time.setText(item.getDateline());
+			holder.time.setText(TimeUtil.TimeStamp2Date(item.getDateline()));
 			
 			if(item.getAvatar_url().length()!=0&&item.getAvatar_url()!=null){
 			

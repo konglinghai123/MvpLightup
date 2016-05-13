@@ -54,7 +54,7 @@ public class ImageLoaderOptions {
 						// 设置下载的图片是否缓存在SD卡中
 				.considerExifParams(true)
 				.imageScaleType(ImageScaleType.EXACTLY_STRETCHED)// 设置图片以如何的编码方式显示
-				.bitmapConfig(Bitmap.Config.RGB_565)// 设置图片的解码类型
+				.bitmapConfig(Bitmap.Config.ARGB_8888)// 设置图片的解码类型
 						// .decodingOptions(android.graphics.BitmapFactory.ImageLoaderOptions
 						// decodingOptions)//设置图片的解码配置
 				.considerExifParams(true)

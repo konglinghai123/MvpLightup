@@ -2,6 +2,7 @@ package com.dawnlightning.ucqa.base;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import java.io.File;
 
@@ -31,7 +32,6 @@ public class MyApp extends Application{
         initJpush(getApplicationContext());
         initShareSdk(getApplicationContext());
         initSpeechSdk(getApplicationContext());
-
         mAppApplication = this;
     }
 
@@ -57,7 +57,7 @@ public class MyApp extends Application{
         ImageLoaderConfiguration config = new ImageLoaderConfiguration
                 .Builder(context)
                 //.memoryCacheExtraOptions(480, 800) // max width, max height，即保存的每个缓存文件的最大长宽
-                //.discCacheExtraOptions(480, 800, CompressFormat.JPEG, 75, null) // Can slow ImageLoader, use it carefully (Better don't use it)设置缓存的详细信息，最好不要设置这个
+                //.discCacheExtraOptions(480, 800, Bitmap.CompressFormat.JPEG, 100, null) // Can slow ImageLoader, use it carefully (Better don't use it)设置缓存的详细信息，最好不要设置这个
                 .threadPoolSize(5)//线程池内加载的数量
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .denyCacheImageMultipleSizesInMemory()
@@ -71,17 +71,17 @@ public class MyApp extends Application{
                 .discCache(new UnlimitedDiscCache(cacheDir))//自定义缓存路径
                         //.defaultDisplayImageOptions(DisplayImageOptions.createSimple())
                         //.imageDownloader(new BaseImageDownloader(context, 5 * 1000, 30 * 1000)) // connectTimeout (5 s), readTimeout (30 s)超时时间
-                .writeDebugLogs() // Remove for release app
                 .build();
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config);//全局初始化此配置
     }
     public  static  void initJpush(Context context){
         JPushInterface.init(context);// 初始化 JPush
-        JPushInterface.setDebugMode(true); 	// 设置开启日志,发布时请关闭日志
+        JPushInterface.setDebugMode(false); 	// 设置开启日志,发布时请关闭日志
     }
     public static  void initShareSdk(Context context){
         ShareSDK.initSDK(context);
+        ShareSDK.closeDebug();
     }
     public static  void initSpeechSdk(Context context){
         SpeechUtility.createUtility(context, "appid=" + context.getString(R.string.app_id));

@@ -1,11 +1,11 @@
 package com.dawnlightning.ucqa.presenter;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import com.dawnlightning.ucqa.Bean.ConsultBean;
 import com.dawnlightning.ucqa.Bean.UploadPicsBean;
 import com.dawnlightning.ucqa.base.Code;
-import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.model.ConsultModel;
 import com.dawnlightning.ucqa.presenterinterface.IConsultPresenter;
 import com.dawnlightning.ucqa.viewinterface.IConsultView;
@@ -16,18 +16,23 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/4/14.
  */
-public class ConsultPresenter implements IConsultPresenter,ConsultModel.SendConsultListener {
+public class ConsultPresenter extends BasePresenter implements IConsultPresenter,ConsultModel.SendConsultListener {
     private ConsultModel model;
-    private MyApp myApp;
+    private Context context;
     private IConsultView view;
-    public ConsultPresenter(IConsultView view,MyApp app){
+    public ConsultPresenter(IConsultView view,Context context){
         this.view=view;
-        this.myApp=app;
+        this.context=context;
         model=new ConsultModel();
     }
     @Override
     public void douploadpics(List<UploadPicsBean> list) {
-        model.uploadpic(list,mHandle);
+        if (checkNetwork(context)){
+            model.uploadpic(list,mHandle);
+        }else{
+            view.showerror(-1,"网络连接不可用");
+        }
+
     }
 
     @Override

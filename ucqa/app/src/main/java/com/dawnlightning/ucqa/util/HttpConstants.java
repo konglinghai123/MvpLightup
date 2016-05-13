@@ -22,5 +22,6 @@ public class HttpConstants {
 	public final static String HTTP_SELECTION=HTTP_REQUEST+"space.php?";
 
 	public final static String Update="https://ucqa.dawnlightning.com/m/index.php/version.json";
+
 	
 }

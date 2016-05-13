@@ -7,16 +7,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.os.Handler.Callback;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -36,7 +35,6 @@ import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.dialog.ActionItem;
 import com.dawnlightning.ucqa.dialog.TitlePopup;
 import com.dawnlightning.ucqa.presenter.DetailedPresenter;
-import com.dawnlightning.ucqa.share.ShareAdapter;
 import com.dawnlightning.ucqa.share.ShareModel;
 import com.dawnlightning.ucqa.share.ShareTool;
 import com.dawnlightning.ucqa.tools.ImageLoaderOptions;
@@ -54,6 +52,9 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 
 import android.view.ViewGroup.LayoutParams;
+
+import javax.security.auth.login.LoginException;
+
 /**
  * Created by Administrator on 2016/4/9.
  */
@@ -315,10 +316,25 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
     public void showcomment(List<CommentBean> beans) {
         if(beans.size()>0){
             commentcount=commentcount+beans.size();
+
+            if (Integer.parseInt(tv_numcommentpeople.getText().toString())==0){
+                commentRelativeLayout.setVisibility(View.GONE);
+
+            }else{
+                commentRelativeLayout.setVisibility(View.VISIBLE);
+                if (commentcount<Integer.parseInt(tv_numcommentpeople.getText().toString())){
+                    tv_footview.setVisibility(View.VISIBLE);
+                    xListView.addFooterView(footerview);
+                }else{
+                    tv_footview.setVisibility(View.GONE);
+
+                }
+
+            }
             if(loadcomment==Code.INITCOMMENT){
                 commentAdapter=new CommentAdapter(getcontext(),beans,this);
             }else if(loadcomment==Code.LOADMORECOMMENT){
-                if (commentcount>=Integer.parseInt(tv_numcommentpeople.getText().toString())){
+                if (commentcount==Integer.parseInt(tv_numcommentpeople.getText().toString())){
                     footerview.setVisibility(View.GONE);
                 }
                 IsLoadMore=false;
@@ -330,20 +346,11 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
                     commentAdapter=new CommentAdapter(getcontext(),beans,this);
                 }
             }
-
             xListView.setAdapter(commentAdapter);
             commentAdapter.notifyDataSetChanged();
         }
-        if (Integer.parseInt(tv_numcommentpeople.getText().toString())==0){
-            commentRelativeLayout.setVisibility(View.GONE);
 
-        }else{
-            commentRelativeLayout.setVisibility(View.VISIBLE);
-            if (commentcount<Integer.parseInt(tv_numcommentpeople.getText().toString())){
-                xListView.addFooterView(footerview);
-            }
 
-        }
     }
 
     @Override
@@ -482,7 +489,6 @@ public class DetailActivity extends BaseActivity implements IDetailView,CommentA
         if (commentAdapter!=null){
             commentAdapter.replacecommentbean(bean,postion);
             xListView.setAdapter(commentAdapter);
-            //LvHeightUtil.setListViewHeightBasedOnChildren(xListView,2);
             commentAdapter.notifyDataSetChanged();
         }
         ed_setcomment.setHint("写下你的想法和大家交流吧");

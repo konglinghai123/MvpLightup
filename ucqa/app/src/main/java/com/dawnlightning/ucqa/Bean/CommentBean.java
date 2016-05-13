@@ -1,11 +1,7 @@
 package com.dawnlightning.ucqa.Bean;
 
-import android.annotation.SuppressLint;
-
 import com.dawnlightning.ucqa.util.TimeUtil;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**

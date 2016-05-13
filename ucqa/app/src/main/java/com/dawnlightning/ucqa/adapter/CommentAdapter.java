@@ -1,28 +1,20 @@
 package com.dawnlightning.ucqa.adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dawnlightning.ucqa.Bean.CommentBean;
-import com.dawnlightning.ucqa.Bean.PicsBean;
 import com.dawnlightning.ucqa.R;
-import com.dawnlightning.ucqa.dialog.ReplyDialog;
 import com.dawnlightning.ucqa.tools.ImageLoaderOptions;
-import com.dawnlightning.ucqa.util.HttpConstants;
-import com.dawnlightning.ucqa.util.LvHeightUtil;
 import com.dawnlightning.ucqa.view.ExpandListView;
 import com.dawnlightning.ucqa.view.RoundImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -1,25 +1,21 @@
 package com.dawnlightning.ucqa.base;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 import android.view.MotionEvent;
 
-import com.dawnlightning.ucqa.Listener.IBase;
+import com.dawnlightning.ucqa.R;
+import com.dawnlightning.ucqa.gesture.IBase;
 import com.dawnlightning.ucqa.db.SharedPreferenceDb;
 import com.dawnlightning.ucqa.dialog.LoadingDialog;
-import com.dawnlightning.ucqa.util.AppUtils;
-import com.dawnlightning.ucqa.Listener.BackGestureListener;
+import com.dawnlightning.ucqa.gesture.BackGestureListener;
 
 import cn.jpush.android.api.JPushInterface;
 
@@ -29,7 +25,7 @@ import cn.jpush.android.api.JPushInterface;
 public abstract  class BaseActivity extends FragmentActivity implements IBase{
     private Context context;
     private  SharedPreferenceDb MySharedPreferenceDb;
-    private LoadingDialog dialog=null;
+    public LoadingDialog dialog=null;
     public static boolean isForeground = false;//推送判断是否在主界面
     protected int activityCloseEnterAnimation;
 
@@ -89,19 +85,6 @@ public abstract  class BaseActivity extends FragmentActivity implements IBase{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        TypedArray activityStyle = getTheme().obtainStyledAttributes(new int[] {android.R.attr.windowAnimationStyle});
-
-        int windowAnimationStyleResId = activityStyle.getResourceId(0, 0);
-
-        activityStyle.recycle();
-
-        activityStyle = getTheme().obtainStyledAttributes(windowAnimationStyleResId, new int[] {android.R.attr.activityCloseEnterAnimation, android.R.attr.activityCloseExitAnimation});
-
-        activityCloseEnterAnimation = activityStyle.getResourceId(0, 0);
-
-        activityCloseExitAnimation = activityStyle.getResourceId(1, 0);
-
-        activityStyle.recycle();
         context=this;
         initsharepreference(context);
         initGestureDetector();
@@ -133,18 +116,18 @@ public abstract  class BaseActivity extends FragmentActivity implements IBase{
     public void setNeedBackGesture(boolean mNeedBackGesture){
         this.mNeedBackGesture = mNeedBackGesture;
     }
-    public Boolean checknetwork(Context context){
-        return  AppUtils.checkNetwork(context);
-    }
+
     public Context getcontext() {
         return this.context;
     }
+    /*
+	 * 返回
+	 */
     @Override
     public void finish() {
-
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         super.finish();
-
-        overridePendingTransition(activityCloseEnterAnimation, activityCloseExitAnimation);
-
     }
+
+
 }

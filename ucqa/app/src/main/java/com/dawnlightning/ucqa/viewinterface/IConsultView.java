@@ -1,6 +1,5 @@
 package com.dawnlightning.ucqa.viewinterface;
 
-import com.dawnlightning.ucqa.Bean.ConsultBean;
 import com.dawnlightning.ucqa.Bean.UploadPicsBean;
 
 import java.io.File;

@@ -1,12 +1,6 @@
 package com.dawnlightning.ucqa.Bean;
 
-import android.annotation.SuppressLint;
-
-import com.dawnlightning.ucqa.util.TimeUtil;
-
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ConsultMessageBean implements Serializable{
 
@@ -89,7 +83,7 @@ public String getDateline() {
 	return dateline;
 }
 public void setDateline(String dateline) {
-	this.dateline = TimeUtil.TimeStamp2Date(dateline);
+	this.dateline =dateline;
 }
 public String getAvatar_url() {
 	return avatar_url;

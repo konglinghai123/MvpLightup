@@ -1,40 +1,38 @@
 package com.dawnlightning.ucqa.presenter;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.dawnlightning.ucqa.Bean.BaseBean;
 import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
 import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
-import com.dawnlightning.ucqa.base.Code;
-import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.model.ConsultListModel;
 import com.dawnlightning.ucqa.presenterinterface.IConsultListPresenter;
 import com.dawnlightning.ucqa.util.AsyncHttp;
 import com.dawnlightning.ucqa.util.HttpConstants;
 import com.dawnlightning.ucqa.viewinterface.IConsultListView;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import cz.msebera.android.httpclient.Header;
-
 /**
  * Created by Administrator on 2016/4/1.
  */
-public class ConsultListPresenter implements IConsultListPresenter,ConsultListModel.consultlistener {
+public class ConsultListPresenter extends BasePresenter implements IConsultListPresenter,ConsultListModel.consultlistener {
     private ConsultListModel model;
     private IConsultListView view;
-    private MyApp myApp;
+    private Context context;
 
     @Override
     public void loadassignlist(int page, int bwztclassid,String m_auth,int identity,int  operate) {
-        model.loadassignconsultlist(this, page, bwztclassid, m_auth, identity, operate);
+        if (checkNetwork(context)) {
+            model.loadassignconsultlist(this, page, bwztclassid, m_auth, identity, operate);
+        }else{
+            view.showerror(-1,"网络连接不可用");
+        }
     }
 
     @Override
@@ -53,9 +51,9 @@ public class ConsultListPresenter implements IConsultListPresenter,ConsultListMo
     public void consultonFailure(int code, String msg,int identity, int operate) {
             view.getFailure(code, msg, identity, operate);
     }
-    public ConsultListPresenter(IConsultListView view, MyApp myApp){
+    public ConsultListPresenter(IConsultListView view, Context context){
         this.view=view;
-        this.myApp=myApp;
+        this.context=context;
         this.model=new ConsultListModel();
     }
 

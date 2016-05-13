@@ -1,11 +1,7 @@
 package com.dawnlightning.ucqa.model;
 
-import android.util.Log;
-
 import com.alibaba.fastjson.JSON;
 import com.dawnlightning.ucqa.Bean.BaseBean;
-import com.dawnlightning.ucqa.Bean.UserBean;
-import com.dawnlightning.ucqa.Bean.UserData;
 import com.dawnlightning.ucqa.modelinterface.IRegisterModel;
 import com.dawnlightning.ucqa.util.AsyncHttp;
 import com.dawnlightning.ucqa.util.HttpConstants;

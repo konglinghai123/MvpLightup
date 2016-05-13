@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -20,7 +19,7 @@ import android.widget.Toast;
 import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
 import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.Bean.UserBean;
-import com.dawnlightning.ucqa.Listener.IBase;
+import com.dawnlightning.ucqa.gesture.IBase;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.activity.ConsultActivity;
 import com.dawnlightning.ucqa.activity.DetailActivity;
@@ -96,13 +95,15 @@ public class MainFragment extends Fragment implements IConsultListView,IXListVie
         }else if(code==Code.LOAD_NOFULL_SUCCESS)//不可能有下一页
         {
             mListView.disablePullLoad();
+            mListView.setFooterText("已加载全部内容");
+
         }
 
         if (operate== Code.REFRESH)//如果是下拉刷新
         {
             mListView.stopRefresh();//停止刷新
-            consultAdapter.setList(list);
-            //consultAdapter.headinsert(list);//list头插
+            //consultAdapter.setList(list);
+            consultAdapter.headinsert(list);//list头插
 
         }
         else if(operate==Code.CHANGE) //如果是点击Girdview

@@ -1,7 +1,5 @@
 package com.dawnlightning.ucqa.Bean;
 
-import android.widget.ProgressBar;
-
 import java.io.File;
 
 /**

@@ -1,6 +1,5 @@
 package com.dawnlightning.ucqa.fragment;
 import android.app.Activity;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -26,9 +25,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
-import com.dawnlightning.ucqa.Bean.ConsultBean;
+
 import com.dawnlightning.ucqa.Bean.UploadPicsBean;
-import com.dawnlightning.ucqa.Listener.IBase;
+import com.dawnlightning.ucqa.gesture.IBase;
 import com.dawnlightning.ucqa.R;
 import com.dawnlightning.ucqa.activity.ConsultActivity;
 import com.dawnlightning.ucqa.activity.DetailActivity;

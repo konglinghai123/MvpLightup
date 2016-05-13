@@ -1,8 +1,6 @@
 package com.dawnlightning.ucqa.model;
 
 
-import android.util.Log;
-
 import com.alibaba.fastjson.JSON;
 import com.dawnlightning.ucqa.Bean.BaseBean;
 import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
@@ -14,7 +12,6 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 

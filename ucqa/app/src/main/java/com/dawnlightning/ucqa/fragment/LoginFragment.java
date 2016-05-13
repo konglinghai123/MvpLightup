@@ -22,7 +22,6 @@ import com.dawnlightning.ucqa.db.SharedPreferenceDb;
 import com.dawnlightning.ucqa.model.RegisterModel;
 import com.dawnlightning.ucqa.presenter.LoginPresenter;
 import com.dawnlightning.ucqa.presenter.ResigterPresenter;
-import com.dawnlightning.ucqa.util.AppUtils;
 import com.dawnlightning.ucqa.view.EditTextWithDel;
 import com.dawnlightning.ucqa.view.PassWordShow;
 import com.dawnlightning.ucqa.viewinterface.ILoginView;
@@ -45,9 +44,8 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
     @Override
     public View initview(LayoutInflater inflater,ViewGroup container) {
         View view =inflater.inflate(R.layout.fragment_login, container,false);
-
         loginpresenter=new LoginPresenter(this,getActivity());
-        resigterPresenter=new ResigterPresenter(this);
+        resigterPresenter=new ResigterPresenter(this,getActivity().getApplicationContext());
         password=(PassWordShow)view.findViewById(R.id.password);
         password2=(PassWordShow)view.findViewById(R.id.password2);
         phone=(EditTextWithDel)view.findViewById(R.id.phone);
@@ -79,13 +77,12 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
                                             .getCurrentFocus()
                                             .getWindowToken(),
                                     InputMethodManager.HIDE_NOT_ALWAYS);
-                    if (IsLogin){
+                    if (IsLogin) {
                         loginpresenter.login(phone.getText().toString().trim(), password.getText().toString().trim());
-                    }else{
+                    } else {
 
-                        activity.showmessage("请再次输入密码",Toast.LENGTH_SHORT);
+                        activity.showmessage("请再次输入密码", Toast.LENGTH_SHORT);
                     }
-
 
 
                     return true;
@@ -109,13 +106,12 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
                         if (phone.getText().toString()!=""){
                             if (password.getText().toString()!=""&&password2.getText().toString()!=""){
                                 if (password.getText().toString().equals(password2.getText().toString())){
-                                    if (AppUtils.checkNetwork(getActivity())){
-                                        showloadingdialog("注册中");
+
+
                                         RegisterModel model =new RegisterModel(password.getText().toString().trim(),phone.getText().toString().trim());
                                         doregister(model);
-                                    }else{
-                                        activity.showmessage("请检查当前网络连接",Toast.LENGTH_SHORT);
-                                    }
+                                    showloadingdialog("注册中");
+
                                 }else{
                                     activity.showmessage("两次密码不相同",Toast.LENGTH_SHORT);
                                 }
@@ -165,7 +161,10 @@ public class LoginFragment extends  Fragment implements ILoginView,IRegisterView
 
     @Override
     public void dissmissloadingdialog() {
-        activity.dismissdialog();
+     if (activity.dialog!=null){
+         activity.dismissdialog();
+     }
+
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.dawnlightning.ucqa.viewinterface;
 
-import com.dawnlightning.ucqa.Bean.DetailedBean;
 import com.dawnlightning.ucqa.Bean.MessageBean;
 
 import java.util.List;

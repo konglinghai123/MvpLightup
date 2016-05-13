@@ -14,45 +14,29 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
-import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
-import com.dawnlightning.ucqa.Bean.MessageBean;
 import com.dawnlightning.ucqa.Bean.UserBean;
 import com.dawnlightning.ucqa.R;
-import com.dawnlightning.ucqa.adapter.ClassifyAdapter;
-import com.dawnlightning.ucqa.adapter.ConsultAdapter;
 import com.dawnlightning.ucqa.adapter.LeftMenuAdapter;
-import com.dawnlightning.ucqa.adapter.MessageAdapter;
 import com.dawnlightning.ucqa.adapter.MyFragmentPagerAdapter;
 import com.dawnlightning.ucqa.base.BaseActivity;
 import com.dawnlightning.ucqa.base.Code;
 import com.dawnlightning.ucqa.base.Menu;
-import com.dawnlightning.ucqa.base.MyApp;
 import com.dawnlightning.ucqa.fragment.MainFragment;
 import com.dawnlightning.ucqa.fragment.MessageFragment;
 import com.dawnlightning.ucqa.fragment.MyConsultFragment;
-import com.dawnlightning.ucqa.presenter.ConsultListPresenter;
 import com.dawnlightning.ucqa.presenter.MainViewPresenter;
-import com.dawnlightning.ucqa.presenter.MessagePresenter;
 import com.dawnlightning.ucqa.push.ExampleUtil;
 import com.dawnlightning.ucqa.tools.ImageLoaderOptions;
-import com.dawnlightning.ucqa.util.LvHeightUtil;
 import com.dawnlightning.ucqa.view.DragLayout;
 import com.dawnlightning.ucqa.view.MyViewPager;
-import com.dawnlightning.ucqa.viewinterface.IConsultListView;
 import com.dawnlightning.ucqa.viewinterface.IMainView;
-import com.dawnlightning.ucqa.viewinterface.IMessageView;
-import com.dawnlightning.ucqa.viewinterface.IMyconsultListView;
 import com.nineoldandroids.view.ViewHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -77,11 +61,12 @@ public class MainActivity extends BaseActivity implements IMainView{
     private MainViewPresenter mainViewPresenter;
     public static UserBean userBean;
     public static List<ConsultClassifyBean> consultClassifyBeanList;
-    private static boolean isExit = false;
+    public static boolean isExit = false;
+    public static boolean isActive=false;
     public MessageReceiver mMessageReceiver;//推送
     public MyViewPager vp_activity;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
-    public ArrayList<Fragment> fragmentList=new ArrayList<Fragment>();
+    public static  ArrayList<Fragment> fragmentList=new ArrayList<Fragment>();
     private MainFragment mainFragment;
     private MessageFragment messageFragment;
     private MyConsultFragment myConsultFragment;
@@ -96,14 +81,12 @@ public class MainActivity extends BaseActivity implements IMainView{
         );
         setContentView(R.layout.activity_main);
         initview();
+        doloaduserdata(getIntent());
         initdata();
         initevent();
-        doloaduserdata(getIntent());
         docheckupdate();
+
     }
-
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -130,6 +113,7 @@ public class MainActivity extends BaseActivity implements IMainView{
         dl_main.setDragListener(new DragLayout.DragListener() {
             @Override
             public void onOpen() {
+
                 lv_menu.smoothScrollToPosition(new Random().nextInt(30));
                 tv_unreadmsg.setVisibility(View.GONE);
             }
@@ -171,10 +155,11 @@ public class MainActivity extends BaseActivity implements IMainView{
             }
         });
     }
+
         @Override
     public void initdata() {
-            mainViewPresenter=new MainViewPresenter(this,getcontext());
-             mainFragment=new MainFragment();
+
+            mainFragment=new MainFragment();
             messageFragment=new MessageFragment();
             myConsultFragment=new MyConsultFragment();
 
@@ -184,6 +169,10 @@ public class MainActivity extends BaseActivity implements IMainView{
             menuList.add(new Menu("我要咨询",0));
             menuList.add(new Menu("设        置",0));
             menuadapter=new LeftMenuAdapter(MainActivity.this,menuList);
+            if (userBean.getUserdata().getAllnotenum()>0){
+                ((Menu)menuadapter.getItem(1)).setStatus(1);
+                menuadapter.notifyDataSetChanged();
+            }
             lv_menu.setAdapter(menuadapter);
 
             fragmentList.add(mainFragment);
@@ -203,8 +192,7 @@ public class MainActivity extends BaseActivity implements IMainView{
                 vp_activity.setCurrentItem(0);
                 break;
             case 1:
-                ((Menu)menuadapter.getItem(1)).setStatus(0);
-                menuadapter.notifyDataSetChanged();
+
                 dl_main.close();
                 showtitleclassift("消息列表");
                 vp_activity.setCurrentItem(1);
@@ -263,6 +251,7 @@ public class MainActivity extends BaseActivity implements IMainView{
         * */
     @Override
     public void doloaduserdata(Intent intent) {
+        mainViewPresenter=new MainViewPresenter(this,getcontext());
         mainViewPresenter.loaduserdata(intent);
 
     }
@@ -295,10 +284,7 @@ public class MainActivity extends BaseActivity implements IMainView{
             tv_unreadmsg.setVisibility(View.GONE);
         }
 
-        if (userBean.getUserdata().getAllnotenum()>0){
-            ((Menu)menuadapter.getItem(1)).setStatus(1);
-            menuadapter.notifyDataSetChanged();
-        }
+
     }
 
 
@@ -378,7 +364,7 @@ public class MainActivity extends BaseActivity implements IMainView{
             switch (code) {
                 case 0:
                     logs = "Set tag and alias success";
-                    Log.e(Code.TAG,logs);
+
                     break;
 
                 case 6002:
@@ -401,7 +387,7 @@ public class MainActivity extends BaseActivity implements IMainView{
         }
 
     };
-    private final Handler mHandler = new Handler() {
+    public Handler mHandler = new Handler() {
         @Override
         public void handleMessage(android.os.Message msg) {
             super.handleMessage(msg);
@@ -419,7 +405,7 @@ public class MainActivity extends BaseActivity implements IMainView{
     };
 
     @Override
-    public void initjpush(UserBean bean) {
+    public  void initjpush(UserBean bean) {
         if(getMySharedPreferenceDb().getPush()){
             registerMessageReceiver();
             //调用JPush API设置Alias
@@ -427,6 +413,8 @@ public class MainActivity extends BaseActivity implements IMainView{
         }
 
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -454,5 +442,17 @@ public class MainActivity extends BaseActivity implements IMainView{
 
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onStart() {
+        isActive=true;
+        super.onStart();
+    }
+
+    @Override
+    public void finish() {
+        isActive=false;
+        super.finish();
     }
 }

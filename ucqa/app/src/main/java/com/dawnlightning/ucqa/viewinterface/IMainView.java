@@ -2,11 +2,7 @@ package com.dawnlightning.ucqa.viewinterface;
 
 import android.content.Intent;
 
-import com.dawnlightning.ucqa.Bean.ConsultClassifyBean;
-import com.dawnlightning.ucqa.Bean.ConsultMessageBean;
 import com.dawnlightning.ucqa.Bean.UserBean;
-
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/4/1.

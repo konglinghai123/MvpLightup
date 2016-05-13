@@ -2,7 +2,6 @@ package com.dawnlightning.ucqa.model;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.dawnlightning.ucqa.Bean.BaseBean;
@@ -29,6 +28,17 @@ public class PersonalDataModel implements IPersonalDataModel {
     public interface modifylistener{
         public void modifySuccess(String msg);
         public void modifyFailure(int code,String msg);
+    }
+
+    @Override
+    public void clearlogincache(String phone, String password) {
+        RequestParams params = new RequestParams();
+        params.put("ac", "login");
+        params.put("username",phone);
+        params.put("password",password);
+        params.put("loginsubmit",true);
+        final String url =HttpConstants.HTTP_LOGIN+params.toString();
+        AsyncHttp.removecache(url);
     }
 
     @Override
